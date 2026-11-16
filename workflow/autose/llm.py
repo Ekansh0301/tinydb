@@ -88,7 +88,7 @@ class Client:
                     last = TooLarge("%s: prompt of about %d tokens leaves no room under the rate limit" % (label, prompt_est))
                     continue
             need = prompt_est + mt
-            for attempt in range(8):
+            for attempt in range(max(8, 2 * len(config.api_keys(provider)))):
                 try:
                     idx, key = self._wait_for_key(provider, need)
                 except LLMError as e:
@@ -112,7 +112,9 @@ class Client:
                         continue
                     if e.code == 429:
                         wait = float(e.headers.get("retry-after", 20) or 20)
-                        self.cooldown[ident] = time.time() + min(wait, 60)
+                        if "per day" in text or "(TPD)" in text:      # daily quota: do not retry this key soon
+                            wait = max(wait, 900)
+                        self.cooldown[ident] = time.time() + min(wait, 3600)
                         continue
                     if e.code == 413 or "too large" in text.lower():
                         raise TooLarge(str(last))
