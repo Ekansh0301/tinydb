@@ -1,23 +1,27 @@
 {
   "base_sha": "62a61e1f63934024f28d988893346de6b3bdf881",
   "branch": "autose/issue-7",
-  "counters": {},
+  "counters": {
+    "s1": 2
+  },
   "issue": 7,
-  "reason": "",
+  "reason": "agent stopped: call budget exhausted (25 calls)",
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 0,
-      "models": [],
-      "reason": "",
+      "calls": 50,
+      "models": [
+        "nvidia:poolside/laguna-xs-2.1"
+      ],
+      "reason": "agent stopped: call budget exhausted (25 calls)",
       "stage": "1",
-      "status": "running",
-      "tokens": 0
+      "status": "STOPPED",
+      "tokens": 184378
     }
   },
   "stage": "1",
-  "status": "running",
+  "status": "STOPPED",
   "tokens": 0,
-  "tokens_total": 0,
-  "updated": "2026-11-16T20:48:05Z"
+  "tokens_total": 184378,
+  "updated": "2026-11-16T20:49:36Z"
 }

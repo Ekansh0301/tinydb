@@ -32,3 +32,7 @@ S5: "It should work on named tables too."
 - Implementing full pagination (offset/skip) beyond the simple `limit` functionality.
 - Changing the underlying storage order or providing sorting capabilities.
 - Supporting limit values larger than the total number of matching documents (the function will simply return all matches).
+
+
+## Stopped
+Stage 1 could not pass its check: agent stopped: call budget exhausted (25 calls)
