@@ -1,0 +1,6 @@
+pr,branch,issue,label,defect
+13,seeded/1,7,correct,none
+14,seeded/2,7,wrong,limit is applied before the result is cached so a later search without limit returns the truncated list
+15,seeded/3,6,correct,none
+16,seeded/4,6,wrong,the query hash omits the prefix and suffix so the query cache returns results of an earlier call with a different argument
+17,seeded/5,4,wrong,only < is fixed; >, <= and >= still raise TypeError on None

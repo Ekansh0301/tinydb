@@ -1,0 +1,25 @@
+diff --git a/tests/test_none_seed.py b/tests/test_none_seed.py
+new file mode 100644
+index 0000000..93eb064
+--- /dev/null
++++ b/tests/test_none_seed.py
+@@ -0,0 +1,6 @@
++from tinydb import where
++
++
++def test_less_than_skips_none(db):
++    db.insert_multiple([{'a': 1}, {'a': None}, {'a': 5}, {}])
++    assert [d['a'] for d in db.search(where('a') < 3)] == [1]
+diff --git a/tinydb/queries.py b/tinydb/queries.py
+index e106c5d..6a48de9 100644
+--- a/tinydb/queries.py
++++ b/tinydb/queries.py
+@@ -286,7 +286,7 @@ class Query(QueryInstance):
+         :param rhs: The value to compare against
+         """
+         return self._generate_test(
+-            lambda value: value < rhs,
++            lambda value: value is not None and value < rhs,
+             ('<', self._path, rhs)
+         )
+ 

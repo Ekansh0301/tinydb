@@ -239,10 +239,32 @@ def cmd_local(a):
         print("REVIEW", json.dumps(js, indent=1) if js else why, "\ntiers", sorted(set(client.served)))
 
 
+def cmd_record(_):
+    """Store a calibration review (seeded pull request) on the runs branch and say so on the PR."""
+    gitops.assert_our_repo()
+    pr, variant, trial, run_id = os.environ["PR"], os.environ["VARIANT"], os.environ["TRIAL"], os.environ["RUN_ID"]
+    runs = gitops.Runs(state_dir(), 0, 0)
+    runs.open()
+    runs.dir = runs.root / "runs" / "seeded" / ("pr-%s" % pr) / ("%s-t%s-run%s" % (variant, trial, run_id))
+    ro = Path(os.environ.get("REVIEW_DIR", "review_out"))
+    verdict = "NONE"
+    for f in ("review.json", "review.md", "meta.json"):
+        if (ro / f).exists():
+            runs.write(f, (ro / f).read_text())
+    if (ro / "review.json").exists():
+        verdict = json.loads((ro / "review.json").read_text()).get("verdict", "NONE")
+    runs.write("verdict.txt", verdict + "\n")
+    runs.persist("autose: calibration review pr %s %s trial %s -> %s" % (pr, variant, trial, verdict))
+    body = (ro / "review.md").read_text() if (ro / "review.md").exists() else "# Review\n\nNo valid review was produced.\n"
+    gitops.gh(["pr", "comment", pr, "--repo", config.REPO, "--body",
+               "Calibration review (variant `%s`, trial %s, run %s)\n\n%s" % (variant, trial, run_id, body)], check=False)
+    print("recorded", pr, variant, trial, verdict)
+
+
 def main():
     p = argparse.ArgumentParser(prog="autose")
     sub = p.add_subparsers(dest="cmd", required=True)
-    for name, fn in (("gate", cmd_gate), ("build", cmd_build), ("review", cmd_review), ("next", cmd_next)):
+    for name, fn in (("gate", cmd_gate), ("build", cmd_build), ("review", cmd_review), ("next", cmd_next), ("record", cmd_record)):
         sub.add_parser(name).set_defaults(fn=fn)
     lc = sub.add_parser("local")
     lc.add_argument("--issue", required=True)

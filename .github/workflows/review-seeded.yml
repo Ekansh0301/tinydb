@@ -1,0 +1,102 @@
+name: review-seeded
+
+# Calibration of the reviewer (decision experiment E2). Runs the same review job as the
+# main workflow on one seeded pull request and records the verdict. Only a maintainer can
+# start it, and it never changes the pull request except to comment.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: seeded pull request
+        required: true
+      issue_number:
+        description: issue the change claims to address
+        required: true
+      variant:
+        description: independent (default tiers) or same-model (builder model, fresh context)
+        default: independent
+      trial:
+        description: trial number
+        default: "1"
+
+permissions: {}
+
+jobs:
+  review:
+    if: github.repository == 'Ekansh0301/tinydb'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: trusted
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ inputs.pr_number }}/head
+          path: pr
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pytest pytest-cov pyyaml
+      - name: Issue text and base commit
+        working-directory: pr
+        run: |
+          gh issue view ${{ inputs.issue_number }} --repo "$GITHUB_REPOSITORY" --json title,body > "$RUNNER_TEMP/issue.json"
+          git fetch -q origin main
+          echo "BASE_SHA=$(git merge-base origin/main HEAD)" >> "$GITHUB_ENV"
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - working-directory: pr
+        run: PYTHONPATH=../trusted/workflow python -m autose review
+        env:
+          ISSUE_FILE: ${{ runner.temp }}/issue.json
+          REVIEW_DIR: ${{ runner.temp }}/review_out
+          AUTOSE_TIERS_REVIEWER: ${{ inputs.variant == 'same-model' && 'groq:openai/gpt-oss-120b' || '' }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          GROQ_API_KEYS: ${{ secrets.GROQ_API_KEYS }}
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-${{ github.run_id }}
+          path: ${{ runner.temp }}/review_out
+          if-no-files-found: ignore
+
+  record:
+    needs: review
+    if: always() && github.repository == 'Ekansh0301/tinydb'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: review-${{ github.run_id }}
+          path: ${{ runner.temp }}/review_out
+      - run: PYTHONPATH=workflow python -m autose record
+        env:
+          PR: ${{ inputs.pr_number }}
+          VARIANT: ${{ inputs.variant }}
+          TRIAL: ${{ inputs.trial }}
+          RUN_ID: ${{ github.run_id }}
+          REVIEW_DIR: ${{ runner.temp }}/review_out
+          STATE_DIR: ${{ runner.temp }}/autose_state
+          GH_TOKEN: ${{ github.token }}

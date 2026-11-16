@@ -1,0 +1,55 @@
+diff --git a/tests/test_limit_seed.py b/tests/test_limit_seed.py
+new file mode 100644
+index 0000000..c189e11
+--- /dev/null
++++ b/tests/test_limit_seed.py
+@@ -0,0 +1,18 @@
++from tinydb import where
++
++
++def test_limit_returns_first_matches(db):
++    db.insert_multiple([{'a': 1, 'i': i} for i in range(5)])
++    assert [d['i'] for d in db.search(where('a') == 1, limit=2)] == [0, 1]
++
++
++def test_limit_none_returns_all(db):
++    db.insert_multiple([{'a': 1}] * 4)
++    assert len(db.search(where('a') == 1)) == 4
++    assert len(db.search(where('a') == 1, limit=None)) == 4
++
++
++def test_limit_on_named_table(db):
++    t = db.table('t')
++    t.insert_multiple([{'a': 1}] * 3)
++    assert len(t.search(where('a') == 1, limit=2)) == 2
+diff --git a/tinydb/table.py b/tinydb/table.py
+index 76470aa..691808f 100644
+--- a/tinydb/table.py
++++ b/tinydb/table.py
+@@ -246,7 +246,7 @@ class Table:
+ 
+         return list(iter(self))
+ 
+-    def search(self, cond: QueryLike) -> list[Document]:
++    def search(self, cond: QueryLike, limit: Optional[int] = None) -> list[Document]:
+         """
+         Search for all documents matching a 'where' cond.
+ 
+@@ -264,7 +264,7 @@ class Table:
+         # query
+         cached_results = self._query_cache.get(cond)
+         if cached_results is not None:
+-            return cached_results[:]
++            return cached_results[:limit]
+ 
+         # Perform the search by applying the query to all documents.
+         # Then, only if the document matches the query, convert it
+@@ -294,7 +294,7 @@ class Table:
+             # Update the query cache
+             self._query_cache[cond] = docs[:]
+ 
+-        return docs
++        return docs[:limit]
+ 
+     @overload
+     def get(self) -> NoReturn: ...
