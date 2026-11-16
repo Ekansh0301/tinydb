@@ -33,3 +33,7 @@ FAILED tests/test_autose_limit.py::test_ac7_limit_larger_than_matches - TypeE...
 6 failed, 229 passed in 0.63s
 
 ```
+
+
+## Stopped
+Stage 4 could not pass its check: agent stopped: token budget exhausted (64243 tokens)
