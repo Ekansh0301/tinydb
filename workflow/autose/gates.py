@@ -127,8 +127,8 @@ def gate_impl(workdir, base, design):
         return False, ["the diff is empty; nothing was changed"]
     allowed = design_files(design)
     for f in files:
-        if f.startswith("tests/") and not f.startswith("tests/test_autose_"):
-            continue            # existing tests may be updated when the design says so
+        if f.startswith("tests/"):
+            continue            # existing tests may be updated when the design says so; the tester's file is checked in stage 4
         if f not in allowed:
             r.append("changed a file the design does not name: " + f)
     rc, out = sh([sys.executable, "-m", "compileall", "-q", "tinydb"], workdir)

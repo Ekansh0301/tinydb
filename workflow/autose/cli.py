@@ -79,6 +79,7 @@ def cmd_gate(_):
         i = ev["inputs"]
         issue, sender = int(i["issue_number"]), ev["sender"]["login"]
         rnd, frm = int(i.get("round") or 1), int(i.get("from_stage") or 1)
+        extra["variant"] = i.get("variant") or "pipeline"
     else:
         return out(**{**base, "reason": "unsupported event"})
     perm = gitops.gh(["api", "repos/%s/collaborators/%s/permission" % (config.REPO, sender), "--jq", ".permission"], check=False)
@@ -99,7 +100,7 @@ def cmd_gate(_):
                        "autose: stopped. The issue text looks like an attempt to give instructions to an automated agent "
                        "(injection score %.2f). A maintainer should review it and trigger again." % score], check=False)
             return out(**{**base, "reason": "prompt-injection score %.2f" % score})
-    out(go="true", issue=issue, round=rnd, from_stage=frm, reason="ok", **extra)
+    out(go="true", issue=issue, round=rnd, from_stage=frm, reason="ok", **{"variant": "pipeline", **extra})
 
 
 def git_identity(wd):
@@ -107,11 +108,19 @@ def git_identity(wd):
     gitops.run(["git", "config", "user.email", "autose-bot@users.noreply.github.com"], wd)
 
 
+def variant():
+    return os.environ.get("VARIANT") or "pipeline"
+
+
+def run_key(n):
+    return n if variant() == "pipeline" else "%s-%s" % (n, variant())
+
+
 def make_ctx(issue_no, rnd, frm, wd, runs, issue, local=False):
-    branch = "autose/issue-%s" % issue_no
+    branch = "autose/issue-%s" % issue_no if variant() == "pipeline" else "autose-%s/issue-%s" % (variant(), issue_no)
     st = runs.state()
     git_identity(wd)
-    prev = Path(runs.root) / "runs" / ("issue-%s" % issue_no) / ("round-%d" % (rnd - 1))
+    prev = Path(runs.root) / "runs" / ("issue-%s" % runs.issue) / ("round-%d" % (rnd - 1))
     findings = ""
     if rnd > 1 and prev.exists():
         rj = prev / "review.json"
@@ -139,17 +148,17 @@ def cmd_build(_):
     gitops.assert_our_repo()
     n, rnd, frm = int(os.environ["ISSUE"]), int(os.environ["ROUND"]), int(os.environ["FROM_STAGE"])
     issue = json.load(open(os.environ.get("ISSUE_FILE", "issue.json")))
-    runs = gitops.Runs(state_dir(), n, rnd)
+    runs = gitops.Runs(state_dir(), run_key(n), rnd)
     runs.open()
     ctx = make_ctx(n, rnd, frm, os.getcwd(), runs, issue)
-    res = orchestrator.build(ctx, frm)
+    res = orchestrator.build_single(ctx) if variant() == "single" else orchestrator.build(ctx, frm)
     out(status=res["status"], pr=res.get("pr", ""), sha=res.get("sha", ""), base_sha=ctx.base_sha)
     runs.write("log.txt", "\n".join(ctx.log_lines) + "\n")
     runs.persist("autose: issue %d round %d log" % (n, rnd))
     if res["status"] != "RELEASED":
         gitops.gh(["issue", "comment", str(n), "--repo", config.REPO, "--body",
-                   "autose: stopped at stage %s. %s\nArtifacts: https://github.com/%s/tree/%s/runs/issue-%d/round-%d" %
-                   (res["stage"], res["reason"][:600], config.REPO, config.RUNS_BRANCH, n, rnd)], check=False)
+                   "autose: stopped at stage %s. %s\nArtifacts: https://github.com/%s/tree/%s/runs/issue-%s/round-%d" %
+                   (res["stage"], res["reason"][:600], config.REPO, config.RUNS_BRANCH, run_key(n), rnd)], check=False)
 
 
 def cmd_review(_):
@@ -179,13 +188,13 @@ def cmd_next(_):
     gitops.assert_our_repo()
     n, rnd = int(os.environ["ISSUE"]), int(os.environ["ROUND"])
     pr, build_res, ci_res = os.environ.get("PR", ""), os.environ.get("BUILD_RESULT", ""), os.environ.get("CI_RESULT", "")
-    runs = gitops.Runs(state_dir(), n, rnd)
+    runs = gitops.Runs(state_dir(), run_key(n), rnd)
     runs.open()
     ro = Path(os.environ.get("REVIEW_DIR", "review_out"))
     for f in ("review.md", "review.json", "meta.json"):
         if (ro / f).exists():
             runs.write(f, (ro / f).read_text())
-    base_url = "https://github.com/%s/tree/%s/runs/issue-%d/round-%d" % (config.REPO, config.RUNS_BRANCH, n, rnd)
+    base_url = "https://github.com/%s/tree/%s/runs/issue-%s/round-%d" % (config.REPO, config.RUNS_BRANCH, run_key(n), rnd)
 
     def final(status, text, comment=True):
         st = runs.state()
@@ -208,6 +217,8 @@ def cmd_next(_):
         return final("REVIEW_UNAVAILABLE", "autose: no valid review was produced, so there is no approval. A person must review pull request #%s." % pr)
     if js["verdict"] == "APPROVE":
         return final("DONE", "autose: reviewer approved pull request #%s. Merge or close is a human decision." % pr)
+    if variant() != "pipeline":
+        return final("DONE", "autose (%s variant): review recorded for pull request #%s; the experiment ends after round 1." % (variant(), pr))
     if rnd - 1 >= config.MAX_FIX_CYCLES:
         return final("DONE", "autose: the reviewer still asks for changes after %d fix cycles. Pull request #%s is left for a human decision." % (config.MAX_FIX_CYCLES, pr))
     frm = 2 if js.get("issue_class") == "approach" else 3

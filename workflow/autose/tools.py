@@ -32,6 +32,7 @@ ROLE_TOOLS = {
     "implementer": ["open_file", "list_dir", "search", "edit_file", "write_file", "run"],
     "tester": ["open_file", "list_dir", "search", "write_file", "run"],
     "reviewer": ["open_file", "list_dir", "search", "run"],
+    "single": ["open_file", "list_dir", "search", "edit_file", "write_file", "run"],
 }
 
 
@@ -76,6 +77,8 @@ class Toolbox:
                 raise ToolError("test_autose_* files belong to the tester")
             if self.role in ("planner", "reviewer"):
                 raise ToolError("this role cannot write")
+            if self.role == "single" and s.startswith("tests/") and not re.fullmatch(r"tests/test_autose_[A-Za-z0-9_]+\.py", s):
+                raise ToolError("write new tests only as tests/test_autose_<name>.py")
         return full
 
     def _cap(self, s):
@@ -156,7 +159,7 @@ class Toolbox:
 
     def t_write_file(self, path, content):
         f = self._path(path, write=True)
-        if f.exists() and self.role == "implementer":
+        if f.exists() and self.role in ("implementer", "single") and not f.name.startswith("test_autose_"):
             raise ToolError("file exists, use edit_file")
         f.parent.mkdir(parents=True, exist_ok=True)
         f.write_text(content)

@@ -103,3 +103,17 @@ def test_starting_at_stage_three_skips_planning(script):
     calls = script(s3=[OK], s4=[OK])
     res = orchestrator.build(make_ctx(), 3)
     assert res["status"] == "RELEASED" and calls == ["s3", "s4"]
+
+
+def test_single_agent_output_is_split_into_spec_and_design():
+    text = "=== SPEC ===\n# Spec\nS\n=== DESIGN ===\n# Design\nD\n=== END ==="
+    assert stages.split_sections(text) == ("# Spec\nS", "# Design\nD")
+    assert stages.split_sections("no sections") == ("", "")
+
+
+def test_single_variant_stops_after_three_attempts(monkeypatch):
+    calls = []
+    monkeypatch.setattr(stages, "stage_single", lambda ctx, notes: (calls.append(1), stages.Outcome(False, ["[stage 1] x"], data={"gates": [False] * 4}))[1])
+    ctx = make_ctx()
+    res = orchestrator.build_single(ctx)
+    assert res["status"] == "STOPPED" and len(calls) == 3
