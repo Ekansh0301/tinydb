@@ -13,3 +13,7 @@ none – all current tests exercise the original behaviour (no `limit` argument)
 ## Risks
 - Introducing a new parameter could clash with existing user‑defined `search` wrappers that expect only one positional argument; however, the keyword‑only nature (`*, limit`) preserves backward compatibility.
 - Incorrect handling of the cache could cause limited results to be cached; the implementation caches the full result set before slicing, avoiding this risk.
+
+
+## Stopped
+Stage 2 could not pass its check: agent stopped: model unavailable: all tiers failed: every groq key is rate limited for another 837 s
