@@ -1,0 +1,47 @@
+diff --git a/tests/test_startswith_seed.py b/tests/test_startswith_seed.py
+new file mode 100644
+index 0000000..04433ce
+--- /dev/null
++++ b/tests/test_startswith_seed.py
+@@ -0,0 +1,16 @@
++from tinydb import where
++
++
++def test_startswith(db):
++    db.insert_multiple([{'name': n} for n in ['Alice', 'Alan', 'bob']])
++    assert [d['name'] for d in db.search(where('name').startswith('Al'))] == ['Alice', 'Alan']
++
++
++def test_endswith(db):
++    db.insert_multiple([{'name': n} for n in ['Alice', 'Bruce', 'bob']])
++    assert [d['name'] for d in db.search(where('name').endswith('ce'))] == ['Alice', 'Bruce']
++
++
++def test_non_strings_do_not_match(db):
++    db.insert_multiple([{'name': 5}, {'name': None}, {'x': 1}, {'name': 'Al'}])
++    assert [d['name'] for d in db.search(where('name').startswith('A'))] == ['Al']
+diff --git a/tinydb/queries.py b/tinydb/queries.py
+index e106c5d..c440e78 100644
+--- a/tinydb/queries.py
++++ b/tinydb/queries.py
+@@ -251,6 +251,20 @@ class Query(QueryInstance):
+             (hashval if self.is_cacheable() else None)
+         )
+ 
++    def startswith(self, prefix: str) -> QueryInstance:
++        """Match string values that start with ``prefix``."""
++        return self._generate_test(
++            lambda value: isinstance(value, str) and value.startswith(prefix),
++            ('startswith', self._path, prefix)
++        )
++
++    def endswith(self, suffix: str) -> QueryInstance:
++        """Match string values that end with ``suffix``."""
++        return self._generate_test(
++            lambda value: isinstance(value, str) and value.endswith(suffix),
++            ('endswith', self._path, suffix)
++        )
++
+     def __eq__(self, rhs: Any):
+         """
+         Test a dict value for equality.
