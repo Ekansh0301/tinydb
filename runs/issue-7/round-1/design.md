@@ -16,3 +16,7 @@ none – the default behaviour (no `limit` argument) is preserved, and the cache
 - Adding a keyword‑only parameter could break user code that called `search` with a second positional argument (unlikely given current API).  
 - Slicing the cached list creates a new list each call, which is already the case for uncached results; memory impact is negligible.  
 - Ensure the cache still stores the full list so subsequent calls with different `limit` values see the same base data.
+
+
+## Stopped
+Stage 2 could not pass its check: agent stopped: context cannot be made to fit the request limit
