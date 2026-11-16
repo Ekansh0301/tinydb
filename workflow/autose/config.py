@@ -16,7 +16,7 @@ BUDGET = {
     "max_tokens": 1100,         # completion cap per request
     "tool_chars": 2600,         # cap on one tool output
     "stage_calls": 25,
-    "stage_tokens": 60_000,
+    "stage_tokens": 120_000,
     "run_tokens": 400_000,
     "call_timeout": 90,
     "run_timeout": 120,         # seconds per tool command
