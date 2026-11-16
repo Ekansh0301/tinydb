@@ -1,0 +1,35 @@
+# Removed from msiemens/tinydb @ edff96aeb2616402e9489d46e90a592c05565621
+# Reason: design docs / long explanatory docs (Assignment 2, Part 1 step 2)
+# Git history was also dropped (fresh 'git init'), so removed docs cannot be recovered via git log.
+docs/api.rst
+docs/changelog.rst
+docs/conf.py
+docs/contribute.rst
+docs/extend.rst
+docs/extensions.rst
+docs/getting-started.rst
+docs/.gitignore
+docs/index.rst
+docs/intro.rst
+docs/make.bat
+docs/Makefile
+docs/_static/architecture.mmd
+docs/_static/architecture.svg
+docs/_static/logo.png
+docs/_templates/links.html
+docs/_templates/sidebarlogo.html
+docs/_themes/flask/layout.html
+docs/_themes/flask/page.html
+docs/_themes/flask/relations.html
+docs/_themes/flask/static/flasky.css_t
+docs/_themes/flask/theme.conf
+docs/_themes/flask_theme_support.py
+docs/_themes/.gitignore
+docs/_themes/LICENSE
+docs/_themes/README
+docs/upgrade.rst
+docs/usage.rst
+README.rst
+CONTRIBUTING.rst
+SECURITY.md
+.readthedocs.yaml
