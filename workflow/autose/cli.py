@@ -187,16 +187,17 @@ def cmd_next(_):
             runs.write(f, (ro / f).read_text())
     base_url = "https://github.com/%s/tree/%s/runs/issue-%d/round-%d" % (config.REPO, config.RUNS_BRANCH, n, rnd)
 
-    def final(status, text):
+    def final(status, text, comment=True):
         st = runs.state()
         st.update({"status": status, "round": rnd, "updated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
         runs.save_state(st)
         runs.persist("autose: issue %d round %d %s" % (n, rnd, status))
-        gitops.gh(["issue", "comment", str(n), "--repo", config.REPO, "--body", text + "\n\nArtifacts: " + base_url], check=False)
+        if comment:
+            gitops.gh(["issue", "comment", str(n), "--repo", config.REPO, "--body", text + "\n\nArtifacts: " + base_url], check=False)
         print(status, text)
 
     if build_res not in ("success", "skipped") or not pr:
-        return final("STOPPED", "autose: the run stopped before a pull request was ready (see the earlier comment).")
+        return final("STOPPED", "the build job stopped before a pull request was ready", comment=False)
     if ci_res != "success":
         gitops.gh(["pr", "comment", pr, "--repo", config.REPO, "--body", "autose: CI did not pass; no review was requested."], check=False)
         return final("STOPPED", "autose: CI failed on pull request #%s; the run stopped." % pr)

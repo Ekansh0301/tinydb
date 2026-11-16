@@ -14,7 +14,7 @@ DENY = {"experiment", "architecture", "workflow", "results", ".github", ".git",
 BUDGET = {
     "input_tokens": 4500,       # estimated prompt size per request (Groq: 8000 tokens/min/key)
     "max_tokens": 1100,         # completion cap per request
-    "tool_chars": 3500,         # cap on one tool output
+    "tool_chars": 2600,         # cap on one tool output
     "stage_calls": 25,
     "stage_tokens": 60_000,
     "run_tokens": 400_000,

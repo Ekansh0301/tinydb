@@ -15,7 +15,7 @@ from . import config
 TEXT_EXT = {".py", ".md", ".txt", ".rst", ".toml", ".ini", ".cfg", ".yaml", ".yml", ".json", ""}
 
 SPECS = {
-    "open_file": ("Open a text file and show numbered lines.",
+    "open_file": ("Open a text file and show numbered lines (at most 80 lines per call).",
                   {"path": "string", "line_start": "integer", "line_end": "integer"}, ["path"]),
     "list_dir": ("List a directory.", {"path": "string"}, []),
     "search": ("Search files for a regular expression. Returns file:line:text.",
@@ -109,7 +109,7 @@ class Toolbox:
             raise ToolError("no such file")
         lines = f.read_text(errors="replace").splitlines()
         a = max(int(line_start or 1), 1)
-        b = min(int(line_end or a + 119), a + 199, len(lines))
+        b = min(int(line_end or a + 59), a + 79, len(lines))
         body = "\n".join("%d: %s" % (i, lines[i - 1]) for i in range(a, b + 1))
         return "%s (lines %d-%d of %d)\n%s" % (path, a, b, len(lines), body)
 
