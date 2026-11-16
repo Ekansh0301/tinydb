@@ -97,6 +97,21 @@ def testability_check(ctx, spec):
         return []
 
 
+def arch_for_design(arch):
+    """Components, ADR titles with their decisions, and the constraints. The longer
+    ADR text is dropped so the request stays under the model's rate limit (ADR-011)."""
+    parts = re.split(r"\n(?=## )", arch)
+    keep = []
+    for part in parts:
+        if re.match(r"## 2\.", part):
+            head = part.splitlines()[0]
+            adrs = re.findall(r"### (ADR-\d+:[^\n]*)\n(?:.*\n)*?- \*\*Decision:\*\* ([^\n]*(?:\n  [^\n]*)*)", part)
+            keep.append(head + "\n" + "\n".join("- %s. Decision: %s" % (t.strip(), " ".join(d.split())) for t, d in adrs))
+        else:
+            keep.append(part)
+    return "\n".join(keep)
+
+
 # -- 2 design -------------------------------------------------------------------
 def stage2(ctx, notes):
     ctx.cur_stage = "2"
@@ -104,7 +119,7 @@ def stage2(ctx, notes):
     if over:
         return over
     spec = ctx.runs.read("spec.md", "")
-    arch = (Path(ctx.workdir) / "ARCHITECTURE.md").read_text()
+    arch = arch_for_design((Path(ctx.workdir) / "ARCHITECTURE.md").read_text())
     c = llm.Client("builder", ctx.log)
     tb = tools.Toolbox(ctx.workdir, "planner")
     user = "SPECIFICATION\n" + spec + "\n\nARCHITECTURE NOTES\n" + arch + notes_block(notes)
