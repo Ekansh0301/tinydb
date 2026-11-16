@@ -19,11 +19,14 @@ on:
       from_stage:
         description: first stage to run (set by the workflow itself)
         default: "1"
+      variant:
+        description: pipeline (default) or single (experiment E1, one agent does stages 1 to 4)
+        default: pipeline
 
 permissions: {}
 
 concurrency:
-  group: autose-issue-${{ github.event.issue.number || inputs.issue_number }}
+  group: autose-issue-${{ github.event.issue.number || inputs.issue_number }}-${{ inputs.variant || 'pipeline' }}
   cancel-in-progress: false
 
 jobs:
@@ -44,6 +47,7 @@ jobs:
       issue: ${{ steps.g.outputs.issue }}
       round: ${{ steps.g.outputs.round }}
       from_stage: ${{ steps.g.outputs.from_stage }}
+      variant: ${{ steps.g.outputs.variant }}
       pr: ${{ steps.g.outputs.pr }}
       sha: ${{ steps.g.outputs.sha }}
       base_sha: ${{ steps.g.outputs.base_sha }}
@@ -100,6 +104,7 @@ jobs:
           ISSUE: ${{ needs.gate.outputs.issue }}
           ROUND: ${{ needs.gate.outputs.round }}
           FROM_STAGE: ${{ needs.gate.outputs.from_stage }}
+          VARIANT: ${{ needs.gate.outputs.variant }}
           ISSUE_FILE: ${{ runner.temp }}/in/issue.json
           STATE_DIR: ${{ runner.temp }}/autose_state
           GH_TOKEN: ${{ github.token }}

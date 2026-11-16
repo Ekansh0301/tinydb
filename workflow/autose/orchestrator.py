@@ -114,3 +114,27 @@ def build(ctx, from_stage):
             ctx.snapshot("5", "released")
             ctx.persist()
             return {"status": "RELEASED", "pr": o.data.get("pr"), "sha": o.data.get("sha")}
+
+
+def build_single(ctx):
+    """Experiment E1: one agent, three attempts, then the same release step."""
+    ctx.snapshot("single", "running")
+    notes = []
+    for attempt in range(3):
+        ctx.persist()
+        ctx.log("single agent (attempt %d)" % (attempt + 1))
+        o = stages.stage_single(ctx, notes)
+        ctx.runs.write("single_attempt_%d.json" % (attempt + 1), __import__("json").dumps(
+            {"ok": o.ok, "gates": o.data.get("gates"), "reasons": o.reasons}))
+        if o.ok:
+            commit_code(ctx, "autose(single): implement #%d" % ctx.issue_no)
+            try:
+                r = stages.stage5(ctx)
+            except Exception as e:
+                return stop(ctx, 5, [str(e)[:300]])
+            ctx.runs.write("result.json", __import__("json").dumps(r.data))
+            ctx.snapshot("5", "released")
+            ctx.persist()
+            return {"status": "RELEASED", "pr": r.data.get("pr"), "sha": r.data.get("sha")}
+        notes = o.reasons[:8]
+    return stop(ctx, "single", notes)

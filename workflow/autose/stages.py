@@ -200,13 +200,55 @@ def write_test_report(ctx, ok, why, rep):
     ctx.runs.write("test_report.md", "\n".join(lines) + "\n")
 
 
+# -- variant: one agent for stages 1-4 (experiment E1, ADR-001) --------------------------------
+def split_sections(text):
+    spec = re.search(r"=== SPEC ===\s*(.*?)\s*(?==== DESIGN ===|\Z)", text, re.S)
+    design = re.search(r"=== DESIGN ===\s*(.*?)\s*(?==== END ===|\Z)", text, re.S)
+    return (spec.group(1).strip() if spec else ""), (design.group(1).strip() if design else "")
+
+
+def stage_single(ctx, notes):
+    """The same four gates as the pipeline, applied to what one agent produced in one conversation."""
+    ctx.cur_stage = "single"
+    over = check_budget(ctx)
+    if over:
+        return over
+    c = llm.Client("single", ctx.log)
+    tb = tools.Toolbox(ctx.workdir, "single")
+    arch = arch_for_design((Path(ctx.workdir) / "ARCHITECTURE.md").read_text())
+    user = untrusted(ctx) + "\n\nARCHITECTURE NOTES\n" + arch + notes_block(notes)
+    res = agent.run_agent("single", c, prompt("single.md"), user, tb, input_budget=6000, max_tokens=1500,
+                          stage_calls=70, stage_tokens=300_000)
+    account(ctx, c, res)
+    spec, design = split_sections(res.text)
+    ctx.runs.write("spec.md", spec + "\n")
+    ctx.runs.write("design.md", design + "\n")
+    why = []
+    ok1, w1 = gates.gate_spec(spec)
+    why += ["[stage 1] " + w for w in w1]
+    ok2, w2 = gates.gate_design(design, spec, ctx.workdir) if ok1 else (False, ["[stage 2] skipped, no valid spec"])
+    why += ["[stage 2] " + w for w in w2 if not w.startswith("[stage")]
+    ok3, w3 = gates.gate_impl(ctx.workdir, ctx.base_sha, design)
+    diff = gitops.run(["git", "diff", ctx.base_sha], ctx.workdir, check=False)
+    ctx.runs.write("diff.patch", diff + "\n")
+    why += ["[stage 3] " + w for w in w3]
+    ok4, rep = False, {}
+    if ok1:
+        ok4, w4, rep = gates.gate_tests(ctx.workdir, ctx.base_sha, spec)
+        write_test_report(ctx, ok4, w4, rep)
+        why += ["[stage 4] " + w for w in w4]
+    if res.stopped:
+        why.append("agent stopped: " + res.stopped)
+    return Outcome(ok1 and ok2 and ok3 and ok4, why, data={"gates": [ok1, ok2, ok3, ok4]})
+
+
 # -- 5 release ---------------------------------------------------------------
 def pr_body(ctx):
     spec = ctx.runs.read("spec.md", "")
     acs = gates.parse_acs(spec)
     files = gitops.run(["git", "diff", "--stat", ctx.base_sha], ctx.workdir, check=False)
     rep = ctx.runs.read("test_report.md", "")
-    base = "https://github.com/%s/tree/%s/runs/issue-%s/round-%s" % (config.REPO, config.RUNS_BRANCH, ctx.issue_no, ctx.round_no)
+    base = "https://github.com/%s/tree/%s/runs/issue-%s/round-%s" % (config.REPO, config.RUNS_BRANCH, ctx.runs.issue, ctx.round_no)
     return "\n".join([
         "Refs #%d (round %d)" % (ctx.issue_no, ctx.round_no), "",
         "## Acceptance criteria", *["- AC-%d: %s" % (n, t) for n, t in acs.items()], "",
