@@ -16,8 +16,8 @@
     }
   },
   "stage": "1",
-  "status": "running",
+  "status": "STOPPED",
   "tokens": 276763,
   "tokens_total": 0,
-  "updated": "2026-11-16T19:48:42Z"
+  "updated": "2026-11-16T20:46:09Z"
 }
