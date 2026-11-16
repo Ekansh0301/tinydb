@@ -151,6 +151,11 @@ def cmd_build(_):
     runs = gitops.Runs(state_dir(), run_key(n), rnd)
     runs.open()
     ctx = make_ctx(n, rnd, frm, os.getcwd(), runs, issue)
+    runs.write("run.json", json.dumps({
+        "run_id": os.environ.get("GITHUB_RUN_ID"), "attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
+        "event": os.environ.get("GITHUB_EVENT_NAME"), "issue": n, "variant": variant(), "round": rnd,
+        "from_stage": frm, "base_sha": ctx.base_sha, "branch": ctx.branch,
+        "started": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, indent=1))
     res = orchestrator.build_single(ctx) if variant() == "single" else orchestrator.build(ctx, frm)
     out(status=res["status"], pr=res.get("pr", ""), sha=res.get("sha", ""), base_sha=ctx.base_sha)
     runs.write("log.txt", "\n".join(ctx.log_lines) + "\n")
@@ -168,7 +173,8 @@ def cmd_review(_):
     outdir.mkdir(exist_ok=True)
     js, why, client, res = review.run_review(os.getcwd(), os.environ["BASE_SHA"], issue["title"] or "", issue["body"] or "")
     tier = ", ".join(sorted(set(client.served))) or "none"
-    meta = {"tiers": client.served, "tokens": client.tokens_used, "calls": client.calls, "problems": why}
+    meta = {"tiers": client.served, "tokens": client.tokens_used, "calls": client.calls, "problems": why,
+            "run_id": os.environ.get("GITHUB_RUN_ID")}
     (outdir / "meta.json").write_text(json.dumps(meta))
     if js is None or why:
         (outdir / "review.md").write_text("# Review\n\nNo valid review was produced: %s\n" % "; ".join(why))

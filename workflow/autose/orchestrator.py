@@ -5,6 +5,16 @@ from . import config, gitops, stages
 LIMITS = {"s1": 2, "s2": 2, "impl": 3, "tests": 3, "redesign": 1}
 
 
+def record(ctx, stage, outcome):
+    """One line per stage attempt: the evidence for per-stage pass rates (results/results.csv)."""
+    import json
+    import time
+    ctx.runs.append("stages.jsonl", json.dumps({
+        "round": ctx.round_no, "stage": stage, "ok": bool(outcome.ok), "route": getattr(outcome, "route", ""),
+        "reasons": [str(r)[:200] for r in outcome.reasons[:6]], "tokens_so_far": ctx.tokens,
+        "calls_so_far": ctx.calls, "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}) + "\n")
+
+
 def stop(ctx, stage, reasons):
     msg = "; ".join(reasons) or "no reason recorded"
     name = {"1": "spec.md", "2": "design.md", "3": "diff.patch", "4": "test_report.md", "5": "pr.md"}.get(str(stage), "state.json")
@@ -45,6 +55,7 @@ def build(ctx, from_stage):
         if stage == 1:
             ctx.log("stage 1 requirements")
             o = stages.stage1(ctx, notes)
+            record(ctx, 1, o)
             if o.ok:
                 stage, notes = 2, []
                 continue
@@ -54,6 +65,7 @@ def build(ctx, from_stage):
         elif stage == 2:
             ctx.log("stage 2 design")
             o = stages.stage2(ctx, notes)
+            record(ctx, 2, o)
             if o.ok:
                 stage, notes = 3, []
                 continue
@@ -63,6 +75,7 @@ def build(ctx, from_stage):
         elif stage == 3:
             ctx.log("stage 3 implementation (attempt %d)" % (ctx.counters.get("impl", 0) + 1))
             o = stages.stage3(ctx, notes)
+            record(ctx, 3, o)
             if o.ok:
                 commit_code(ctx, "autose: implement #%d" % ctx.issue_no)
                 stage, notes = 4, []
@@ -73,6 +86,7 @@ def build(ctx, from_stage):
         elif stage == 4:
             ctx.log("stage 4 testing (attempt %d)" % (ctx.counters.get("tests", 0) + 1))
             o = stages.stage4(ctx, notes)
+            record(ctx, 4, o)
             if o.ok:
                 commit_code(ctx, "autose: tests for #%d" % ctx.issue_no)
                 stage = 5
@@ -124,6 +138,7 @@ def build_single(ctx):
         ctx.persist()
         ctx.log("single agent (attempt %d)" % (attempt + 1))
         o = stages.stage_single(ctx, notes)
+        record(ctx, "single", o)
         ctx.runs.write("single_attempt_%d.json" % (attempt + 1), __import__("json").dumps(
             {"ok": o.ok, "gates": o.data.get("gates"), "reasons": o.reasons}))
         if o.ok:

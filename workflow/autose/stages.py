@@ -147,13 +147,15 @@ def stage3(ctx, notes):
     user = "SPECIFICATION\n" + spec + "\n\nDESIGN\n" + design + notes_block(notes)
     if ctx.findings and not notes:
         user += "\n\nA reviewer found these problems in the current code; fix them:\n" + ctx.findings
-    res = agent.run_agent("implementer", c, prompt("implementer.md"), user, tb, input_budget=5500)
+    res = agent.run_agent("implementer", c, prompt("implementer.md"), user, tb, input_budget=5500, must_edit=True)
     account(ctx, c, res)
     ok, why = gates.gate_impl(ctx.workdir, ctx.base_sha, design)
     diff = gitops.run(["git", "diff", ctx.base_sha], ctx.workdir, check=False)
     ctx.runs.write("diff.patch", diff + "\n")
     if res.stopped and not ok:
         why = ["agent stopped: " + res.stopped] + why
+    if not ok and any("diff is empty" in w for w in why):
+        why.append("you must change files with the edit_file or write_file tool; describing a change in words changes nothing")
     return Outcome(ok, why)
 
 
@@ -168,7 +170,7 @@ def stage4(ctx, notes):
     c = llm.Client("tester", ctx.log)
     tb = tools.Toolbox(ctx.workdir, "tester")
     user = "SPECIFICATION\n" + spec + "\n\nFiles that were changed (names only): " + ", ".join(files) + notes_block(notes)
-    res = agent.run_agent("tester", c, prompt("tester.md"), user, tb, input_budget=5500)
+    res = agent.run_agent("tester", c, prompt("tester.md"), user, tb, input_budget=5500, must_edit=True)
     account(ctx, c, res)
     if res.stopped and not gates.test_names(ctx.workdir):
         return Outcome(False, ["agent stopped: " + res.stopped], route="tests")
@@ -217,7 +219,7 @@ def stage_single(ctx, notes):
     tb = tools.Toolbox(ctx.workdir, "single")
     arch = arch_for_design((Path(ctx.workdir) / "ARCHITECTURE.md").read_text())
     user = untrusted(ctx) + "\n\nARCHITECTURE NOTES\n" + arch + notes_block(notes)
-    res = agent.run_agent("single", c, prompt("single.md"), user, tb, input_budget=6000, max_tokens=1500,
+    res = agent.run_agent("single", c, prompt("single.md"), user, tb, input_budget=6000, max_tokens=1500, must_edit=True,
                           stage_calls=70, stage_tokens=300_000)
     account(ctx, c, res)
     spec, design = split_sections(res.text)

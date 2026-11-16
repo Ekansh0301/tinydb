@@ -58,6 +58,7 @@ class Toolbox:
         self.role = role
         self.calls = []          # (name, args) history, used by gates and loop detection
         self.ran_command = False
+        self.edits = 0           # successful edit_file / write_file calls
 
     # -- path policy --------------------------------------------------------
     def _path(self, p, write=False):
@@ -155,6 +156,7 @@ class Toolbox:
         if n != 1:
             raise ToolError("`old` must match exactly once, it matches %d times" % n)
         f.write_text(text.replace(old, new))
+        self.edits += 1
         return "edited %s" % path
 
     def t_write_file(self, path, content):
@@ -163,6 +165,7 @@ class Toolbox:
             raise ToolError("file exists, use edit_file")
         f.parent.mkdir(parents=True, exist_ok=True)
         f.write_text(content)
+        self.edits += 1
         return "wrote %s (%d bytes)" % (path, len(content))
 
     def t_run(self, command):

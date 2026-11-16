@@ -15,6 +15,7 @@ class Result:
     tokens: int = 0
     transcript: list = field(default_factory=list)
     ran_command: bool = False
+    reminded: bool = False
 
 
 def _compact(messages, budget):
@@ -37,7 +38,7 @@ def _compact(messages, budget):
 
 
 def run_agent(role, client, system, user, toolbox, stage_calls=None, stage_tokens=None,
-              input_budget=None, max_tokens=None):
+              input_budget=None, max_tokens=None, must_edit=False):
     cap_calls = stage_calls or config.BUDGET["stage_calls"]
     cap_tokens = stage_tokens or config.BUDGET["stage_tokens"]
     schema = tools.schemas(role) if toolbox else None
@@ -87,6 +88,12 @@ def run_agent(role, client, system, user, toolbox, stage_calls=None, stage_token
         res.transcript.append({"model": label, "content": clean["content"],
                                "tool_calls": clean.get("tool_calls", [])})
         if not calls:
+            if must_edit and toolbox is not None and toolbox.edits == 0 and not res.reminded:
+                res.reminded = True      # describing a change in words is not making it
+                messages.append({"role": "user", "content":
+                                 "You have not changed any file yet. Make the change now with the edit_file or "
+                                 "write_file tool; a description without edits counts as nothing."})
+                continue
             res.text = (msg.get("content") or "").strip()
             break
         for c in clean["tool_calls"]:

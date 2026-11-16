@@ -61,3 +61,27 @@ def test_argument_aliases_and_tool_name_aliases(tmp_path):
     tb = box(tmp_path, "planner")
     out = tb.call("read_file", {"file": "tinydb/a.py", "start_line": 1, "end_line": 1})
     assert "def f" in out
+
+
+def test_agent_is_reminded_once_when_it_finishes_without_editing(tmp_path):
+    from autose import agent
+
+    class Fake:
+        served = []
+
+        def __init__(self):
+            self.n = 0
+
+        def chat(self, messages, tools=None, max_tokens=None, temperature=0.2):
+            self.n += 1
+            if self.n == 1:
+                return {"role": "assistant", "content": "I changed it."}, 10, "fake"
+            if self.n == 2:
+                return {"role": "assistant", "content": "", "tool_calls": [
+                    {"id": "1", "function": {"name": "edit_file", "arguments":
+                     '{"path": "tinydb/a.py", "old": "return 1", "new": "return 2"}'}}]}, 10, "fake"
+            return {"role": "assistant", "content": "done"}, 10, "fake"
+
+    tb = box(tmp_path, "implementer")
+    res = agent.run_agent("implementer", Fake(), "sys", "user", tb, must_edit=True)
+    assert res.text == "done" and tb.edits == 1 and res.reminded
