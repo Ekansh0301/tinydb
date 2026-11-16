@@ -31,7 +31,7 @@ def fresh(monkeypatch):
     monkeypatch.setenv("NVIDIA_API_KEY", "n1")
 
 
-def client(monkeypatch, behaviour, role="implementer"):
+def client(monkeypatch, behaviour, role="tester"):
     c = llm.Client(role, log=lambda *_: None)
     seen = []
 
@@ -66,7 +66,7 @@ def test_rate_limited_key_rotates_to_the_next(monkeypatch):
 
 
 def test_oversized_prompt_leaves_no_room_and_raises(monkeypatch):
-    monkeypatch.setenv("AUTOSE_TIERS_IMPLEMENTER", "groq:openai/gpt-oss-120b")
+    monkeypatch.setenv("AUTOSE_TIERS_TESTER", "groq:openai/gpt-oss-120b")
     c, seen = client(monkeypatch, lambda *a: OK)
     with pytest.raises(llm.TooLarge):
         c.chat([{"role": "user", "content": "x" * 30000}])
@@ -96,7 +96,7 @@ def test_builder_falls_back_to_the_second_vendor_when_the_daily_quota_is_used_up
         return OK
     c, seen = client(monkeypatch, b)
     msg, used, label = c.chat([{"role": "user", "content": "x"}])
-    assert label == "nvidia:poolside/laguna-xs-2.1"
+    assert label == "nvidia:nvidia/nemotron-3-ultra-550b-a55b"
     assert all(c.cooldown[("groq", i)] > llm.time.time() + 800 for i in range(3))   # daily quota: long cooldown
 
 
@@ -104,3 +104,18 @@ def test_malformed_tool_call_is_reported_not_fatal(monkeypatch):
     c, seen = client(monkeypatch, lambda *a: http_error(400, '{"code":"tool_use_failed"}'))
     msg, used, label = c.chat([{"role": "user", "content": "x"}])
     assert msg.get("_malformed_tool_call")
+
+
+def test_a_tier_whose_keys_are_all_set_aside_is_skipped_at_once(monkeypatch):
+    seen_waits = []
+    monkeypatch.setattr(llm.time, "sleep", lambda s: seen_waits.append(s))
+
+    def b(p, m, k, n):
+        return OK if p == "nvidia" else http_error(500)
+    c, seen = client(monkeypatch, b)
+    for i in range(3):
+        c.cooldown[("groq", i)] = llm.time.time() + 1000      # e.g. daily quota used up
+    msg, used, label = c.chat([{"role": "user", "content": "x"}])
+    assert label.startswith("nvidia:")
+    assert seen_waits == []                                    # it did not wait for the Groq keys
+    assert all(s[0] == "nvidia" for s in seen)

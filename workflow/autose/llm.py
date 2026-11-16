@@ -61,6 +61,10 @@ class Client:
         return None, None
 
     def _wait_for_key(self, provider, need):
+        n = len(config.api_keys(provider))
+        soonest = min([self.cooldown.get((provider, i), 0) for i in range(n)] or [0])
+        if n and soonest - time.time() > 90:            # every key is set aside for a long time: give up on this tier now
+            raise LLMError("every %s key is rate limited for another %.0f s" % (provider, soonest - time.time()))
         for _ in range(40):
             i, k = self._pick_key(provider, need)
             if k:
