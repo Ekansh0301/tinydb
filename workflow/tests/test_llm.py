@@ -31,7 +31,7 @@ def fresh(monkeypatch):
     monkeypatch.setenv("NVIDIA_API_KEY", "n1")
 
 
-def client(monkeypatch, behaviour, role="tester"):
+def client(monkeypatch, behaviour, role="planner"):
     c = llm.Client(role, log=lambda *_: None)
     seen = []
 
@@ -66,7 +66,7 @@ def test_rate_limited_key_rotates_to_the_next(monkeypatch):
 
 
 def test_oversized_prompt_leaves_no_room_and_raises(monkeypatch):
-    monkeypatch.setenv("AUTOSE_TIERS_TESTER", "groq:openai/gpt-oss-120b")
+    monkeypatch.setenv("AUTOSE_TIERS_PLANNER", "groq:openai/gpt-oss-120b")
     c, seen = client(monkeypatch, lambda *a: OK)
     with pytest.raises(llm.TooLarge):
         c.chat([{"role": "user", "content": "x" * 30000}])
@@ -89,14 +89,20 @@ def test_all_tiers_failing_raises_never_returns_text(monkeypatch):
         c.chat([{"role": "user", "content": "x"}])
 
 
+def test_builder_is_pinned_to_one_model_by_default():
+    assert [t[1] for r in ("planner", "implementer") for t in llm.config.tiers(r)] == ["openai/gpt-oss-120b"] * 2
+    assert llm.config.tiers("tester")[0][1] != llm.config.tiers("implementer")[0][1]
+
+
 def test_builder_falls_back_to_the_second_vendor_when_the_daily_quota_is_used_up(monkeypatch):
+    monkeypatch.setenv("AUTOSE_TIERS_PLANNER", "groq:openai/gpt-oss-120b,nvidia:poolside/laguna-xs-2.1")
     def b(p, m, k, n):
         if p == "groq":
             return http_error(429, "Rate limit reached on tokens per day (TPD): Limit 200000, Used 199000")
         return OK
     c, seen = client(monkeypatch, b)
     msg, used, label = c.chat([{"role": "user", "content": "x"}])
-    assert label == "nvidia:nvidia/nemotron-3-ultra-550b-a55b"
+    assert label == "nvidia:poolside/laguna-xs-2.1"
     assert all(c.cooldown[("groq", i)] > llm.time.time() + 800 for i in range(3))   # daily quota: long cooldown
 
 
@@ -107,6 +113,7 @@ def test_malformed_tool_call_is_reported_not_fatal(monkeypatch):
 
 
 def test_a_tier_whose_keys_are_all_set_aside_is_skipped_at_once(monkeypatch):
+    monkeypatch.setenv("AUTOSE_TIERS_PLANNER", "groq:openai/gpt-oss-120b,nvidia:poolside/laguna-xs-2.1")
     seen_waits = []
     monkeypatch.setattr(llm.time, "sleep", lambda s: seen_waits.append(s))
 
