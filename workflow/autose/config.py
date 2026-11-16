@@ -29,11 +29,12 @@ PROVIDERS = {
 
 # ADR-006. Override with AUTOSE_TIERS_<ROLE>="provider:model,provider:model".
 ROLE_TIERS = {
-    # Groq's free tier allows 200,000 tokens per day per organisation and model, so the
-    # builder roles fall back to a second vendor when that quota is used up (ADR-006).
-    "planner": [("groq", "openai/gpt-oss-120b"), ("nvidia", "poolside/laguna-xs-2.1")],
-    "implementer": [("groq", "openai/gpt-oss-120b"), ("nvidia", "poolside/laguna-xs-2.1")],
-    "tester": [("nvidia", "poolside/laguna-xs-2.1"), ("groq", "openai/gpt-oss-120b")],
+    # Groq's free tier allows 200,000 tokens per day per organisation and model, and that quota rolls
+    # over 24 hours. NVIDIA's free endpoint is the primary for the builder roles; Groq is the fallback
+    # (ADR-006, second amendment). The tester is a different model from the implementer.
+    "planner": [("nvidia", "poolside/laguna-xs-2.1"), ("groq", "openai/gpt-oss-120b")],
+    "implementer": [("nvidia", "poolside/laguna-xs-2.1"), ("groq", "openai/gpt-oss-120b")],
+    "tester": [("groq", "openai/gpt-oss-120b"), ("nvidia", "nvidia/nemotron-3-ultra-550b-a55b")],
     "reviewer": [("nvidia", "nvidia/nemotron-3.5-super-vl-120b-a12b"),
                  ("nvidia", "nvidia/nemotron-3-ultra-550b-a55b"),
                  ("groq", "qwen/qwen3.8-27b")],
