@@ -42,6 +42,9 @@ class Client:
         keys = config.api_keys(provider)
         if not keys:
             raise LLMError("no API key for " + provider)
+        if provider not in _SHARED.setdefault("announced", {}):
+            _SHARED["announced"][provider] = len(keys)
+            self.log("%s: %d API key(s) available" % (provider, len(keys)))
         now = time.time()
         order = [(self.rr.get(provider, 0) + i) % len(keys) for i in range(len(keys))]
         for i in order:
@@ -109,13 +112,15 @@ class Client:
                     text = e.read().decode(errors="replace")[:400]
                     last = LLMError("%s HTTP %s %s" % (label, e.code, text[:400]))
                     if e.code in (401, 403):
-                        self.cooldown[ident] = float("inf")     # dead key: never use it again
+                        self.log("key#%d of %s refused (HTTP %d): %s" % (idx, provider, e.code, text[:140].replace("\n", " ")))
+                        self.cooldown[ident] = time.time() + (float("inf") if e.code == 401 else 600)
                         continue
                     if e.code == 429:
                         wait = float(e.headers.get("retry-after", 20) or 20)
                         if "per day" in text or "(TPD)" in text:      # daily quota: do not retry this key soon
                             wait = max(wait, 900)
                         self.cooldown[ident] = time.time() + min(wait, 3600)
+                        self.log("key#%d of %s rate limited, set aside %.0fs: %s" % (idx, provider, min(wait, 3600), text[60:200].replace("\n", " ")))
                         continue
                     if e.code == 413 or "too large" in text.lower():
                         raise TooLarge(str(last))
