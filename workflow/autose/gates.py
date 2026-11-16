@@ -12,12 +12,18 @@ VAGUE = re.compile(r"\b(fast|quick|easy|easily|user-friendly|robust|secure|scala
 MAX_WORDS = {"spec": 1000, "design": 800}
 
 
+def norm(t):
+    """Models sometimes write non-breaking or typographic hyphens in ids; treat them as "-"."""
+    return re.sub("[\u2010-\u2015\u2212]", "-", t)
+
+
 def words(t):
     return len(t.split())
 
 
 # -- stage 1 ---------------------------------------------------------------
 def parse_acs(spec):
+    spec = norm(spec)
     acs = {}
     sec = re.search(r"##\s*Acceptance criteria(.*?)(?=\n##\s|\Z)", spec, re.S | re.I)
     if sec:
@@ -27,6 +33,7 @@ def parse_acs(spec):
 
 
 def gate_spec(spec):
+    spec = norm(spec)
     r = []
     for h in ("Source statements", "Requirements", "Acceptance criteria", "Assumptions"):
         if not re.search(r"^##\s*" + h, spec, re.M | re.I):
@@ -54,6 +61,7 @@ def gate_spec(spec):
 
 # -- stage 2 ---------------------------------------------------------------
 def design_rows(design):
+    design = norm(design)
     sec = re.search(r"##\s*Changes(.*?)(?=\n##\s|\Z)", design, re.S | re.I)
     rows = []
     for line in (sec.group(1) if sec else "").splitlines():
