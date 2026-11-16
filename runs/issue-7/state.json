@@ -1,28 +1,23 @@
 {
-  "base_sha": "ae9531b204bfc6dd69fe79a7903cce65b67e2b5a",
+  "base_sha": "6fda3cb099fb2f8676c36914d2cf59509ebe5eb7",
   "branch": "autose/issue-7",
-  "counters": {
-    "tests": 3
-  },
+  "counters": {},
   "issue": 7,
-  "reason": "agent stopped: token budget exhausted (64243 tokens)",
+  "reason": "",
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 69,
-      "models": [
-        "groq:openai/gpt-oss-120b",
-        "nvidia:poolside/laguna-xs-2.1"
-      ],
-      "reason": "agent stopped: token budget exhausted (64243 tokens)",
-      "stage": "4",
-      "status": "STOPPED",
-      "tokens": 276763
+      "calls": 0,
+      "models": [],
+      "reason": "",
+      "stage": "1",
+      "status": "running",
+      "tokens": 0
     }
   },
-  "stage": "4",
-  "status": "STOPPED",
-  "tokens": 0,
-  "tokens_total": 276763,
-  "updated": "2026-11-16T19:46:29Z"
+  "stage": "1",
+  "status": "running",
+  "tokens": 276763,
+  "tokens_total": 0,
+  "updated": "2026-11-16T19:48:42Z"
 }
