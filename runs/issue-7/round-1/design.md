@@ -13,3 +13,8 @@ none – the existing test suite only exercises the original un‑limited behavi
 ## Risks
 - Adding a keyword‑only argument could break user code that previously passed a positional argument after `cond`; however, all current usages in the library call `search` with a single positional argument, so compatibility is maintained.
 - Slicing the cached list on each call adds negligible overhead but must not mutate the cached data; the implementation uses `cached_results[:limit]` which returns a new list, preserving cache integrity.
+
+
+## Stopped
+Stage 2 could not pass its check: agent stopped: model unavailable: all tiers failed: groq:openai/gpt-oss-120b HTTP 429 {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01knz0bvj3f2wbzwfq04phs5md` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198307, Requested 3721. Please try again in 14m36.096s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing","type":"tokens","code":"rate_limit_exceeded"}}
+
