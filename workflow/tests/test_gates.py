@@ -92,3 +92,13 @@ def test_review_gate_rejects_approve_with_serious_findings_and_unclassified_reje
     assert not gates.gate_review(rc, True)[0]                      # no issue_class
     assert gates.gate_review(dict(rc, issue_class="code"), True)[0]
     assert not gates.gate_review("not json", True)[0]
+
+
+def test_typographic_hyphens_in_ids_are_accepted(tmp_path):
+    (tmp_path / "tinydb").mkdir()
+    (tmp_path / "tinydb" / "a.py").write_text("def f():\n    pass\n")
+    spec = GOOD_SPEC.replace("AC-1", "AC\u20111").replace("FR-1", "FR\u20111")
+    assert gates.gate_spec(spec)[0]
+    design = DESIGN.replace("AC-1", "AC\u20111")
+    ok, why = gates.gate_design(design, spec, tmp_path)
+    assert ok, why
