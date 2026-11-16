@@ -1,15 +1,15 @@
 # Design
 ## Approach
-We will extend the `Table.search` method to accept an optional keyword argument `limit`. The method will keep its existing signature for backward compatibility (positional `cond` only) and add `limit=None` as a keyword‑only parameter. The search logic will remain unchanged; after gathering all matching documents we will apply the `limit` semantics: a non‑positive limit yields an empty list, a limit larger than the result size returns the full list, otherwise the list is sliced to the requested size. The full result set will still be cached so that subsequent calls without a limit (or with a larger limit) benefit from the cache. No other modules need changes, and the default behaviour of `search()` stays identical.
+Add an optional `limit` keyword argument to `Table.search`. The method will keep its existing caching behaviour by always caching the full result set, then apply the limit only to the returned list. A simple validation ensures `limit` is a non‑negative integer, raising `ValueError` for invalid values. Because `TinyDB.__getattr__` forwards attribute access to the default `Table`, no changes are needed there, and the new argument automatically works for named tables via `TinyDB.table(name).search(...)`.
 
 ## Changes
 | File | Function or class | Change | ACs |
 |---|---|---|---|
-| tinydb/table.py | Table.search | Change signature to `def search(self, cond: QueryLike, *, limit: int | None = None) -> list[Document]`. After building `docs`, add logic: if `limit` is not None, treat `limit <= 0` as empty list, else return `docs[:limit]`. Cache the full `docs` list unchanged. Update docstring to mention the new argument. | AC‑1, AC‑2, AC‑3, AC‑4, AC‑5, AC‑6, AC‑7 |
+| tinydb/table.py | `Table.search` | • Extend signature to `def search(self, cond: QueryLike, *, limit: int | None = None) -> list[Document]`.<br>• Validate `limit` (must be `int` and ≥ 0) and raise `ValueError` otherwise.<br>• After obtaining (or caching) the full result list, return `docs[:limit]` when `limit` is not `None`; otherwise return the full list.<br>• Update docstring to describe the new argument and its behaviour. | AC‑1, AC‑2, AC‑3, AC‑4, AC‑5 |
 
 ## Existing tests affected
-none – existing tests call `search` without the new keyword, which continues to work unchanged.
+none – all current tests exercise the original behaviour (no `limit` argument) which remains unchanged. New tests for the `limit` feature will be added separately.
 
 ## Risks
-- Adding a keyword‑only parameter could break code that calls `search` with a positional second argument; however, the library never used a second positional argument, so this risk is minimal.
-- Slicing after caching ensures cache size is unchanged, but if a future change relies on the cached list being exactly the returned list, tests may need adjustment (unlikely given current design).
+- Introducing a new parameter could clash with existing user‑defined `search` wrappers that expect only one positional argument; however, the keyword‑only nature (`*, limit`) preserves backward compatibility.
+- Incorrect handling of the cache could cause limited results to be cached; the implementation caches the full result set before slicing, avoiding this risk.
