@@ -1,5 +1,5 @@
 diff --git a/tinydb/table.py b/tinydb/table.py
-index 76470aa..1f765c8 100644
+index 76470aa..a5011fd 100644
 --- a/tinydb/table.py
 +++ b/tinydb/table.py
 @@ -246,7 +246,7 @@ class Table:
@@ -11,27 +11,33 @@ index 76470aa..1f765c8 100644
          """
          Search for all documents matching a 'where' cond.
  
-@@ -274,6 +274,14 @@ class Table:
+@@ -264,6 +264,9 @@ class Table:
+         # query
+         cached_results = self._query_cache.get(cond)
+         if cached_results is not None:
++            # Return a copy of cached results, applying limit if provided
++            if limit is not None:
++                return cached_results[:limit]
+             return cached_results[:]
+ 
+         # Perform the search by applying the query to all documents.
+@@ -274,6 +277,10 @@ class Table:
              for doc_id, doc in self._read_table().items()
              if cond(doc)
          ]
-+        # Apply limit if provided
++        # Validate limit
 +        if limit is not None:
-+            if limit <= 0:
-+                limited_docs = []
-+            else:
-+                limited_docs = docs[:limit]
-+        else:
-+            limited_docs = docs
++            if not isinstance(limit, int) or limit < 0:
++                raise ValueError('limit must be a non‑negative integer')
  
          # Only cache cacheable queries.
          #
-@@ -294,7 +302,7 @@ class Table:
+@@ -294,7 +301,7 @@ class Table:
              # Update the query cache
              self._query_cache[cond] = docs[:]
  
 -        return docs
-+        return limited_docs
++        return docs[:limit] if limit is not None else docs
  
      @overload
      def get(self) -> NoReturn: ...
