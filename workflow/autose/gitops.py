@@ -80,6 +80,11 @@ class Runs:
         self.dir.mkdir(parents=True, exist_ok=True)
         (self.dir / name).write_text(text)
 
+    def append(self, name, text):
+        self.dir.mkdir(parents=True, exist_ok=True)
+        with open(self.dir / name, "a") as f:
+            f.write(text)
+
     def read(self, name, default=None):
         f = self.dir / name
         return f.read_text() if f.exists() else default

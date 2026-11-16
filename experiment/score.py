@@ -46,6 +46,7 @@ def main():
     g = a.add_mutually_exclusive_group(required=True)
     g.add_argument("--branch", help="branch of the fork, e.g. autose/issue-7")
     g.add_argument("--path", help="an existing checkout")
+    a.add_argument("--sha", help="with --branch: score this commit of the branch instead of its tip")
     a.add_argument("--python", default=sys.executable)
     a.add_argument("--hidden", default=os.environ.get("HIDDEN_DIR") or str(REPO.parent / "private" / "hidden_tests"))
     a.add_argument("--allow-changed", default="",
@@ -58,7 +59,7 @@ def main():
         work = tmp / "work"
         subprocess.run(["git", "clone", "-q", "--no-hardlinks", str(REPO), str(work)], check=True)
         subprocess.run(["git", "fetch", "-q", "origin", args.branch], cwd=work, check=True)
-        subprocess.run(["git", "checkout", "-q", "FETCH_HEAD"], cwd=work, check=True)
+        subprocess.run(["git", "checkout", "-q", args.sha or "FETCH_HEAD"], cwd=work, check=True)
     else:
         work = Path(args.path)
 

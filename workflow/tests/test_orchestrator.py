@@ -12,6 +12,9 @@ class FakeRuns:
     def write(self, n, t):
         self.files[n] = t
 
+    def append(self, n, t):
+        self.files[n] = self.files.get(n, "") + t
+
     def read(self, n, default=None):
         return self.files.get(n, default)
 
@@ -63,8 +66,11 @@ def bad(reason="x", route=""):
 
 def test_happy_path_runs_every_stage_once(script):
     calls = script(s1=[OK], s2=[OK], s3=[OK], s4=[OK])
-    res = orchestrator.build(make_ctx(), 1)
+    ctx = make_ctx()
+    res = orchestrator.build(ctx, 1)
     assert res["status"] == "RELEASED" and calls == ["s1", "s2", "s3", "s4"]
+    lines = ctx.runs.read("stages.jsonl").strip().splitlines()
+    assert [__import__("json").loads(x)["stage"] for x in lines] == [1, 2, 3, 4]
 
 
 def test_stage1_gets_one_retry_then_stops_and_explains_in_artifact(script):
