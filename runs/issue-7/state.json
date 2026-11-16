@@ -1,23 +1,27 @@
 {
   "base_sha": "7dd4dc0817f0c1dfefcb9cd05c2b49be5fc2aab5",
   "branch": "autose/issue-7",
-  "counters": {},
+  "counters": {
+    "s2": 2
+  },
   "issue": 7,
-  "reason": "",
+  "reason": "acceptance criteria not covered by any row: AC-1, AC-2, AC-3, AC-4, AC-5",
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 0,
-      "models": [],
-      "reason": "",
-      "stage": "1",
-      "status": "running",
-      "tokens": 0
+      "calls": 10,
+      "models": [
+        "groq:openai/gpt-oss-120b"
+      ],
+      "reason": "acceptance criteria not covered by any row: AC-1, AC-2, AC-3, AC-4, AC-5",
+      "stage": "2",
+      "status": "STOPPED",
+      "tokens": 33499
     }
   },
-  "stage": "1",
-  "status": "running",
-  "tokens": 69604,
-  "tokens_total": 0,
-  "updated": "2026-11-16T17:54:23Z"
+  "stage": "2",
+  "status": "STOPPED",
+  "tokens": 0,
+  "tokens_total": 33499,
+  "updated": "2026-11-16T17:56:34Z"
 }
