@@ -1,0 +1,201 @@
+name: autose
+
+# Issue in, pull request out. A maintainer adds the label "autose" to an issue
+# or comments "/autose". Design and reasons: architecture/decisions/.
+
+on:
+  issues:
+    types: [labeled]
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: issue to work on
+        required: true
+      round:
+        description: review round (set by the workflow itself)
+        default: "1"
+      from_stage:
+        description: first stage to run (set by the workflow itself)
+        default: "1"
+
+permissions: {}
+
+concurrency:
+  group: autose-issue-${{ github.event.issue.number || inputs.issue_number }}
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    if: >-
+      github.repository == 'Ekansh0301/tinydb' && (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'issues' && github.event.label.name == 'autose') ||
+        (github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/autose')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+      issue: ${{ steps.g.outputs.issue }}
+      round: ${{ steps.g.outputs.round }}
+      from_stage: ${{ steps.g.outputs.from_stage }}
+      pr: ${{ steps.g.outputs.pr }}
+      sha: ${{ steps.g.outputs.sha }}
+      base_sha: ${{ steps.g.outputs.base_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - id: g
+        run: PYTHONPATH=workflow python -m autose gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GROQ_API_KEYS: ${{ secrets.GROQ_API_KEYS }}
+      - if: steps.g.outputs.go == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue-${{ github.run_id }}
+          path: issue.json
+
+  build:
+    needs: gate
+    if: needs.gate.outputs.go == 'true' && needs.gate.outputs.from_stage != '6'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      status: ${{ steps.b.outputs.status }}
+      pr: ${{ steps.b.outputs.pr }}
+      sha: ${{ steps.b.outputs.sha }}
+      base_sha: ${{ steps.b.outputs.base_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pytest pytest-cov pyyaml
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue-${{ github.run_id }}
+          path: ${{ runner.temp }}/in
+      - id: b
+        run: PYTHONPATH=workflow python -m autose build
+        env:
+          ISSUE: ${{ needs.gate.outputs.issue }}
+          ROUND: ${{ needs.gate.outputs.round }}
+          FROM_STAGE: ${{ needs.gate.outputs.from_stage }}
+          ISSUE_FILE: ${{ runner.temp }}/in/issue.json
+          STATE_DIR: ${{ runner.temp }}/autose_state
+          GH_TOKEN: ${{ github.token }}
+          GROQ_API_KEYS: ${{ secrets.GROQ_API_KEYS }}
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ github.run_id }}
+          path: ${{ runner.temp }}/autose_state/runs
+          if-no-files-found: ignore
+
+  ci:
+    needs: [gate, build]
+    if: >-
+      always() && needs.gate.outputs.go == 'true' &&
+      (needs.build.outputs.status == 'RELEASED' || needs.gate.outputs.from_stage == '6')
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.build.outputs.sha || needs.gate.outputs.sha }}
+    permissions:
+      contents: read
+
+  review:
+    needs: [gate, build, ci]
+    if: always() && needs.ci.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      # trusted workflow code from main, repository under review at the PR head
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: trusted
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.build.outputs.sha || needs.gate.outputs.sha }}
+          path: pr
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pytest pytest-cov pyyaml
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue-${{ github.run_id }}
+          path: ${{ runner.temp }}/in
+      - id: r
+        working-directory: pr
+        run: PYTHONPATH=../trusted/workflow python -m autose review
+        env:
+          ISSUE_FILE: ${{ runner.temp }}/in/issue.json
+          REVIEW_DIR: ${{ runner.temp }}/review_out
+          BASE_SHA: ${{ needs.build.outputs.base_sha || needs.gate.outputs.base_sha }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          GROQ_API_KEYS: ${{ secrets.GROQ_API_KEYS }}
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-${{ github.run_id }}
+          path: ${{ runner.temp }}/review_out
+          if-no-files-found: ignore
+
+  next:
+    needs: [gate, build, ci, review]
+    if: always() && needs.gate.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: review-${{ github.run_id }}
+          path: ${{ runner.temp }}/review_out
+      - run: PYTHONPATH=workflow python -m autose next
+        env:
+          REVIEW_DIR: ${{ runner.temp }}/review_out
+          STATE_DIR: ${{ runner.temp }}/autose_state
+          ISSUE: ${{ needs.gate.outputs.issue }}
+          ROUND: ${{ needs.gate.outputs.round }}
+          PR: ${{ needs.build.outputs.pr || needs.gate.outputs.pr }}
+          BUILD_RESULT: ${{ needs.build.result }}
+          CI_RESULT: ${{ needs.ci.result }}
+          GH_TOKEN: ${{ github.token }}
