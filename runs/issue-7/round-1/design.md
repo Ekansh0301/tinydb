@@ -1,20 +1,15 @@
 # Design
 ## Approach
-The `Table.search` method is the single entry point for all query executions, including calls via `TinyDB.__getattr__`. By extending its signature with an optional keyword‑only `limit` argument we can satisfy the new functional requirements without touching any other component. The existing cache will continue to store the full result set; the limit is applied only to the returned slice, preserving cache correctness. Input validation will coerce non‑positive limits to an empty list, and limits larger than the result size will simply return the full list, matching the specified behaviour.
+We will extend the `Table.search` method to accept an optional keyword argument `limit`. The method will keep its existing signature for backward compatibility (positional `cond` only) and add `limit=None` as a keyword‑only parameter. The search logic will remain unchanged; after gathering all matching documents we will apply the `limit` semantics: a non‑positive limit yields an empty list, a limit larger than the result size returns the full list, otherwise the list is sliced to the requested size. The full result set will still be cached so that subsequent calls without a limit (or with a larger limit) benefit from the cache. No other modules need changes, and the default behaviour of `search()` stays identical.
 
 ## Changes
 | File | Function or class | Change | ACs |
 |---|---|---|---|
-| tinydb/table.py | `Table.search` | • Add a keyword‑only parameter `limit: int | None = None`.<br>• Update docstring to describe the new argument and its semantics.<br>• When a cached result is used, return `cached_results[:limit]` if `limit` is not `None` (handling `limit <= 0` → empty list).<br>• After computing `docs`, store the full list in the cache as before, then apply the same slicing logic before returning.<br>• Raise `TypeError` only if `limit` is provided but not an `int`. | AC‑1, AC‑2, AC‑3, AC‑4, AC‑5, AC‑6 |
+| tinydb/table.py | Table.search | Change signature to `def search(self, cond: QueryLike, *, limit: int | None = None) -> list[Document]`. After building `docs`, add logic: if `limit` is not None, treat `limit <= 0` as empty list, else return `docs[:limit]`. Cache the full `docs` list unchanged. Update docstring to mention the new argument. | AC‑1, AC‑2, AC‑3, AC‑4, AC‑5, AC‑6, AC‑7 |
 
 ## Existing tests affected
-none – the existing test suite only exercises the original un‑limited behaviour, which remains unchanged when `limit` is omitted.
+none – existing tests call `search` without the new keyword, which continues to work unchanged.
 
 ## Risks
-- Adding a keyword‑only argument could break user code that previously passed a positional argument after `cond`; however, all current usages in the library call `search` with a single positional argument, so compatibility is maintained.
-- Slicing the cached list on each call adds negligible overhead but must not mutate the cached data; the implementation uses `cached_results[:limit]` which returns a new list, preserving cache integrity.
-
-
-## Stopped
-Stage 2 could not pass its check: agent stopped: model unavailable: all tiers failed: groq:openai/gpt-oss-120b HTTP 429 {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01knz0bvj3f2wbzwfq04phs5md` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198307, Requested 3721. Please try again in 14m36.096s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing","type":"tokens","code":"rate_limit_exceeded"}}
-
+- Adding a keyword‑only parameter could break code that calls `search` with a positional second argument; however, the library never used a second positional argument, so this risk is minimal.
+- Slicing after caching ensures cache size is unchanged, but if a future change relies on the cached list being exactly the returned list, tests may need adjustment (unlikely given current design).
