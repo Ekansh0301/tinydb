@@ -57,7 +57,7 @@ def stage1(ctx, notes):
     over = check_budget(ctx)
     if over:
         return over
-    c = llm.Client("builder", ctx.log)
+    c = llm.Client("planner", ctx.log)
     tb = tools.Toolbox(ctx.workdir, "planner")
     user = untrusted(ctx) + notes_block(notes)
     if ctx.findings:
@@ -80,7 +80,7 @@ def testability_check(ctx, spec):
     """Second, short model call that flags criteria an automated test could not check."""
     acs = gates.parse_acs(spec)
     listing = "\n".join("AC-%d: %s" % (n, t) for n, t in acs.items())
-    c = llm.Client("builder", ctx.log)
+    c = llm.Client("planner", ctx.log)
     try:
         msg, used, _ = c.chat([
             {"role": "system", "content": "You check acceptance criteria. A criterion is NOT testable if an automated test "
@@ -120,7 +120,7 @@ def stage2(ctx, notes):
         return over
     spec = ctx.runs.read("spec.md", "")
     arch = arch_for_design((Path(ctx.workdir) / "ARCHITECTURE.md").read_text())
-    c = llm.Client("builder", ctx.log)
+    c = llm.Client("planner", ctx.log)
     tb = tools.Toolbox(ctx.workdir, "planner")
     user = "SPECIFICATION\n" + spec + "\n\nARCHITECTURE NOTES\n" + arch + notes_block(notes)
     if ctx.findings:
@@ -142,7 +142,7 @@ def stage3(ctx, notes):
     if over:
         return over
     spec, design = ctx.runs.read("spec.md", ""), ctx.runs.read("design.md", "")
-    c = llm.Client("builder", ctx.log)
+    c = llm.Client("implementer", ctx.log)
     tb = tools.Toolbox(ctx.workdir, "implementer")
     user = "SPECIFICATION\n" + spec + "\n\nDESIGN\n" + design + notes_block(notes)
     if ctx.findings and not notes:
@@ -165,7 +165,7 @@ def stage4(ctx, notes):
         return over
     spec, design = ctx.runs.read("spec.md", ""), ctx.runs.read("design.md", "")
     files = sorted(gates.design_files(design))
-    c = llm.Client("builder", ctx.log)
+    c = llm.Client("tester", ctx.log)
     tb = tools.Toolbox(ctx.workdir, "tester")
     user = "SPECIFICATION\n" + spec + "\n\nFiles that were changed (names only): " + ", ".join(files) + notes_block(notes)
     res = agent.run_agent("tester", c, prompt("tester.md"), user, tb, input_budget=5500)
