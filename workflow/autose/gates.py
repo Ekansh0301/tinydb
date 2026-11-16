@@ -152,6 +152,17 @@ def failing_tests(output):
     return sorted(set(re.findall(r"FAILED (\S+)", output)))
 
 
+def classify_failures(out):
+    """Split failing new tests into those that fail on an assertion (the behaviour is wrong,
+    an implementation problem) and those that crash inside the test file itself with another
+    exception type (the test is wrong, a tester problem)."""
+    tester_bugs, impl = [], []
+    for m in re.finditer(r"^(tests/test_autose_\w+\.py):(\d+): (\w+)", out, re.M):
+        (impl if m.group(3) == "AssertionError" else tester_bugs).append("%s:%s %s" % m.groups())
+    others = re.findall(r"^(?!tests/test_autose_)(\S+\.py):\d+: \w+", out, re.M)   # raised inside the library
+    return tester_bugs, impl, others
+
+
 def gate_tests(workdir, base, spec):
     """New tests must exist for every criterion, fail on the base code, and pass
     on the new code together with the whole existing suite."""
@@ -184,6 +195,7 @@ def gate_tests(workdir, base, spec):
     out = tools.run_isolated([sys.executable, "-m", "pytest", "-p", "no:cacheprovider", "-q", "-o", "addopts=", "tests"], workdir, timeout=280)
     report["suite_output"] = out
     report["failed"] = failing_tests(out)
+    report["tester_bugs"], report["impl_failures"], report["library_errors"] = classify_failures(out)
     if not out.startswith("exit code 0"):
         r.append("test suite does not pass: " + ", ".join(report["failed"][:8] or ["see output"]))
     m = re.search(r"(\d+) passed", out)
