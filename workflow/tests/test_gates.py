@@ -102,3 +102,13 @@ def test_typographic_hyphens_in_ids_are_accepted(tmp_path):
     design = DESIGN.replace("AC-1", "AC\u20111")
     ok, why = gates.gate_design(design, spec, tmp_path)
     assert ok, why
+
+
+def test_failures_are_split_between_wrong_tests_and_wrong_behaviour():
+    out = ("tests/test_autose_a.py:13: TypeError\n"
+           "tests/test_autose_a.py:30: AssertionError\n"
+           "tinydb/table.py:301: ValueError\n")
+    tester, impl, library = gates.classify_failures(out)
+    assert tester == ["tests/test_autose_a.py:13 TypeError"]
+    assert impl == ["tests/test_autose_a.py:30 AssertionError"]
+    assert library == ["tinydb/table.py"]

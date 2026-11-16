@@ -101,6 +101,7 @@ class Client:
                 if provider == "groq" and model.startswith("openai/gpt-oss"):
                     body["reasoning_effort"] = "low"
                 ident = (provider, idx)
+                t0 = time.time()
                 self.window.setdefault(ident, []).append((time.time(), need))
                 try:
                     d = self._post(provider, model, key, body)
@@ -118,6 +119,7 @@ class Client:
                         continue
                     if e.code == 413 or "too large" in text.lower():
                         raise TooLarge(str(last))
+                    self.window[ident][-1] = (time.time(), 200)      # a rejected request used almost nothing
                     if e.code == 400 and ("tool_use_failed" in text or "output_parse_failed" in text):
                         self.log("malformed tool call: " + text[:500].replace("\n", " "))
                         return {"role": "assistant", "content": "",
@@ -132,6 +134,7 @@ class Client:
                     continue
                 msg = d["choices"][0]["message"]
                 used = d.get("usage", {}).get("total_tokens", need)
+                self.log("call %s key#%d prompt~%d used %d in %.1fs" % (label, idx, prompt_est, used, time.time() - t0))
                 self.window[ident][-1] = (time.time(), used)
                 self.tokens_used += used
                 self.calls += 1
