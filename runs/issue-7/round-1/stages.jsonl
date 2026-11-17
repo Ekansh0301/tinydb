@@ -18,3 +18,4 @@
 {"run_id": "44150591768", "round": 1, "stage": 1, "ok": false, "route": "", "reasons": ["requirements without an acceptance criterion: FR-6"], "tokens_so_far": 1775, "calls_so_far": 1, "time": "2026-11-17T18:42:00Z"}
 {"run_id": "44150591768", "round": 1, "stage": 1, "ok": false, "route": "", "reasons": ["requirements without an acceptance criterion: FR-2"], "tokens_so_far": 3371, "calls_so_far": 2, "time": "2026-11-17T18:42:03Z"}
 {"run_id": "44150971867", "round": 1, "stage": 1, "ok": true, "route": "", "reasons": [], "tokens_so_far": 2373, "calls_so_far": 2, "time": "2026-11-17T18:44:14Z"}
+{"run_id": "44150971867", "round": 1, "stage": 2, "ok": false, "route": "", "reasons": ["`change` not found in tinydb/database.py (mark it NEW if it is new)"], "tokens_so_far": 42006, "calls_so_far": 18, "time": "2026-11-17T18:46:24Z"}

@@ -1,15 +1,17 @@
 # Design
 ## Approach
-Add an optional `limit` keyword argument to `Table.search`, which is the method ultimately invoked by `TinyDB.search`. The function will keep its existing caching behaviour – the cache stores the full result list for a given query – and will apply the `limit` only when returning the final list to the caller. Validation will ensure that a provided limit is a non‑negative integer, raising `ValueError` for negative values and `TypeError` for non‑integers. Because `TinyDB.__getattr__` forwards unknown attributes to the default table, no changes are required there, and the new signature works transparently for named tables as well.
+Add an optional `limit` keyword argument to `Table.search`, defaulting to `None`. The method will keep its existing behavior (query‑cache lookup, result generation) and, after obtaining the full list of matching documents, apply the limit logic: if `limit` is provided and ≤ 0 return an empty list; otherwise slice the list to at most `limit` items, preserving the original storage order. Because `TinyDB.__getattr__` forwards attribute access to the default table, the new signature automatically applies to `db.search`. No other components need changes, and the existing query‑cache remains valid because the cached value is the full result list; limiting is performed after cache retrieval.
 
 ## Changes
 | File | Function or class | Change | ACs |
 |---|---|---|---|
-| tinydb/table.py | `Table.search` | • Add `limit: int | None = None` keyword argument.<br>• Validate `limit` (raise `TypeError` if not `int`, `ValueError` if < 0).<br>• After obtaining the cached/full result list, slice it: `result = result[:limit]` when `limit` is not `None`.<br>• Update docstring to describe the new argument and behaviour. | AC-1, AC-2, AC-3, AC-4 |
+| tinydb/table.py | `Table.search` | Extend signature to `def search(self, cond: QueryLike, *, limit: int | None = None) -> list[Document]`. After obtaining `result` (from cache or fresh computation), add logic: <br>```python\nif limit is None:\n    return result\nif limit <= 0:\n    return []\nreturn result[:limit]\n```<br>Keep existing docstring and cache behavior unchanged. | AC‑1, AC‑2, AC‑3, AC‑4, AC‑5, AC‑6 |
+| tinydb/database.py | `__getattr__` forwarding (no code change) | No modification needed; forwarding already works for any keyword arguments passed to the default table’s `search`. | — |
 
 ## Existing tests affected
-none – all current tests exercise `search` without a `limit` argument, and the added default behaviour preserves the existing output.
+None. All current tests exercise `db.search` without a `limit` argument, and the default `limit=None` preserves existing behaviour, so no test modifications are required.
 
 ## Risks
-- Introducing the `limit` parameter changes the public signature; callers that previously passed an unexpected keyword named `limit` will now be accepted, but this is intended and does not break existing code.
-- Slicing after cache retrieval means the cached list remains the full result set, preserving cache correctness for subsequent calls with different limits. No cache invalidation logic is altered.
+- **Cache size impact** – limiting is applied after cache retrieval, so the cache still stores the full result list; this matches current design and does not violate any constraint.
+- **Signature compatibility** – adding a keyword‑only `limit` preserves positional call compatibility; existing code that passed positional arguments will continue to work.
+- **Future API misuse** – callers might pass `limit` as a positional argument; the keyword‑only design prevents accidental mis‑ordering while remaining backward‑compatible.
