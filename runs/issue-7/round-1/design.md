@@ -1,17 +1,16 @@
 # Design
 ## Approach
-We will extend the `Table.search` method to accept an optional keyword‑only argument `limit`. The method will keep its existing behaviour (including caching) and only slice the result list when a non‑`None` limit is provided. Validation will ensure `limit` is a non‑negative integer, raising `ValueError` for negatives. Because `TinyDB.__getattr__` forwards unknown attributes to the default table, no change is required there; the new signature will be automatically usable on named tables as well.
+Add an optional `limit` keyword argument to `Table.search` while preserving its existing behavior when omitted. The function will validate `limit` as a non‑negative integer, raise `ValueError` for negatives, and return a sliced copy of the full result list when a limit is provided. Caching will continue to store the complete result set so that subsequent unlimited searches are fast, and the change will automatically apply to the default table and any named tables because they all use the same `Table.search` implementation. No other modules need to be altered.
 
 ## Changes
 | File | Function or class | Change | ACs |
 |---|---|---|---|
-| tinydb/table.py | `Table.search` | • Add a keyword‑only parameter `limit: int | None = None` to the signature.<br>• Validate `limit` (raise `ValueError` if < 0, allow 0).<br>• After building the full `docs` list and caching it (unchanged), return `docs[:]` when `limit is None` else `docs[:limit]`.<br>• Update docstring to describe the new argument and its behaviour. | AC-1, AC-2, AC-3, AC-4, AC-5 |
-| tinydb/__init__.py (optional) | Re‑export unchanged | No change needed; the public API already exposes `TinyDB.search` which forwards to `Table.search`. | – |
+| tinydb/table.py | Table.search | • Add `limit: int | None = None` to the signature.<br>• Validate that `limit` is `None` or a non‑negative int (raise `ValueError` if negative).<br>• After building `docs`, compute `result = docs if limit is None else docs[:limit]`.<br>• Return `result` (still a fresh copy).<br>• Keep caching unchanged (cache full `docs`). | AC-1, AC-2, AC-3, AC-4, AC-5 |
 
 ## Existing tests affected
-None. The current test suite never passes a `limit` argument, so all existing behaviour remains identical. No test modifications are required.
+none – all current tests call `search()` without `limit`; the new optional argument is backward‑compatible.
 
 ## Risks
-- **Cache consistency:** The cache continues to store the full result set; slicing occurs only on return, preserving existing cache semantics.
-- **Performance:** For very large tables the full list is still built before slicing, which matches the specification (no early‑exit optimisation required).  
-- **Argument validation:** Introducing a `ValueError` for negative limits adds a new exception path; callers must handle it, but this is documented and aligns with the assumed behaviour.
+- Slicing after document conversion may add minimal overhead, but it does not affect correctness.  
+- Introducing a new parameter could conflict with user‑defined query objects that also accept `**kwargs`; however, `Table.search` only forwards `cond`, so this risk is negligible.  
+- Validation may raise `ValueError` for negative limits, which is an intentional design decision (per assumption A‑1).
