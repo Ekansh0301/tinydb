@@ -1,3 +1,32 @@
+diff --git a/tests/test_autose_search_limit.py b/tests/test_autose_search_limit.py
+new file mode 100644
+index 0000000..2508ba5
+--- /dev/null
++++ b/tests/test_autose_search_limit.py
+@@ -0,0 +1,22 @@
++from tinydb import TinyDB, where
++from tinydb.storages import MemoryStorage
++
++
++def make_db():
++    db = TinyDB(storage=MemoryStorage)
++    db.drop_tables()
++    return db
++
++
++def test_ac1_limit_returns_at_most_limit_documents():
++    db = make_db()
++    for i in range(10):
++        db.insert({'type': 'log', 'id': i})
++
++    results = db.search(where('type') == 'log', limit=5)
++    assert len(results) <= 5
++
++
++def test_ac2_limit_preserves_storage_order():
++    db = make_db()
++    for i in range(1, 7):
+\ No newline at end of file
 diff --git a/tinydb/table.py b/tinydb/table.py
 index 76470aa..379266d 100644
 --- a/tinydb/table.py
