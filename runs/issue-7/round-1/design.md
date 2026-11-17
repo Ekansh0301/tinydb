@@ -1,17 +1,17 @@
 # Design
 ## Approach
-Add an optional `limit` keyword argument to `Table.search`, defaulting to `None`. The method will keep its existing behavior (query‑cache lookup, result generation) and, after obtaining the full list of matching documents, apply the limit logic: if `limit` is provided and ≤ 0 return an empty list; otherwise slice the list to at most `limit` items, preserving the original storage order. Because `TinyDB.__getattr__` forwards attribute access to the default table, the new signature automatically applies to `db.search`. No other components need changes, and the existing query‑cache remains valid because the cached value is the full result list; limiting is performed after cache retrieval.
+We will extend the `Table.search` method to accept an optional `limit` keyword argument while preserving its existing signature for callers that omit it. The method will first retrieve (or compute) the full list of matching documents, then apply the `limit` rules: a non‑positive limit yields an empty list, a positive limit returns at most that many documents in the original storage order, and a limit larger than the result size returns the full list. The cache will continue to store the full result set so that subsequent calls without a limit can reuse it, and calls with a limit will return a sliced copy. No other components need to change, and the public API of `TinyDB` already forwards unknown attributes to the default `Table`, so the new keyword works for named tables as well.
 
 ## Changes
 | File | Function or class | Change | ACs |
 |---|---|---|---|
-| tinydb/table.py | `Table.search` | Extend signature to `def search(self, cond: QueryLike, *, limit: int | None = None) -> list[Document]`. After obtaining `result` (from cache or fresh computation), add logic: <br>```python\nif limit is None:\n    return result\nif limit <= 0:\n    return []\nreturn result[:limit]\n```<br>Keep existing docstring and cache behavior unchanged. | AC‑1, AC‑2, AC‑3, AC‑4, AC‑5, AC‑6 |
-| tinydb/database.py | `__getattr__` forwarding (no code change) | No modification needed; forwarding already works for any keyword arguments passed to the default table’s `search`. | — |
+| tinydb/table.py | `Table.search` | • Change signature to `def search(self, cond: QueryLike, limit: int | None = None) -> list[Document]`.<br>• Add handling after the full result list is built: if `limit` is not `None` and `limit <= 0` return `[]`; if `limit` is positive return `result[:limit]`.<br>• Keep caching of the full result (as before) and slice only on return, so cached data remains unchanged.<br>• Update docstring to describe the new `limit` parameter and its behaviour. | AC-1, AC-2, AC-3, AC-4, AC-5, AC-6 |
+| tinydb/__init__.py | (re‑export) | No change needed; the new signature is automatically exposed via `TinyDB.search`. | – |
 
 ## Existing tests affected
-None. All current tests exercise `db.search` without a `limit` argument, and the default `limit=None` preserves existing behaviour, so no test modifications are required.
+None. All current tests exercise `Table.search` without the `limit` argument, and the default behaviour (no limit) is preserved. New tests for the limit feature will be added separately.
 
 ## Risks
-- **Cache size impact** – limiting is applied after cache retrieval, so the cache still stores the full result list; this matches current design and does not violate any constraint.
-- **Signature compatibility** – adding a keyword‑only `limit` preserves positional call compatibility; existing code that passed positional arguments will continue to work.
-- **Future API misuse** – callers might pass `limit` as a positional argument; the keyword‑only design prevents accidental mis‑ordering while remaining backward‑compatible.
+- Slicing the cached result could unintentionally expose a view that mutates the cache; we return a fresh list slice to avoid this.  
+- Adding a new keyword may conflict with user code that previously passed a positional argument named `limit`; however, `limit` is a keyword‑only addition, and existing positional calls remain unaffected.  
+- The order of documents is defined by the iteration order of `self._read_table().items()`, which reflects the storage order; if a storage implementation changes this order, the limit behaviour will follow it, satisfying the spec.
