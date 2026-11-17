@@ -246,7 +246,7 @@ class Table:
 
         return list(iter(self))
 
-    def search(self, cond: QueryLike) -> list[Document]:
+    def search(self, cond: QueryLike, limit: Optional[int] = None) -> list[Document]:
         """
         Search for all documents matching a 'where' cond.
 
@@ -292,6 +292,8 @@ class Table:
                                                    lambda: True)
         if is_cacheable():
             # Update the query cache
+            if limit is not None:
+                docs = docs[:limit]
             self._query_cache[cond] = docs[:]
 
         return docs
