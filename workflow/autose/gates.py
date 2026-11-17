@@ -70,7 +70,8 @@ def design_rows(design):
         cells = [c.strip().strip("`") for c in line.strip().strip("|").split("|")]
         if len(cells) >= 4 and cells[0].lower() not in ("file", "---", "") and not set(cells[0]) <= set("-: "):
             # a Change cell may itself contain "|" (e.g. type hints), so take the last cell as the ACs
-            rows.append([cells[0], cells[1], " | ".join(cells[2:-1]), cells[-1]])
+            path = re.match(r"[\w./\-]+", cells[0])           # "tinydb/x.py (optional)" -> "tinydb/x.py"
+            rows.append([path.group(0) if path else cells[0], cells[1], " | ".join(cells[2:-1]), cells[-1]])
     return rows
 
 

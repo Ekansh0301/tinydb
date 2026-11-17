@@ -135,3 +135,10 @@ def test_function_cell_with_explanatory_text(tmp_path):
     assert ok, why
     design = DESIGN.replace("| f |", "| (none) |")
     assert gates.gate_design(design, GOOD_SPEC, tmp_path)[0]
+
+
+def test_file_cell_with_a_note_after_the_path(tmp_path):
+    (tmp_path / "tinydb").mkdir(exist_ok=True)
+    (tmp_path / "tinydb" / "a.py").write_text("def f():\n    pass\n")
+    ok, why = gates.gate_design(DESIGN.replace("| tinydb/a.py |", "| tinydb/a.py (main change) |"), GOOD_SPEC, tmp_path)
+    assert ok, why
