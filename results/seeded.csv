@@ -1,0 +1,16 @@
+pr,label,variant,trial,run_id,verdict,outcome,tier,tokens,problems
+13,correct,independent,1,43938734137,APPROVE,approved,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,65072,
+13,correct,independent,2,43939329566,NONE,no valid review,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,80107,reviewer stopped: token budget exhausted (80107 tokens)
+13,correct,independent,3,43939623536,APPROVE,approved,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,66886,
+14,wrong,independent,1,43938800731,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,39481,
+14,wrong,independent,2,43939390061,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,65675,
+14,wrong,independent,3,43939682492,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,33005,
+15,correct,independent,1,43938865666,APPROVE,approved,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,31739,
+15,correct,independent,2,43939450019,APPROVE,approved,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,48074,
+15,correct,independent,3,43939740474,APPROVE,approved,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,24920,
+16,wrong,independent,1,43938928895,APPROVE,missed,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,45786,
+16,wrong,independent,2,43939505787,APPROVE,missed,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,72323,
+16,wrong,independent,3,43939799354,NONE,no valid review,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,83508,reviewer stopped: token budget exhausted (83508 tokens)
+17,wrong,independent,1,43938994841,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,24390,
+17,wrong,independent,2,43939564463,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,36809,
+17,wrong,independent,3,43939856408,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,88716,

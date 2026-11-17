@@ -1,0 +1,15 @@
+{
+ "autose/issue-7@7e0abeb45bfa17ed381554354fa112b45cdfe281": {
+  "acceptance_passed": 3,
+  "acceptance_total": 5,
+  "baseline_passed": 228,
+  "failed_acceptance": [
+   "test_I4_search_limit.py::test_cache_is_not_confused_by_limit",
+   "test_I4_search_limit.py::test_limit_zero_and_larger_than_matches"
+  ],
+  "issue": 4,
+  "outcome": "Partial",
+  "regressed_tests": [],
+  "regressions": 0
+ }
+}
