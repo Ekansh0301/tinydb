@@ -1,19 +1,16 @@
 # Design
 ## Approach
-Add an optional `limit` keyword argument to `Table.search`. The method will keep its existing caching behaviour by always caching the full result set, then apply the limit only to the returned list. A simple validation ensures `limit` is a non‑negative integer, raising `ValueError` for invalid values. Because `TinyDB.__getattr__` forwards attribute access to the default `Table`, no changes are needed there, and the new argument automatically works for named tables via `TinyDB.table(name).search(...)`.
+We will extend `Table.search` to accept an optional keyword argument `limit`. The existing signature will be kept backward‑compatible by giving `limit` a default value of `None`. When `limit` is provided we validate it as an integer ≥ 1, then return at most that many matching documents without caching the limited result (the cache must remain keyed only by the query). When `limit` is omitted the current behaviour – full caching and returning all matches – stays unchanged. Because `TinyDB` forwards unknown attributes to the default `Table`, the new argument automatically works for the default table and for any named table returned by `TinyDB.table(name)`.
 
 ## Changes
 | File | Function or class | Change | ACs |
 |---|---|---|---|
-| tinydb/table.py | `Table.search` | • Extend signature to `def search(self, cond: QueryLike, *, limit: int | None = None) -> list[Document]`.<br>• Validate `limit` (must be `int` and ≥ 0) and raise `ValueError` otherwise.<br>• After obtaining (or caching) the full result list, return `docs[:limit]` when `limit` is not `None`; otherwise return the full list.<br>• Update docstring to describe the new argument and its behaviour. | AC‑1, AC‑2, AC‑3, AC‑4, AC‑5 |
+| tinydb/table.py | Table.search | • Change signature to `def search(self, cond: QueryLike, *, limit: int | None = None) -> list[Document]`.<br>• Add validation: if `limit` is not `None` and (`not isinstance(limit, int)` or `limit < 1`) raise `TypeError`.<br>• After building the full `docs` list, if `limit` is provided return `docs[:limit]` **without** storing in the query cache.<br>• If `limit` is `None`, keep existing caching logic unchanged.<br>• Update docstring to describe the new parameter. | AC‑1, AC‑2, AC‑3, AC‑4, AC‑5 |
 
 ## Existing tests affected
-none – all current tests exercise the original behaviour (no `limit` argument) which remains unchanged. New tests for the `limit` feature will be added separately.
+None. All current tests call `search` without a `limit` argument, and the default `None` preserves existing behaviour.
 
 ## Risks
-- Introducing a new parameter could clash with existing user‑defined `search` wrappers that expect only one positional argument; however, the keyword‑only nature (`*, limit`) preserves backward compatibility.
-- Incorrect handling of the cache could cause limited results to be cached; the implementation caches the full result set before slicing, avoiding this risk.
-
-
-## Stopped
-Stage 2 could not pass its check: agent stopped: model unavailable: all tiers failed: every groq key is rate limited for another 837 s
+- Introducing a new positional‑only parameter could break user code that called `search` with a positional argument after the query; using a keyword‑only parameter (`*, limit`) mitigates this.
+- Incorrect validation may raise the wrong exception type; we explicitly raise `TypeError` as required by FR‑1.
+- Bypassing the cache for limited results could increase memory usage for repeated limited queries, but this follows the specification and does not affect existing functionality.
