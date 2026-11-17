@@ -112,3 +112,9 @@ def test_failures_are_split_between_wrong_tests_and_wrong_behaviour():
     assert tester == ["tests/test_autose_a.py:13 TypeError"]
     assert impl == ["tests/test_autose_a.py:30 AssertionError"]
     assert library == ["tinydb/table.py"]
+
+
+def test_a_test_file_that_cannot_be_collected_is_the_testers_fault():
+    out = "ERROR tests/test_autose_x.py\n!!!! Interrupted: 1 error during collection !!!!\n"
+    tester, impl, library = gates.classify_failures(out)
+    assert tester == ["tests/test_autose_x.py collection error"] and impl == [] and library == []

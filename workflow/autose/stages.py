@@ -180,7 +180,9 @@ def stage4(ctx, notes):
         return Outcome(True, [], data=rep)
     suite_failed = [w for w in why if w.startswith("test suite does not pass")]
     route = "impl" if suite_failed else "tests"
-    if suite_failed and rep.get("tester_bugs") and not rep.get("impl_failures") and not rep.get("library_errors"):
+    if any(w.startswith("no test for") for w in why):
+        route = "tests"          # the tester has not covered every criterion yet; the code is not to blame
+    elif suite_failed and rep.get("tester_bugs") and not rep.get("impl_failures") and not rep.get("library_errors"):
         route = "tests"          # the new tests crash in their own code: the tester must fix them
         why = why + ["these tests raise errors in the test code itself, not assertion failures: " +
                      "; ".join(rep["tester_bugs"][:4])]

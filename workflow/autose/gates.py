@@ -159,6 +159,8 @@ def classify_failures(out):
     tester_bugs, impl = [], []
     for m in re.finditer(r"^(tests/test_autose_\w+\.py):(\d+): (\w+)", out, re.M):
         (impl if m.group(3) == "AssertionError" else tester_bugs).append("%s:%s %s" % m.groups())
+    for m in re.finditer(r"^ERROR (tests/test_autose_\w+\.py)", out, re.M):     # the test file cannot even be collected
+        tester_bugs.append("%s collection error" % m.group(1))
     others = re.findall(r"^(?!tests/test_autose_)(\S+\.py):\d+: \w+", out, re.M)   # raised inside the library
     return tester_bugs, impl, others
 
@@ -197,7 +199,8 @@ def gate_tests(workdir, base, spec):
     report["failed"] = failing_tests(out)
     report["tester_bugs"], report["impl_failures"], report["library_errors"] = classify_failures(out)
     if not out.startswith("exit code 0"):
-        r.append("test suite does not pass: " + ", ".join(report["failed"][:8] or ["see output"]))
+        detail = report["failed"][:8] or [" | ".join(l.strip() for l in out.splitlines() if l.startswith("E ") or l.startswith("ERROR "))[:300] or "see output"]
+        r.append("test suite does not pass: " + ", ".join(detail))
     m = re.search(r"(\d+) passed", out)
     report["passed"] = int(m.group(1)) if m else 0
     return not r, r, report
