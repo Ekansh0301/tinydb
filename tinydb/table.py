@@ -246,7 +246,7 @@ class Table:
 
         return list(iter(self))
 
-    def search(self, cond: QueryLike) -> list[Document]:
+    def search(self, cond: QueryLike, limit: Optional[int] = None) -> list[Document]:
         """
         Search for all documents matching a 'where' cond.
 
@@ -264,7 +264,7 @@ class Table:
         # query
         cached_results = self._query_cache.get(cond)
         if cached_results is not None:
-            return cached_results[:]
+            return cached_results[:limit]
 
         # Perform the search by applying the query to all documents.
         # Then, only if the document matches the query, convert it
@@ -294,7 +294,7 @@ class Table:
             # Update the query cache
             self._query_cache[cond] = docs[:]
 
-        return docs
+        return docs[:limit]
 
     @overload
     def get(self) -> NoReturn: ...
