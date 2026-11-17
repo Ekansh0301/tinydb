@@ -58,6 +58,8 @@ def main():
         tmp = Path(tempfile.mkdtemp(prefix="score-"))
         work = tmp / "work"
         subprocess.run(["git", "clone", "-q", "--no-hardlinks", str(REPO), str(work)], check=True)
+        url = subprocess.run(["git", "remote", "get-url", "origin"], cwd=REPO, capture_output=True, text=True).stdout.strip()
+        subprocess.run(["git", "remote", "set-url", "origin", url], cwd=work, check=True)     # the fork on GitHub, not the local clone
         subprocess.run(["git", "fetch", "-q", "origin", args.branch], cwd=work, check=True)
         subprocess.run(["git", "checkout", "-q", args.sha or "FETCH_HEAD"], cwd=work, check=True)
     else:

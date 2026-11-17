@@ -100,3 +100,24 @@ def test_write_file_reports_what_the_python_file_contains_and_cut_off_files(tmp_
     assert "defines 2 tests: test_ac1_a, test_ac2_b" in ok
     cut = tb.call("write_file", {"path": "tests/test_autose_b.py", "content": "def test_ac1_a():\n    x = (1,\n"})
     assert "syntax error" in cut and "cut off" in cut
+
+
+def test_agent_is_told_once_to_wrap_up_when_most_of_the_budget_is_used(tmp_path):
+    from autose import agent
+
+    seen = []
+
+    class Fake:
+        served = []
+
+        def chat(self, messages, tools=None, max_tokens=None, temperature=0.2):
+            seen.append(messages[-1]["content"] if messages[-1]["role"] == "user" else "")
+            if len(seen) < 4:
+                return {"role": "assistant", "content": "", "tool_calls": [
+                    {"id": str(len(seen)), "function": {"name": "list_dir", "arguments": '{"path": "%s"}' % ("." if len(seen) % 2 else "tinydb")}}]}, 10, "fake"
+            return {"role": "assistant", "content": "final"}, 10, "fake"
+
+    tb = box(tmp_path, "reviewer")
+    res = agent.run_agent("reviewer", Fake(), "sys", "user", tb, stage_calls=5, wrap_up_at=0.6)
+    assert res.text == "final" and res.wrapped
+    assert sum("Give your final answer now" in s for s in seen) == 1
