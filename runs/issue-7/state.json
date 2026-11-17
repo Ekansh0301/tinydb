@@ -1,27 +1,23 @@
 {
-  "base_sha": "f7bbc073ce9bd64a0cd8aa35ab12b9a569298a9e",
+  "base_sha": "66bac3e4b3301ce21799e09348d990c621246d13",
   "branch": "autose/issue-7",
-  "counters": {
-    "s2": 2
-  },
+  "counters": {},
   "issue": 7,
-  "reason": "agent stopped: model unavailable: all tiers failed: every groq key is rate limited for another 837 s",
+  "reason": "",
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 5,
-      "models": [
-        "groq:openai/gpt-oss-120b"
-      ],
-      "reason": "agent stopped: model unavailable: all tiers failed: every groq key is rate limited for another 837 s",
-      "stage": "2",
-      "status": "STOPPED",
-      "tokens": 12976
+      "calls": 0,
+      "models": [],
+      "reason": "",
+      "stage": "1",
+      "status": "running",
+      "tokens": 0
     }
   },
-  "stage": "2",
-  "status": "STOPPED",
-  "tokens": 0,
-  "tokens_total": 12976,
-  "updated": "2026-11-16T20:56:24Z"
+  "stage": "1",
+  "status": "running",
+  "tokens": 12976,
+  "tokens_total": 0,
+  "updated": "2026-11-17T17:34:08Z"
 }
