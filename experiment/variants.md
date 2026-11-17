@@ -10,7 +10,7 @@ tester, a different model) produce better results than one agent doing all four 
 
 | | `pipeline` (the design) | `single` (variant) |
 |---|---|---|
-| Agents | planner (`gpt-oss-120b`), implementer (`gpt-oss-120b`), tester (`qwen3.8-27b`) | one agent (`gpt-oss-120b`) |
+| Agents | planner (`gpt-oss-120b`), implementer (`gpt-oss-120b`), tester (`gpt-oss-20b`) | one agent (`gpt-oss-120b`) |
 | What an agent sees | per ADR-003 / ADR-011 | everything, including its own earlier reasoning |
 | Who writes the tests | an agent that has not seen the implementation | the agent that wrote the code |
 | Control | orchestrator state machine with the back-edges of ADR-002 | the same agent retried up to 3 times with the gate findings of the previous attempt |

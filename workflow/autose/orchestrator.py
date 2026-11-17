@@ -101,13 +101,14 @@ def build(ctx, from_stage):
                 repeated = any(k.startswith("ac") and v >= 2 for k, v in ctx.counters.items())
                 if repeated and ctx.counters.get("redesign", 0) < LIMITS["redesign"]:
                     ctx.bump("redesign")
-                    ctx.log("same criterion failed twice: back to design")
+                    ctx.log("same criterion failed twice: back to requirements")
                     for k in [k for k in ctx.counters if k.startswith("ac")]:
                         ctx.counters[k] = 0
-                    ctx.counters["s2"] = ctx.counters["impl"] = 0
-                    stage = 2
+                    ctx.counters["s1"] = ctx.counters["s2"] = ctx.counters["impl"] = 0
+                    stage = 1
                     notes = ["The implementation could not satisfy these tests: " + ", ".join(failing[:6]) +
-                             ". The plan may be wrong or incomplete; revise it."]
+                             ". A criterion may ask for something the code does not offer (for example a parameter that does not exist); "
+                             "check each criterion against the real API and revise the specification."]
                     gitops.run(["git", "reset", "-q", "--hard", ctx.base_sha], ctx.workdir)
                     gitops.run(["git", "clean", "-fdq"], ctx.workdir)
                     continue
