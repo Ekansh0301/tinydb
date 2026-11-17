@@ -229,13 +229,14 @@ def write_seeded(rb):
             outcome = "caught" if verdict == "REQUEST_CHANGES" else "missed"
         else:
             outcome = "approved" if verdict == "APPROVE" else "false rejection"
-        rows.append({"pr": pr, "label": label, "variant": variant, "trial": trial, "run_id": run_id, "verdict": verdict,
+        version = "v2" if int(run_id) >= 44162000000 else "v1"       # v2: reviewer with the JSON formatting step and wrap-up
+        rows.append({"pr": pr, "label": label, "variant": variant, "reviewer_version": version, "trial": trial, "run_id": run_id, "verdict": verdict,
                      "outcome": outcome, "tier": sorted(set(meta.get("tiers", [])))[0] if meta.get("tiers") else "",
                      "tokens": meta.get("tokens", ""), "problems": "; ".join(meta.get("problems") or [])[:120]})
     with (RESULTS / "seeded.csv").open("w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["pr", "label", "variant", "trial", "run_id", "verdict", "outcome", "tier", "tokens", "problems"])
+        w = csv.DictWriter(f, fieldnames=["pr", "label", "variant", "reviewer_version", "trial", "run_id", "verdict", "outcome", "tier", "tokens", "problems"])
         w.writeheader()
-        w.writerows(sorted(rows, key=lambda r: (r["variant"], r["pr"], r["trial"])))
+        w.writerows(sorted(rows, key=lambda r: (r["variant"], r["reviewer_version"], r["pr"], r["trial"])))
     return rows
 
 
