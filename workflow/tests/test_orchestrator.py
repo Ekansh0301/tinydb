@@ -73,9 +73,9 @@ def test_happy_path_runs_every_stage_once(script):
     assert [__import__("json").loads(x)["stage"] for x in lines] == [1, 2, 3, 4]
 
 
-def test_stage1_gets_one_retry_then_stops_and_explains_in_artifact(script):
+def test_stage1_gets_two_retries_then_stops_and_explains_in_artifact(script):
     ctx = make_ctx()
-    script(s1=[bad("no AC"), bad("no AC")])
+    script(s1=[bad("no AC"), bad("no AC"), bad("no AC")])
     res = orchestrator.build(ctx, 1)
     assert res["status"] == "STOPPED" and res["stage"] == "1"
     assert "no AC" in ctx.runs.read("spec.md")

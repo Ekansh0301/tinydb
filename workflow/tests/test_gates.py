@@ -118,3 +118,10 @@ def test_a_test_file_that_cannot_be_collected_is_the_testers_fault():
     out = "ERROR tests/test_autose_x.py\n!!!! Interrupted: 1 error during collection !!!!\n"
     tester, impl, library = gates.classify_failures(out)
     assert tester == ["tests/test_autose_x.py collection error"] and impl == [] and library == []
+
+
+def test_a_criterion_may_cover_several_requirements():
+    spec = GOOD_SPEC.replace("- FR-1 [STATED] The system shall return at most limit documents. (S1)",
+                             "- FR-1 [STATED] The system shall return at most limit documents. (S1)\n- FR-2 [STATED] Order is kept. (S1)")
+    spec = spec.replace("- AC-1 (FR-1):", "- AC-1 (FR-1 & FR-2):")
+    assert gates.gate_spec(spec)[0], gates.gate_spec(spec)[1]
