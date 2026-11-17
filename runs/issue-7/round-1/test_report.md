@@ -34,6 +34,6 @@ tests/test_autose_search_limit.py:24: NameError
 =========================== short test summary info ============================
 FAILED tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[memory]
 FAILED tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[json]
-2 failed, 230 passed in 0.61s
+2 failed, 230 passed in 0.45s
 
 ```
