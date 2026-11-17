@@ -1,23 +1,27 @@
 {
   "base_sha": "18d62ebef3c57a6f5fc5c68a3b360e930f36285f",
   "branch": "autose/issue-7",
-  "counters": {},
+  "counters": {
+    "s1": 2
+  },
   "issue": 7,
-  "reason": "",
+  "reason": "requirements without an acceptance criterion: FR-2",
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 0,
-      "models": [],
-      "reason": "",
+      "calls": 2,
+      "models": [
+        "groq:openai/gpt-oss-120b"
+      ],
+      "reason": "requirements without an acceptance criterion: FR-2",
       "stage": "1",
-      "status": "running",
-      "tokens": 0
+      "status": "STOPPED",
+      "tokens": 3371
     }
   },
   "stage": "1",
-  "status": "running",
+  "status": "STOPPED",
   "tokens": 0,
-  "tokens_total": 0,
-  "updated": "2026-11-17T18:41:56Z"
+  "tokens_total": 3371,
+  "updated": "2026-11-17T18:42:03Z"
 }

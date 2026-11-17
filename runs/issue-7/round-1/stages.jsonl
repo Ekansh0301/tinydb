@@ -16,3 +16,4 @@
 {"run_id": "44148348750", "round": 1, "stage": 4, "ok": false, "route": "impl", "reasons": ["no test for: AC-3, AC-4", "test suite does not pass: see output"], "tokens_so_far": 164980, "calls_so_far": 52, "time": "2026-11-17T18:38:03Z"}
 {"run_id": "44148348750", "round": 1, "stage": 3, "ok": true, "route": "", "reasons": [], "tokens_so_far": 207109, "calls_so_far": 69, "time": "2026-11-17T18:40:13Z"}
 {"run_id": "44150591768", "round": 1, "stage": 1, "ok": false, "route": "", "reasons": ["requirements without an acceptance criterion: FR-6"], "tokens_so_far": 1775, "calls_so_far": 1, "time": "2026-11-17T18:42:00Z"}
+{"run_id": "44150591768", "round": 1, "stage": 1, "ok": false, "route": "", "reasons": ["requirements without an acceptance criterion: FR-2"], "tokens_so_far": 3371, "calls_so_far": 2, "time": "2026-11-17T18:42:03Z"}
