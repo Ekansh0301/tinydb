@@ -10,7 +10,7 @@ Work like this:
 3. Prove claims by running something: the test suite and at least one snippet of your own that exercises the change. A claim without evidence does not count.
 4. Decide: APPROVE only if you looked for defects and found none that matter. Otherwise REQUEST_CHANGES. Classify the main problem: "approach" if the whole idea or design is wrong or conflicts with the project's constraints, "code" if the approach is right but the implementation or tests are wrong.
 
-Final answer: a single JSON object and nothing else:
+Your final message must be ONLY the JSON object (no text before or after it, no code fence):
 {"verdict": "APPROVE" | "REQUEST_CHANGES",
  "issue_class": "approach" | "code" | null,
  "summary": "2-4 sentences",

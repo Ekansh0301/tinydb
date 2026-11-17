@@ -39,16 +39,27 @@ def run_review(workdir, base_sha, issue_title, issue_text, log=print):
     user = "<untrusted_issue>\nTitle: %s\n\n%s\n</untrusted_issue>\n\nDIFF\n%s" % (issue_title[:200], text, cut)
     c = llm.Client("reviewer", log)
     tb = tools.Toolbox(workdir, "reviewer")
-    notes = ""
-    for attempt in range(2):
-        res = agent.run_agent("reviewer", c, stages.prompt("reviewer.md"), user + notes, tb, input_budget=6000,
-                              stage_calls=24, stage_tokens=150_000, wrap_up_at=0.6)
+    res = agent.run_agent("reviewer", c, stages.prompt("reviewer.md"), user, tb, input_budget=6000, max_tokens=2000,
+                          stage_calls=24, stage_tokens=150_000, wrap_up_at=0.6)
+    c.last_transcript = res.transcript
+    js = parse_json(res.text)
+    if js is None and res.text and not res.stopped:
+        # the analysis is there but not in the required format: ask for the same findings as the JSON object
+        res.text = reformat(c, user, res.text)
         js = parse_json(res.text)
-        c.last_transcript = res.transcript
-        if res.stopped and js is None:
-            return None, ["reviewer stopped: " + res.stopped], c, res
-        ok, why = gates.gate_review(js, tb.ran_command)
-        if ok:
-            return js, [], c, res
-        notes = "\n\nYour last answer was rejected: " + "; ".join(why) + ". Fix this and answer again."
-    return js, why, c, res
+    if res.stopped and js is None:
+        return None, ["reviewer stopped: " + res.stopped], c, res
+    ok, why = gates.gate_review(js, tb.ran_command)
+    return (js, [], c, res) if ok else (js, why, c, res)
+
+
+def reformat(client, user, analysis):
+    msgs = [{"role": "system", "content": stages.prompt("reviewer.md")}, {"role": "user", "content": user[:6000]},
+            {"role": "assistant", "content": analysis[:6000]},
+            {"role": "user", "content": "Now give your result as the single JSON object described in the instructions, and nothing else. "
+                                        "Use only what is already in your analysis; every check needs the evidence you already gathered."}]
+    try:
+        msg, _, _ = client.chat(msgs, None, max_tokens=1500, temperature=0.1)
+        return msg.get("content") or ""
+    except llm.LLMError:
+        return ""
