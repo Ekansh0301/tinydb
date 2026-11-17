@@ -18,8 +18,8 @@ that explain why it is built this way. It is the submission for assignment 3 (ro
 
 | Role | Model (provider) |
 |---|---|
-| Planner (stages 1 and 2), implementer (stage 3) | `openai/gpt-oss-120b` (Groq), fallback `poolside/laguna-xs-2.1` (NVIDIA) |
-| Tester (stage 4) | `poolside/laguna-xs-2.1` (NVIDIA), fallback `gpt-oss-120b` |
+| Planner (stages 1 and 2), implementer (stage 3) | `openai/gpt-oss-120b` (Groq) |
+| Tester (stage 4) | `qwen/qwen3.8-27b` (Groq) |
 | Reviewer (stage 6) | `nvidia/nemotron-3.5-super-vl-120b-a12b`, then `nemotron-3-ultra-550b-a55b`, then `qwen/qwen3.8-27b` (Groq) |
 | Prompt-injection screen | `meta-llama/llama-prompt-guard-2-86m` (Groq) |
 
