@@ -1,5 +1,5 @@
 diff --git a/tinydb/table.py b/tinydb/table.py
-index 76470aa..3269ff8 100644
+index 76470aa..45b8d7f 100644
 --- a/tinydb/table.py
 +++ b/tinydb/table.py
 @@ -246,7 +246,7 @@ class Table:
@@ -11,7 +11,20 @@ index 76470aa..3269ff8 100644
          """
          Search for all documents matching a 'where' cond.
  
-@@ -291,10 +291,14 @@ class Table:
+@@ -274,6 +274,12 @@ class Table:
+             for doc_id, doc in self._read_table().items()
+             if cond(doc)
+         ]
++        # Validate limit argument
++        if limit is not None:
++            if not isinstance(limit, int):
++                raise ValueError("limit must be an integer or None")
++            if limit < 0:
++                raise ValueError("limit must be a non‑negative integer")
+ 
+         # Only cache cacheable queries.
+         #
+@@ -291,10 +297,14 @@ class Table:
          is_cacheable: Callable[[], bool] = getattr(cond, 'is_cacheable',
                                                     lambda: True)
          if is_cacheable():
