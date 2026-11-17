@@ -20,3 +20,4 @@
 {"run_id": "44150971867", "round": 1, "stage": 1, "ok": true, "route": "", "reasons": [], "tokens_so_far": 2373, "calls_so_far": 2, "time": "2026-11-17T18:44:14Z"}
 {"run_id": "44150971867", "round": 1, "stage": 2, "ok": false, "route": "", "reasons": ["`change` not found in tinydb/database.py (mark it NEW if it is new)"], "tokens_so_far": 42006, "calls_so_far": 18, "time": "2026-11-17T18:46:24Z"}
 {"run_id": "44150971867", "round": 1, "stage": 2, "ok": true, "route": "", "reasons": [], "tokens_so_far": 90579, "calls_so_far": 31, "time": "2026-11-17T18:48:31Z"}
+{"run_id": "44150971867", "round": 1, "stage": 3, "ok": true, "route": "", "reasons": [], "tokens_so_far": 132558, "calls_so_far": 47, "time": "2026-11-17T18:51:31Z"}
