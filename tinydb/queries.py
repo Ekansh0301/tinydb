@@ -251,6 +251,20 @@ class Query(QueryInstance):
             (hashval if self.is_cacheable() else None)
         )
 
+    def startswith(self, prefix: str) -> QueryInstance:
+        """Match string values that start with ``prefix``."""
+        return self._generate_test(
+            lambda value: isinstance(value, str) and value.startswith(prefix),
+            ('startswith', self._path, prefix)
+        )
+
+    def endswith(self, suffix: str) -> QueryInstance:
+        """Match string values that end with ``suffix``."""
+        return self._generate_test(
+            lambda value: isinstance(value, str) and value.endswith(suffix),
+            ('endswith', self._path, suffix)
+        )
+
     def __eq__(self, rhs: Any):
         """
         Test a dict value for equality.
