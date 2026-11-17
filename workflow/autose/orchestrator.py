@@ -10,7 +10,7 @@ def record(ctx, stage, outcome):
     import json
     import time
     ctx.runs.append("stages.jsonl", json.dumps({
-        "round": ctx.round_no, "stage": stage, "ok": bool(outcome.ok), "route": getattr(outcome, "route", ""),
+        "run_id": __import__("os").environ.get("GITHUB_RUN_ID"), "round": ctx.round_no, "stage": stage, "ok": bool(outcome.ok), "route": getattr(outcome, "route", ""),
         "reasons": [str(r)[:200] for r in outcome.reasons[:6]], "tokens_so_far": ctx.tokens,
         "calls_so_far": ctx.calls, "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}) + "\n")
 

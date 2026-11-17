@@ -34,7 +34,7 @@ ROLE_TIERS = {
     # reason; it is repeated later, not silently continued on another model.
     "planner": [("groq", "openai/gpt-oss-120b")],
     "implementer": [("groq", "openai/gpt-oss-120b")],
-    "tester": [("nvidia", "poolside/laguna-xs-2.1")],
+    "tester": [("groq", "qwen/qwen3.8-27b")],
     "single": [("groq", "openai/gpt-oss-120b")],       # experiment E1: one agent does every build stage
     "reviewer": [("nvidia", "nvidia/nemotron-3.5-super-vl-120b-a12b"),
                  ("nvidia", "nvidia/nemotron-3-ultra-550b-a55b"),
