@@ -125,3 +125,13 @@ def test_a_criterion_may_cover_several_requirements():
                              "- FR-1 [STATED] The system shall return at most limit documents. (S1)\n- FR-2 [STATED] Order is kept. (S1)")
     spec = spec.replace("- AC-1 (FR-1):", "- AC-1 (FR-1 & FR-2):")
     assert gates.gate_spec(spec)[0], gates.gate_spec(spec)[1]
+
+
+def test_function_cell_with_explanatory_text(tmp_path):
+    (tmp_path / "tinydb").mkdir(exist_ok=True)
+    (tmp_path / "tinydb" / "a.py").write_text("class T:\n    def f(self):\n        pass\n")
+    design = DESIGN.replace("| f |", "| T.f (signature change) |")
+    ok, why = gates.gate_design(design, GOOD_SPEC, tmp_path)
+    assert ok, why
+    design = DESIGN.replace("| f |", "| (none) |")
+    assert gates.gate_design(design, GOOD_SPEC, tmp_path)[0]
