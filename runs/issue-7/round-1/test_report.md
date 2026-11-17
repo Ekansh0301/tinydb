@@ -32,3 +32,7 @@ ERROR tests/test_autose_search_limit.py
 1 error in 0.47s
 
 ```
+
+
+## Stopped
+Stage 4 could not pass its check: no test for: AC-3, AC-4, AC-5, AC-6 (found only: test_ac1_limit_returns_list, test_ac2_limit_returns_first_n_in_order). Every test must be named test_ac<N>_<what>, with N the criterion number; test suite does not pass: E     File "/home/runner/work/tinydb/tinydb/tests/test_autose_search_limit.py", line 21 | E       assert [d['i'] for d in result] == list(range(10 | E                                                    ^ | E   SyntaxError: '(' was never closed | ERROR tests/test_autose_search_limit.py
