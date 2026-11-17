@@ -1,28 +1,23 @@
 {
-  "base_sha": "85b0a0b6d79cf944db6446fbeafe763846a19433",
+  "base_sha": "daa87498fb43357273901f3686d7ed007c77e37b",
   "branch": "autose/issue-7",
-  "counters": {
-    "tests": 3
-  },
+  "counters": {},
   "issue": 7,
-  "reason": "no test for: AC-3, AC-4, AC-5, AC-6 (found only: test_ac1_limit_returns_list, test_ac2_limit_returns_first_n_in_order). Every test must be named test_ac<N>_<what>, with N the criterion number; test suite does not pass: E     File \"/home/runner/work/tinydb/tinydb/tests/test_autose_search_limit.py\", line 21 | E       assert [d['i'] for d in result] == list(range(10 | E                                                    ^ | E   SyntaxError: '(' was never closed | ERROR tests/test_autose_search_limit.py",
+  "reason": "",
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 70,
-      "models": [
-        "groq:openai/gpt-oss-120b",
-        "groq:qwen/qwen3.8-27b"
-      ],
-      "reason": "no test for: AC-3, AC-4, AC-5, AC-6 (found only: test_ac1_limit_returns_list, test_ac2_limit_returns_first_n_in_order). Every test must be named test_ac<N>_<what>, with N the criterion number; test suite does not pass: E     File \"/home/runner/work/tinydb/tinydb/tests/test_autose_search_limit.py\", line 21 | E       assert [d['i'] for d in result] == list(range(10 | E                                                    ^ | E   SyntaxError: '(' was never closed | ERROR tests/test_autose_search_limit.py",
-      "stage": "4",
-      "status": "STOPPED",
-      "tokens": 234592
+      "calls": 0,
+      "models": [],
+      "reason": "",
+      "stage": "1",
+      "status": "running",
+      "tokens": 0
     }
   },
-  "stage": "4",
-  "status": "STOPPED",
-  "tokens": 0,
-  "tokens_total": 234592,
-  "updated": "2026-11-17T19:19:45Z"
+  "stage": "1",
+  "status": "running",
+  "tokens": 234592,
+  "tokens_total": 0,
+  "updated": "2026-11-17T19:24:34Z"
 }
