@@ -1,0 +1,72 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=1.7cm,top=1.5cm,bottom=1.6cm]{geometry}
+\usepackage{fontspec}
+\setmainfont{DejaVu Serif}[Scale=0.9]
+\setsansfont{DejaVu Sans}[Scale=0.88]
+\setmonofont{DejaVu Sans Mono}[Scale=0.8]
+\usepackage{microtype,booktabs,tabularx,longtable,array,graphicx,xcolor,enumitem,tikz,caption,titlesec,ragged2e}
+\usetikzlibrary{arrows.meta,decorations.pathreplacing,shapes.geometric,positioning}
+\usepackage[hidelinks]{hyperref}
+\setlist{nosep,leftmargin=1.2em}
+\setlength{\parskip}{3pt}\setlength{\parindent}{0pt}
+\titleformat{\section}{\sffamily\bfseries\large}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\sffamily\bfseries\normalsize}{\thesubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{8pt}{3pt}\titlespacing*{\subsection}{0pt}{5pt}{2pt}
+\captionsetup{font={small,sf},labelfont=bf,skip=2pt}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\newcommand{\adr}[1]{\textsf{ADR-#1}}
+\newcommand{\code}[1]{\texttt{\small #1}}
+\renewcommand{\arraystretch}{1.12}
+
+\begin{document}
+\begin{center}
+{\sffamily\bfseries\Large Architecting an Agentic SDLC Workflow}\\[2pt]
+{\sffamily Issue in, pull request out on a fork of tinydb\,---\,roll number 2023114007}\\[1pt]
+{\small Repository: \url{https://github.com/Ekansh0301/tinydb} \quad Pinned upstream commit \code{edff96a}, prepared base \code{8a94233}}
+\end{center}
+
+\section{Architecture}
+The workflow turns an issue into a tested and reviewed pull request through the six required stages. It is one deterministic orchestrator that drives three builder agents, plus a separate reviewer agent that has no write access. Figure~\ref{fig:comp} is the component view; Table~\ref{tab:stages} lists the agent, artifact and check of each stage; Figure~\ref{fig:seq} is one real run.
+
+\begin{figure}[ht]\centering
+\resizebox{\linewidth}{!}{\input{figs/component.tex}}
+\caption{Component view. Blue boxes are plain code, green boxes are builder agents, the orange box is the independent reviewer. Dashed arrows are tool access; every agent reaches the repository only through its own small tool set.}\label{fig:comp}
+\end{figure}
+
+\input{generated/stage_table.tex}
+
+\begin{figure}[ht]\centering
+\resizebox{\linewidth}{!}{\input{figs/sequence.tex}}
+\caption{One real run from the trigger to the review (Actions run 44158195212, issue \#7, 15 minutes of build time). The same criterion failed twice in stage 4, which sent the run back to stage 1; the second pass succeeded and pull request \#34 was opened. The reviewer later asked for changes (see Section~\ref{sec:results}).}\label{fig:seq}
+\end{figure}
+
+\textbf{How the pieces fit.} The orchestrator (plain Python, \adr{002}) owns the state machine, the gates and the budgets; agents decide only what to write or edit inside a stage. Agents receive artifacts, never each other's conversations (\adr{003}, \adr{011}). State lives on a separate branch \code{autose-runs} and as workflow artifacts, so a pull request contains only code (\adr{004}). The reviewer is a separate job with \code{contents: read}, a different model family and its own prompt; its verdict leaves the job as a file and a later job posts it (\adr{008}). Anyone with write access can start a run with a label or the comment \code{/autose}; the issue text is screened and passed to agents as delimited data (\adr{009}, \adr{010}).
+
+\section{Design decisions}
+Table~\ref{tab:adr} summarises all eleven records. The full ADRs, including the evidence behind each amendment, are in \code{architecture/decisions/}; they follow the Nygard format used in the earlier study (status, context, decision, alternatives, consequences).
+
+\input{generated/adr_table.tex}
+
+\subsection*{The three decisions that mattered most}
+\textbf{\adr{008}, reviewer independence.} A reviewer that shares the builder's model or context tends to approve, and the opposite failure is also real: in a first smoke test one model rejected even a harmless diff. We therefore built independence into five levels (own job and token, own vendor, own prompt, own inputs, command environment without keys) and added an evidence rule: a verdict is only valid if at least two checks carry evidence and the reviewer ran a command. The rule paid off twice. On pull request \#34 the reviewer found the real defect (the query cache returns before \code{limit} is applied) by running its own snippet, which is exactly what two hidden tests check. And reviews that returned prose or ran out of budget were recorded as \emph{no review} and never as an approval. The cost is that the reviewer sees neither the spec nor the design, so it judges against the issue text only; it sometimes misses a defect that needs the spec to see (Section~\ref{sec:exp}).
+
+\textbf{\adr{002}, a deterministic orchestrator with bounded back-edges.} Letting an agent decide when to go back would let a mistaken agent skip a gate or loop on a budget we cannot afford. The state machine moved the system forward in every run where the models cooperated, and it made failures explainable: each attempt of each stage is one line in \code{stages.jsonl}. Real runs changed it twice (amendments to \adr{002}): a criterion that fails twice now returns to \emph{requirements}, because a repeated failure can come from a criterion that asks for something the code does not offer, and tests that cannot even be collected are blamed on the tester, not the implementer.
+
+\textbf{\adr{006}, models chosen by measurement.} Our free models limited everything. We measured availability and tool-call behaviour before choosing, then had to revise the choice five times when runs contradicted the probes (laptop probes did not show the quota, the hang or the truncation that the runner showed). The lesson recorded in the ADR is that a model is only chosen once it has completed a stage inside the real workflow, and that builder roles are pinned to one model each so a result can be attributed (the second amendment's fallback was reverted for exactly that reason).
+
+\section{Decision experiments}\label{sec:exp}
+\input{generated/experiments.tex}
+
+\section{Results}\label{sec:results}
+\input{generated/results.tex}
+
+\section{Hindsight}
+\input{generated/hindsight.tex}
+
+\section{Limitations and threats to validity}
+\input{generated/limitations.tex}
+
+\appendix
+\section{Appendix: runs, tokens and reproduction}
+\input{generated/appendix.tex}
+\end{document}

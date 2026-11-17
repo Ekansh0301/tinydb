@@ -1,0 +1,14 @@
+
+\begin{table}[ht]\centering\small
+\caption{Stage map: agent, artifact and check. A gate is decided by code (\adr{007}); an agent never says ``done''.}\label{tab:stages}
+\begin{tabularx}{\linewidth}{@{}c l l l Y@{}}
+\toprule
+\# & Stage & Agent (model) & Artifact & Check before moving on \\ \midrule
+1 & Requirements & Planner (\code{gpt-oss-120b}), A1 skill & \code{spec.md} & required sections; every criterion Given/When/Then with a concrete outcome; no vague word; each requirement has a criterion; one model call may only add ``not testable'' objections \\
+2 & Design & Planner (same), A2 architecture note & \code{design.md} & every file and function named exists or is marked NEW; every criterion appears in a row \\
+3 & Implementation & Implementer (\code{gpt-oss-120b}) & \code{diff.patch} & diff not empty; only files named in the design changed; compiles and imports \\
+4 & Testing & Tester (\code{gpt-oss-20b}) & \code{test\_report.md} & a test \code{test\_ac<N>\_*} per criterion; at least one new test fails on the base commit; whole suite passes; fails go back to 3, a repeated failure to 1 \\
+5 & Release & none (code) & \code{pr.md} + PR link & PR open; reusable CI workflow green on its head \\
+6 & Review & Reviewer (Nemotron, separate job) & \code{review.md} & valid JSON with evidence for each check and a command run; approve, or two fix cycles used \\
+\bottomrule\end{tabularx}
+\end{table}
