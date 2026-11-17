@@ -18,7 +18,7 @@ BUDGET = {
     "stage_calls": 25,
     "stage_tokens": 120_000,
     "run_tokens": 400_000,
-    "call_timeout": 90,
+    "call_timeout": {"groq": 60, "nvidia": 45},   # seconds; normal calls take 1 to 15 s
     "run_timeout": 120,         # seconds per tool command
 }
 

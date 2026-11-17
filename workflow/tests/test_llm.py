@@ -126,3 +126,10 @@ def test_a_tier_whose_keys_are_all_set_aside_is_skipped_at_once(monkeypatch):
     assert label.startswith("nvidia:")
     assert seen_waits == []                                    # it did not wait for the Groq keys
     assert all(s[0] == "nvidia" for s in seen)
+
+
+def test_an_endpoint_that_never_answers_is_given_up_after_four_timeouts(monkeypatch):
+    c, seen = client(monkeypatch, lambda *a: TimeoutError("hang"))
+    with pytest.raises(llm.LLMError):
+        c.chat([{"role": "user", "content": "x"}])
+    assert len(seen) == 4
