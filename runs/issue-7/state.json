@@ -1,29 +1,23 @@
 {
-  "base_sha": "b768597b4e5e098f9c36b2cd0f35cc829b9bd93e",
+  "base_sha": "85b0a0b6d79cf944db6446fbeafe763846a19433",
   "branch": "autose/issue-7",
-  "counters": {
-    "s2": 1,
-    "tests": 3
-  },
+  "counters": {},
   "issue": 7,
-  "reason": "no test for: AC-3, AC-4, AC-5 (found only: test_ac1_limit_kwarg_accepted, test_ac2_limit_returns_first_n). Every test must be named test_ac<N>_<what>, with N the criterion number; test suite does not pass: tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[json], tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[memory]; failing: tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[json], tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[memory]",
+  "reason": "",
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 78,
-      "models": [
-        "groq:openai/gpt-oss-120b",
-        "groq:qwen/qwen3.8-27b"
-      ],
-      "reason": "no test for: AC-3, AC-4, AC-5 (found only: test_ac1_limit_kwarg_accepted, test_ac2_limit_returns_first_n). Every test must be named test_ac<N>_<what>, with N the criterion number; test suite does not pass: tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[json], tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[memory]; failing: tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[json], tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[memory]",
-      "stage": "4",
-      "status": "STOPPED",
-      "tokens": 238451
+      "calls": 0,
+      "models": [],
+      "reason": "",
+      "stage": "1",
+      "status": "running",
+      "tokens": 0
     }
   },
-  "stage": "4",
-  "status": "STOPPED",
-  "tokens": 0,
-  "tokens_total": 238451,
-  "updated": "2026-11-17T19:06:47Z"
+  "stage": "1",
+  "status": "running",
+  "tokens": 238451,
+  "tokens_total": 0,
+  "updated": "2026-11-17T19:09:42Z"
 }
