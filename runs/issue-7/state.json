@@ -1,28 +1,23 @@
 {
-  "base_sha": "da18881f4aa04333adfae77904e828252fafb800",
+  "base_sha": "22e8e9259d2f7cc2f2c8f082606b480c0c7e0b16",
   "branch": "autose/issue-7",
-  "counters": {
-    "tests": 3
-  },
+  "counters": {},
   "issue": 7,
-  "reason": "test suite does not pass: tests/test_autose_limit.py::test_ac4_limit_works_on_named_tables; these tests raise errors in the test code itself, not assertion failures: tests/test_autose_limit.py:54 TypeError; failing: tests/test_autose_limit.py::test_ac4_limit_works_on_named_tables",
+  "reason": "",
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 67,
-      "models": [
-        "groq:openai/gpt-oss-120b",
-        "nvidia:poolside/laguna-xs-2.1"
-      ],
-      "reason": "test suite does not pass: tests/test_autose_limit.py::test_ac4_limit_works_on_named_tables; these tests raise errors in the test code itself, not assertion failures: tests/test_autose_limit.py:54 TypeError; failing: tests/test_autose_limit.py::test_ac4_limit_works_on_named_tables",
-      "stage": "4",
-      "status": "STOPPED",
-      "tokens": 247714
+      "calls": 0,
+      "models": [],
+      "reason": "",
+      "stage": "1",
+      "status": "running",
+      "tokens": 0
     }
   },
-  "stage": "4",
-  "status": "STOPPED",
-  "tokens": 0,
-  "tokens_total": 247714,
-  "updated": "2026-11-17T18:28:12Z"
+  "stage": "1",
+  "status": "running",
+  "tokens": 247714,
+  "tokens_total": 0,
+  "updated": "2026-11-17T18:29:35Z"
 }
