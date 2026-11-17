@@ -23,3 +23,4 @@
 {"run_id": "44150971867", "round": 1, "stage": 3, "ok": true, "route": "", "reasons": [], "tokens_so_far": 132558, "calls_so_far": 47, "time": "2026-11-17T18:51:31Z"}
 {"run_id": "44150971867", "round": 1, "stage": 4, "ok": false, "route": "tests", "reasons": ["no test for: AC-2, AC-3, AC-4, AC-5, AC-6"], "tokens_so_far": 145785, "calls_so_far": 52, "time": "2026-11-17T18:51:40Z"}
 {"run_id": "44150971867", "round": 1, "stage": 4, "ok": false, "route": "tests", "reasons": ["no test for: AC-2, AC-3, AC-4, AC-5, AC-6"], "tokens_so_far": 163275, "calls_so_far": 58, "time": "2026-11-17T18:52:38Z"}
+{"run_id": "44150971867", "round": 1, "stage": 4, "ok": false, "route": "tests", "reasons": ["no test for: AC-2, AC-3, AC-4, AC-5, AC-6"], "tokens_so_far": 180853, "calls_so_far": 64, "time": "2026-11-17T18:52:51Z"}
