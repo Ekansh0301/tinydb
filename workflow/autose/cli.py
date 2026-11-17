@@ -176,6 +176,7 @@ def cmd_review(_):
     meta = {"tiers": client.served, "tokens": client.tokens_used, "calls": client.calls, "problems": why,
             "run_id": os.environ.get("GITHUB_RUN_ID")}
     (outdir / "meta.json").write_text(json.dumps(meta))
+    (outdir / "transcript_6.jsonl").write_text("\n".join(json.dumps(x) for x in getattr(client, "last_transcript", [])))
     if js is None or why:
         (outdir / "review.md").write_text("# Review\n\nNo valid review was produced: %s\n" % "; ".join(why))
         out(verdict="NONE")
@@ -197,7 +198,7 @@ def cmd_next(_):
     runs = gitops.Runs(state_dir(), run_key(n), rnd)
     runs.open()
     ro = Path(os.environ.get("REVIEW_DIR", "review_out"))
-    for f in ("review.md", "review.json", "meta.json"):
+    for f in ("review.md", "review.json", "meta.json", "transcript_6.jsonl"):
         if (ro / f).exists():
             runs.write(f, (ro / f).read_text())
     base_url = "https://github.com/%s/tree/%s/runs/issue-%s/round-%d" % (config.REPO, config.RUNS_BRANCH, run_key(n), rnd)
@@ -265,7 +266,7 @@ def cmd_record(_):
     runs.dir = runs.root / "runs" / "seeded" / ("pr-%s" % pr) / ("%s-t%s-run%s" % (variant, trial, run_id))
     ro = Path(os.environ.get("REVIEW_DIR", "review_out"))
     verdict = "NONE"
-    for f in ("review.json", "review.md", "meta.json"):
+    for f in ("review.json", "review.md", "meta.json", "transcript_6.jsonl"):
         if (ro / f).exists():
             runs.write(f, (ro / f).read_text())
     if (ro / "review.json").exists():

@@ -42,8 +42,9 @@ def run_review(workdir, base_sha, issue_title, issue_text, log=print):
     notes = ""
     for attempt in range(2):
         res = agent.run_agent("reviewer", c, stages.prompt("reviewer.md"), user + notes, tb, input_budget=6000,
-                              stage_calls=20, stage_tokens=80_000)
+                              stage_calls=24, stage_tokens=150_000, wrap_up_at=0.6)
         js = parse_json(res.text)
+        c.last_transcript = res.transcript
         if res.stopped and js is None:
             return None, ["reviewer stopped: " + res.stopped], c, res
         ok, why = gates.gate_review(js, tb.ran_command)

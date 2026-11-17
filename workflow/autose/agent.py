@@ -16,6 +16,7 @@ class Result:
     transcript: list = field(default_factory=list)
     ran_command: bool = False
     reminded: bool = False
+    wrapped: bool = False
 
 
 def _compact(messages, budget):
@@ -38,7 +39,7 @@ def _compact(messages, budget):
 
 
 def run_agent(role, client, system, user, toolbox, stage_calls=None, stage_tokens=None,
-              input_budget=None, max_tokens=None, must_edit=False):
+              input_budget=None, max_tokens=None, must_edit=False, wrap_up_at=None):
     cap_calls = stage_calls or config.BUDGET["stage_calls"]
     cap_tokens = stage_tokens or config.BUDGET["stage_tokens"]
     schema = tools.schemas(role) if toolbox else None
@@ -53,6 +54,10 @@ def run_agent(role, client, system, user, toolbox, stage_calls=None, stage_token
         if res.tokens >= cap_tokens:
             res.stopped = "token budget exhausted (%d tokens)" % res.tokens
             break
+        if wrap_up_at and not res.wrapped and (res.calls >= wrap_up_at * cap_calls or res.tokens >= wrap_up_at * cap_tokens):
+            res.wrapped = True
+            messages.append({"role": "user", "content":
+                             "Most of your budget is used. Give your final answer now, based on what you have found."})
         if not _compact(messages, input_budget or config.BUDGET["input_tokens"]):
             res.stopped = "context cannot be made to fit the request limit"
             break
