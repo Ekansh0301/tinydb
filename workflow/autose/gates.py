@@ -177,7 +177,8 @@ def gate_tests(workdir, base, spec):
     if not names:
         return False, ["no tests named test_ac<N>_... found in tests/test_autose_*.py"], report
     if need - have:
-        r.append("no test for: " + ", ".join("AC-%d" % n for n in sorted(need - have)))
+        r.append("no test for: %s (found only: %s). Every test must be named test_ac<N>_<what>, with N the criterion number"
+                 % (", ".join("AC-%d" % n for n in sorted(need - have)), ", ".join(n for n, _ in names) or "none"))
     # 1. new tests on the base commit must fail somewhere (otherwise they prove nothing)
     base_dir = Path(workdir).parent / "base_checkout"
     sh(["rm", "-rf", str(base_dir)], workdir)

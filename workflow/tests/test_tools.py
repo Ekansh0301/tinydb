@@ -85,3 +85,10 @@ def test_agent_is_reminded_once_when_it_finishes_without_editing(tmp_path):
     tb = box(tmp_path, "implementer")
     res = agent.run_agent("implementer", Fake(), "sys", "user", tb, must_edit=True)
     assert res.text == "done" and tb.edits == 1 and res.reminded
+
+
+def test_tester_can_extend_its_own_file_but_not_edit_the_library(tmp_path):
+    tb = box(tmp_path, "tester")
+    tb.call("write_file", {"path": "tests/test_autose_x.py", "content": "def test_ac1_a():\n    pass\n"})
+    assert tb.call("edit_file", {"path": "tests/test_autose_x.py", "old": "pass", "new": "assert True"}) == "edited tests/test_autose_x.py"
+    assert "error" in tb.call("edit_file", {"path": "tinydb/a.py", "old": "return 1", "new": "return 2"})
