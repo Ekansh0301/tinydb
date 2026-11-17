@@ -1,5 +1,5 @@
 diff --git a/tinydb/table.py b/tinydb/table.py
-index 76470aa..45b8d7f 100644
+index 76470aa..da990ad 100644
 --- a/tinydb/table.py
 +++ b/tinydb/table.py
 @@ -246,7 +246,7 @@ class Table:
@@ -7,37 +7,19 @@ index 76470aa..45b8d7f 100644
          return list(iter(self))
  
 -    def search(self, cond: QueryLike) -> list[Document]:
-+    def search(self, cond: QueryLike, limit: int | None = None) -> list[Document]:
++    def search(self, cond: QueryLike, *, limit: int | None = None) -> list[Document]:
          """
          Search for all documents matching a 'where' cond.
  
-@@ -274,6 +274,12 @@ class Table:
-             for doc_id, doc in self._read_table().items()
-             if cond(doc)
-         ]
-+        # Validate limit argument
-+        if limit is not None:
-+            if not isinstance(limit, int):
-+                raise ValueError("limit must be an integer or None")
-+            if limit < 0:
-+                raise ValueError("limit must be a non‑negative integer")
- 
-         # Only cache cacheable queries.
-         #
-@@ -291,10 +297,14 @@ class Table:
-         is_cacheable: Callable[[], bool] = getattr(cond, 'is_cacheable',
-                                                    lambda: True)
-         if is_cacheable():
--            # Update the query cache
-+            # Update the query cache with full result list
+@@ -294,6 +294,11 @@ class Table:
+             # Update the query cache
              self._query_cache[cond] = docs[:]
  
--        return docs
 +        # Apply limit if provided
-+        if limit is None:
-+            return docs[:]
-+        else:
++        if limit is not None:
++            if not isinstance(limit, int) or limit <= 0:
++                raise ValueError('limit must be a positive integer')
 +            return docs[:limit]
+         return docs
  
      @overload
-     def get(self) -> NoReturn: ...

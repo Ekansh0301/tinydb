@@ -45,3 +45,4 @@
 {"run_id": "44158195212", "round": 1, "stage": 4, "ok": false, "route": "impl", "reasons": ["test suite does not pass: tests/test_autose_search.py::test_ac2_limit_respects_order_and_count", "failing: tests/test_autose_search.py::test_ac2_limit_respects_order_and_count"], "tokens_so_far": 157318, "calls_so_far": 58, "time": "2026-11-17T19:32:16Z"}
 {"run_id": "44158195212", "round": 1, "stage": 1, "ok": true, "route": "", "reasons": [], "tokens_so_far": 164803, "calls_so_far": 65, "time": "2026-11-17T19:33:04Z"}
 {"run_id": "44158195212", "round": 1, "stage": 2, "ok": true, "route": "", "reasons": [], "tokens_so_far": 179825, "calls_so_far": 70, "time": "2026-11-17T19:34:08Z"}
+{"run_id": "44158195212", "round": 1, "stage": 3, "ok": true, "route": "", "reasons": [], "tokens_so_far": 206564, "calls_so_far": 87, "time": "2026-11-17T19:38:17Z"}
