@@ -2,34 +2,33 @@
 
 Result: **FAIL**
 
-New tests: test_ac1_limit_returns_at_most_n_documents, test_ac2_limit_preserves_storage_order, test_ac3_limit_omitted_returns_all_documents, test_ac4_limit_works_on_named_tables
+New tests: test_ac1_limit_returns_at_most_limit_documents, test_ac2_limit_preserves_storage_order
 
-- Failing on the base commit (expected for new behaviour): tests/test_autose_limit.py::test_ac1_limit_returns_at_most_n_documents, tests/test_autose_limit.py::test_ac2_limit_preserves_storage_order, tests/test_autose_limit.py::test_ac4_limit_works_on_named_tables
-- Tests passing on the new code: 231
-- Failing on the new code: tests/test_autose_limit.py::test_ac4_limit_works_on_named_tables
+- Failing on the base commit (expected for new behaviour): none
+- Tests passing on the new code: 0
+- Failing on the new code: none
 
 Gate findings:
-- test suite does not pass: tests/test_autose_limit.py::test_ac4_limit_works_on_named_tables
+- no test for: AC-3, AC-4
+- test suite does not pass: see output
 
 Last lines of the full suite run:
 ```
-c4_limit_works_on_named_tables():
-        """AC-4: Given a named table `logs` containing 8 matching documents, when `db.search(where('type') == 'log', limit=4, table='logs')` is executed, then the returned collection shall contain exactly 4 documents in storage order."""
-        db = TinyDB(storage=MemoryStorage)
-        logs_table = db.table('logs')
-        logs_table.insert_multiple([{'type': 'log', 'id': i} for i in range(8)])
-    
->       results = db.search(where('type') == 'log', limit=4, table='logs')
-                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E       TypeError: Table.search() got an unexpected keyword argument 'table'
-
-tests/test_autose_limit.py:54: TypeError
+thon/3.12.16/x64/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:176: in exec_module
+    source_hash, co = _rewrite_test(fn, self.config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:339: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/ast.py:52: in parse
+    return compile(source, filename, mode, flags,
+E     File "/home/runner/work/tinydb/tinydb/tests/test_autose_search_limit.py", line 23
+E       for
+E          ^
+E   SyntaxError: invalid syntax
 =========================== short test summary info ============================
-FAILED tests/test_autose_limit.py::test_ac4_limit_works_on_named_tables - Typ...
-1 failed, 231 passed in 0.50s
+ERROR tests/test_autose_search_limit.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.38s
 
 ```
-
-
-## Stopped
-Stage 4 could not pass its check: test suite does not pass: tests/test_autose_limit.py::test_ac4_limit_works_on_named_tables; these tests raise errors in the test code itself, not assertion failures: tests/test_autose_limit.py:54 TypeError; failing: tests/test_autose_limit.py::test_ac4_limit_works_on_named_tables
