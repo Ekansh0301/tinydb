@@ -1,0 +1,1 @@
+{"tiers": ["nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b", "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b", "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b", "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b", "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b", "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b"], "tokens": 17785, "calls": 6, "problems": [], "run_id": "44196972064"}

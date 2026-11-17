@@ -1,0 +1,13 @@
+# Review
+
+Verdict: **APPROVE**
+
+The PR adds `startswith` and `endswith` methods to the `Query` class in `tinydb/queries.py`. Both use `_generate_test` with a lambda that checks `isinstance(value, str)` before calling the string method, so missing fields, `None`, and numbers silently don't match. Case-sensitive matching is used, matching Python's default behavior. All new and existing tests pass, and a manual snippet confirms non-strings and missing fields are excluded without errors.
+
+## Checks
+- [pass] startswith/endswith match only strings and skip non-strings/missing fields: tests/test_startswith_seed.py passes (3 tests) plus manual snippet: startswith A returned ['Alice','Al'], endswith ce returned ['Alice'], missing field docs excluded
+- [pass] existing query tests still pass: tests/test_queries.py: 37 tests passed
+
+## Findings
+
+_Reviewer model: nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b_
