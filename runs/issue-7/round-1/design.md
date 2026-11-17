@@ -1,17 +1,16 @@
 # Design
 ## Approach
-Add an optional `limit` keyword to `Table.search`. The method will validate the argument, raise a `ValueError` for non‑integer or negative values, and treat `None` as “no limit”. The full result set will still be cached, and the returned list will be sliced according to `limit` while preserving order. No other modules need changes because `TinyDB.__getattr__` forwards calls to the default `Table`, and named tables already use the same `Table.search` implementation.
+We will extend `Table.search` to accept an optional keyword‑only argument `limit: int | None = None`. The method will keep its existing behaviour (including cache usage) unchanged when `limit` is omitted or `None`. After obtaining the full result list (and optionally caching it), we will apply the limit by returning `docs[:limit]` when a positive integer is provided, raising `ValueError` for non‑positive integers. Because the limit is applied after caching, existing cached full‑result sets remain valid for subsequent calls without a limit, satisfying FR‑2 and preserving order.
 
 ## Changes
 | File | Function or class | Change | ACs |
 |---|---|---|---|
-| tinydb/table.py | `Table.search` | • Change signature to `def search(self, cond: QueryLike, limit: int | None = None) -> list[Document]`.<br>• Add validation: if `limit` is not `None` and not an `int` → raise `ValueError`; if `limit < 0` → raise `ValueError` with message “limit must be a non‑negative integer”.<br>• After building the full `docs` list, store it in the cache as before.<br>• Return `docs[:]` when `limit is None`, otherwise return `docs[:limit]`.<br>• Update docstring to describe the new argument and behaviour. | AC-1, AC-2, AC-3, AC-4, AC-5, AC-6 |
-| tinydb/__init__.py | (none) | No change needed; re‑export unchanged. | — |
-| tests (if any) | (none) | No test file needs modification because existing tests call `search` without `limit`. New tests for the limit behaviour will pass with the implementation above. | — |
+| tinydb/table.py | `Table.search` | • Add keyword‑only parameter `limit: int | None = None` to the signature.<br>• Validate `limit` (raise `ValueError` if not `None` and `limit <= 0`).<br>• Keep existing cache lookup and caching of the full result list unchanged.<br>• After building `docs` (and caching if appropriate), apply `if limit is not None: return docs[:limit]` otherwise return `docs`.<br>• Update docstring to describe the new argument and its behaviour. | AC‑1, AC‑2, AC‑3, AC‑4 |
 
 ## Existing tests affected
-None. All current tests invoke `search` without a `limit` argument, which continues to behave exactly as before.
+None. All current tests exercise `Table.search` without a `limit` argument, and the added keyword‑only parameter does not affect those calls.
 
 ## Risks
-- **Cache size impact**: caching the full result set may increase memory usage for very large tables when many limited searches are performed, but this follows the existing caching strategy.
-- **Signature change**: external code that uses positional arguments expecting only `cond` will still work because `limit` is a keyword‑only argument with a default; however, code that passes a second positional argument will now receive a `TypeError`. This is acceptable given the library’s public API expectations.
+- Introducing the keyword‑only parameter could break code that previously passed a positional argument expecting the old signature; however, the spec mandates that `limit` be keyword‑only, and such usage would have been invalid before (no second positional argument existed), so risk is minimal.  
+- If a user relied on the cached list being returned directly (i.e., mutating the list), the new slicing could return a new list even when `limit` is `None`. The implementation returns the original cached list copy (`cached_results[:]`) when no limit is set, preserving existing semantics.  
+- Ensuring that the limit is applied after caching is crucial; otherwise cached limited results could affect later unrestricted searches. The plan explicitly applies the limit only to the return value.
