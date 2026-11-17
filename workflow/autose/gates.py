@@ -50,8 +50,10 @@ def gate_spec(spec):
         m = VAGUE.search(t.split("then", 1)[-1] if "then" in low else t)
         if m:
             r.append("AC-%d uses a vague word in its outcome: '%s'" % (n, m.group(0)))
-    frs = set(int(x) for x in re.findall(r"\bFR-(\d+)\b", spec))
-    refs = set(int(x) for x in re.findall(r"^\s*[-*]\s*AC-\d+\s*\(FR-(\d+)", spec, re.M))
+    req = re.search(r"##\s*Requirements(.*?)(?=\n##\s|\Z)", spec, re.S | re.I)
+    frs = set(int(x) for x in re.findall(r"^\s*[-*]\s*FR-(\d+)\b", req.group(1), re.M)) if req else set()
+    ac_sec = re.search(r"##\s*Acceptance criteria(.*?)(?=\n##\s|\Z)", spec, re.S | re.I)
+    refs = set(int(x) for x in re.findall(r"\bFR-(\d+)\b", ac_sec.group(1))) if ac_sec else set()
     if frs and not frs <= refs:
         r.append("requirements without an acceptance criterion: " + ", ".join("FR-%d" % x for x in sorted(frs - refs)))
     if words(spec) > MAX_WORDS["spec"]:

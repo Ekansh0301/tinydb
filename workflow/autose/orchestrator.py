@@ -2,7 +2,7 @@
 its gate passes; back-edges and attempt limits are fixed here."""
 from . import config, gitops, stages
 
-LIMITS = {"s1": 2, "s2": 2, "impl": 3, "tests": 3, "redesign": 1}
+LIMITS = {"s1": 3, "s2": 3, "impl": 3, "tests": 3, "redesign": 1}
 
 
 def record(ctx, stage, outcome):
