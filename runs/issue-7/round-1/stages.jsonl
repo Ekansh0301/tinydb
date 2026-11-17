@@ -10,3 +10,4 @@
 {"round": 1, "stage": 4, "ok": false, "route": "tests", "reasons": ["test suite does not pass: tests/test_autose_limit.py::test_ac4_limit_works_on_named_tables", "these tests raise errors in the test code itself, not assertion failures: tests/test_autose_limit.py:54 TypeError", "failing: tests/test_autose_limit.py::test_ac4_limit_works_on_named_tables"], "tokens_so_far": 247714, "calls_so_far": 67, "time": "2026-11-17T18:27:53Z"}
 {"run_id": "44148348750", "round": 1, "stage": 1, "ok": true, "route": "", "reasons": [], "tokens_so_far": 2113, "calls_so_far": 2, "time": "2026-11-17T18:29:39Z"}
 {"run_id": "44148348750", "round": 1, "stage": 2, "ok": true, "route": "", "reasons": [], "tokens_so_far": 16452, "calls_so_far": 6, "time": "2026-11-17T18:29:44Z"}
+{"run_id": "44148348750", "round": 1, "stage": 3, "ok": true, "route": "", "reasons": [], "tokens_so_far": 67755, "calls_so_far": 22, "time": "2026-11-17T18:32:47Z"}

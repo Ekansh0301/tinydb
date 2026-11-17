@@ -1,5 +1,5 @@
 diff --git a/tinydb/table.py b/tinydb/table.py
-index 76470aa..92eff4c 100644
+index 76470aa..379266d 100644
 --- a/tinydb/table.py
 +++ b/tinydb/table.py
 @@ -246,7 +246,7 @@ class Table:
@@ -11,17 +11,43 @@ index 76470aa..92eff4c 100644
          """
          Search for all documents matching a 'where' cond.
  
-@@ -294,7 +294,12 @@ class Table:
+@@ -257,6 +257,7 @@ class Table:
+         what a later identical search returns.
+ 
+         :param cond: the condition to check against
++        :param limit: optional maximum number of documents to return; must be a non‑negative integer
+         :returns: list of matching documents
+         """
+ 
+@@ -264,7 +265,14 @@ class Table:
+         # query
+         cached_results = self._query_cache.get(cond)
+         if cached_results is not None:
+-            return cached_results[:]
++            result = cached_results[:]
++            if limit is not None:
++                if not isinstance(limit, int):
++                    raise TypeError('limit must be an integer')
++                if limit < 0:
++                    raise ValueError('limit must be non‑negative')
++                result = result[:limit]
++            return result
+ 
+         # Perform the search by applying the query to all documents.
+         # Then, only if the document matches the query, convert it
+@@ -294,7 +302,14 @@ class Table:
              # Update the query cache
              self._query_cache[cond] = docs[:]
  
 -        return docs
-+        # Apply limit if provided
++        result = docs
 +        if limit is not None:
-+            if not isinstance(limit, int) or limit < 0:
-+                raise ValueError('limit must be a non‑negative integer')
-+            return docs[:limit]
-+        return docs[:]
++            if not isinstance(limit, int):
++                raise TypeError('limit must be an integer')
++            if limit < 0:
++                raise ValueError('limit must be non‑negative')
++            result = result[:limit]
++        return result
  
      @overload
      def get(self) -> NoReturn: ...
