@@ -92,3 +92,11 @@ def test_tester_can_extend_its_own_file_but_not_edit_the_library(tmp_path):
     tb.call("write_file", {"path": "tests/test_autose_x.py", "content": "def test_ac1_a():\n    pass\n"})
     assert tb.call("edit_file", {"path": "tests/test_autose_x.py", "old": "pass", "new": "assert True"}) == "edited tests/test_autose_x.py"
     assert "error" in tb.call("edit_file", {"path": "tinydb/a.py", "old": "return 1", "new": "return 2"})
+
+
+def test_write_file_reports_what_the_python_file_contains_and_cut_off_files(tmp_path):
+    tb = box(tmp_path, "tester")
+    ok = tb.call("write_file", {"path": "tests/test_autose_a.py", "content": "def test_ac1_a():\n    pass\n\ndef test_ac2_b():\n    pass\n"})
+    assert "defines 2 tests: test_ac1_a, test_ac2_b" in ok
+    cut = tb.call("write_file", {"path": "tests/test_autose_b.py", "content": "def test_ac1_a():\n    x = (1,\n"})
+    assert "syntax error" in cut and "cut off" in cut

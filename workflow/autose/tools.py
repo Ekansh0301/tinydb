@@ -166,7 +166,20 @@ class Toolbox:
         f.parent.mkdir(parents=True, exist_ok=True)
         f.write_text(content)
         self.edits += 1
-        return "wrote %s (%d bytes)" % (path, len(content))
+        return "wrote %s (%d bytes)%s" % (path, len(content), self._python_feedback(path, content))
+
+    @staticmethod
+    def _python_feedback(path, content):
+        """Tell the model what a Python file it just wrote really contains. Models sometimes emit a
+        file that is cut off; saying so lets them repair it instead of repeating the same call."""
+        if not path.endswith(".py"):
+            return ""
+        try:
+            compile(content, path, "exec")
+        except SyntaxError as e:
+            return ". WARNING: the file has a syntax error at line %s (%s); it was probably cut off. Fix it with edit_file or rewrite a shorter file." % (e.lineno, e.msg)
+        names = re.findall(r"^def (test_\w+)", content, re.M)
+        return ". It defines %d tests: %s" % (len(names), ", ".join(names) or "none") if names else ""
 
     def t_run(self, command):
         try:
