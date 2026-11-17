@@ -29,6 +29,6 @@ E   SyntaxError: '(' was never closed
 =========================== short test summary info ============================
 ERROR tests/test_autose_search_limit.py
 !!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
-1 error in 0.48s
+1 error in 0.47s
 
 ```
