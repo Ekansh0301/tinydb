@@ -1,16 +1,17 @@
 # Design
 ## Approach
-Add an optional `limit` keyword argument to `Table.search` while preserving its existing behavior when omitted. The function will validate `limit` as a non‑negative integer, raise `ValueError` for negatives, and return a sliced copy of the full result list when a limit is provided. Caching will continue to store the complete result set so that subsequent unlimited searches are fast, and the change will automatically apply to the default table and any named tables because they all use the same `Table.search` implementation. No other modules need to be altered.
+Add an optional `limit` keyword argument to `Table.search`. The method will validate the argument, raise `TypeError` for non‑int values, and return an empty list for zero or negative limits. The existing query‑result cache will continue to store the full result set; the `limit` will be applied only to the list returned to the caller, preserving current behaviour when omitted. No other components need changes because `TinyDB.__getattr__` forwards calls to the default `Table`, which now supports the new signature, and named tables use the same `Table.search`.
 
 ## Changes
 | File | Function or class | Change | ACs |
-|---|---|---|---|
-| tinydb/table.py | Table.search | • Add `limit: int | None = None` to the signature.<br>• Validate that `limit` is `None` or a non‑negative int (raise `ValueError` if negative).<br>• After building `docs`, compute `result = docs if limit is None else docs[:limit]`.<br>• Return `result` (still a fresh copy).<br>• Keep caching unchanged (cache full `docs`). | AC-1, AC-2, AC-3, AC-4, AC-5 |
+| --- | --- | --- | --- |
+| tinydb/table.py | Table.search | • Change signature to `def search(self, cond: QueryLike, *, limit: int | None = None) -> list[Document]`.<br>• Validate `limit`: if not `None` and not `int` → raise `TypeError`.<br>• If `limit` ≤ 0 → return `[]`.<br>• After obtaining (or retrieving from cache) the full result list, apply slicing `results[:limit]` when `limit` is a positive int.<br>• Update docstring to describe the new argument and its semantics. | AC‑1, AC‑2, AC‑3, AC‑4, AC‑5, AC‑6 |
+| tinydb/__init__.py | (re‑export) | No change needed; `Table.search` is the public API. | – |
 
 ## Existing tests affected
-none – all current tests call `search()` without `limit`; the new optional argument is backward‑compatible.
+None. All current tests exercise `Table.search` without the `limit` argument, and the added default preserves existing behaviour. New tests for the limit functionality will be added, but no existing test needs modification.
 
 ## Risks
-- Slicing after document conversion may add minimal overhead, but it does not affect correctness.  
-- Introducing a new parameter could conflict with user‑defined query objects that also accept `**kwargs`; however, `Table.search` only forwards `cond`, so this risk is negligible.  
-- Validation may raise `ValueError` for negative limits, which is an intentional design decision (per assumption A‑1).
+- **Cache semantics:** The cache still stores the complete result set; applying `limit` after retrieval ensures cached data remains correct for subsequent unlimited searches.  
+- **Signature compatibility:** Adding a keyword‑only `limit` argument is backward compatible because calls that previously passed only the condition remain valid.  
+- **Performance:** Slicing a list is O(k); negligible for typical TinyDB usage.
