@@ -30,7 +30,7 @@ SPECS = {
 ROLE_TOOLS = {
     "planner": ["open_file", "list_dir", "search"],
     "implementer": ["open_file", "list_dir", "search", "edit_file", "write_file", "run"],
-    "tester": ["open_file", "list_dir", "search", "write_file", "run"],
+    "tester": ["open_file", "list_dir", "search", "write_file", "edit_file", "run"],
     "reviewer": ["open_file", "list_dir", "search", "run"],
     "single": ["open_file", "list_dir", "search", "edit_file", "write_file", "run"],
 }
