@@ -79,7 +79,7 @@ class Client:
             json.dumps(body).encode(),
             {"Authorization": "Bearer " + key, "Content-Type": "application/json",
              "User-Agent": "autose/1.0"})
-        with urllib.request.urlopen(req, timeout=config.BUDGET["call_timeout"]) as r:
+        with urllib.request.urlopen(req, timeout=config.BUDGET["call_timeout"][provider]) as r:
             return json.load(r)
 
     def chat(self, messages, tools=None, max_tokens=None, temperature=0.2):
@@ -95,6 +95,7 @@ class Client:
                     last = TooLarge("%s: prompt of about %d tokens leaves no room under the rate limit" % (label, prompt_est))
                     continue
             need = prompt_est + mt
+            timeouts = 0
             for attempt in range(max(8, 2 * len(config.api_keys(provider)))):
                 try:
                     idx, key = self._wait_for_key(provider, need)
@@ -139,7 +140,11 @@ class Client:
                     break           # other 4xx: try next tier
                 except (urllib.error.URLError, TimeoutError, OSError) as e:
                     last = LLMError("%s %s" % (label, type(e).__name__))
-                    time.sleep(2 + 2 * attempt)
+                    timeouts += 1
+                    self.log("%s: no answer within %ds (%s), attempt %d" % (label, config.BUDGET["call_timeout"][provider], type(e).__name__, timeouts))
+                    if timeouts >= 4:               # an endpoint that hangs: give the tier up instead of waiting for minutes
+                        break
+                    time.sleep(2)
                     continue
                 msg = d["choices"][0]["message"]
                 used = d.get("usage", {}).get("total_tokens", need)
