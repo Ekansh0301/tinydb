@@ -1,0 +1,18 @@
+\begin{table}[ht]\centering\footnotesize
+\caption{Summary of the decision records (all under \code{architecture/decisions/}).}\label{tab:adr}
+\begin{tabularx}{\linewidth}{@{}l l Y Y Y l@{}}
+\toprule
+ADR & Area & Option chosen & Main option rejected & Main reason & Status \\ \midrule
+001 & D1 Split & 3 builder agents + code release + separate reviewer & one agent for everything; one per stage & tester must not have seen the implementation; request limit forbids one long conversation & Accepted, tested (E1) \\
+002 & D2 Control & deterministic state machine, bounded back-edges & planner agent decides what next & reproducible, auditable, budget-bounded & Accepted, 2 amendments \\
+003 & D3 Hand-offs & short artifacts, never conversations & pass transcripts or summaries & limits error propagation and tokens & Superseded in part by 011 \\
+004 & D4 State & files on branch \code{autose-runs} + artifacts + PR comment & artifacts in the PR branch; Actions cache & PR diff stays code only; durable and linkable & Accepted \\
+005 & D5 Tools & in-process tools per role, empty command environment & MCP servers; \code{gh} for agents & least privilege; small tool list & Accepted (names changed) \\
+006 & D6 Models & one pinned model per builder role; reviewer chain & cross-vendor fallback for builders & results attributable to one model; evidence from runs & Accepted, 5 amendments \\
+007 & D7 Checks & code gates, model call may only object & LLM judge per stage & reproducible decisions & Accepted (gate bugs fixed) \\
+008 & D8 Reviewer & own job, vendor, prompt, inputs, permissions + evidence rule & same model, fresh context & shared blind spots; rubber-stamping & Accepted, tested (E2) \\
+009 & D9 Safety & budgets, delimiters, injection classifier, keyless commands & trust the model to ignore injections & defence in layers, measurable & Accepted \\
+010 & D10 Triggers & label or \code{/autose} by write access; one run per issue & trigger on every issue & only maintainers spend tokens & Accepted, 1 amendment \\
+011 & D3 Hand-offs & trimmed architecture note, small file reads & full note, free-size reads & first run exceeded the request limit & Accepted, supersedes 003 row \\
+\bottomrule\end{tabularx}
+\end{table}

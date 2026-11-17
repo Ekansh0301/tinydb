@@ -1,0 +1,32 @@
+\begin{table}[ht]\centering\small
+\caption{Per-stage pass rates over all recorded stage attempts (every run, including runs that later stopped).}\label{tab:rates}
+\begin{tabular}{@{}l c r r r r@{}}
+\toprule
+Variant & Stage & Attempts & Passed & Rate & First-attempt rate \\ \midrule
+pipeline & 1 & 8 & 6 & 75\% & 83\% \\
+pipeline & 2 & 8 & 6 & 75\% & 60\% \\
+pipeline & 3 & 12 & 9 & 75\% & 83\% \\
+pipeline & 4 & 14 & 1 & 7\% & 0\% \\
+\bottomrule\end{tabular}
+\end{table}
+\begin{table}[ht]\centering\small
+\caption{Result of each pipeline or variant round: hidden acceptance tests (passed/total), regressions among the 228 baseline tests, and the reviewer's verdict on that round.}\label{tab:issues}
+\begin{tabular}{@{}r l c c c c r r l@{}}
+\toprule
+Issue & Variant & Round & PR & Hidden & Regr. & Tokens & Reviewer & \\ \midrule
+\#7 & pipeline & 1 & \#34 & 3/5 & 0 & 215385 & request changes & \\
+\#7 & pipeline & 2 & -- & not scored & -- & 23565 & none & \\
+\bottomrule\end{tabular}
+\end{table}
+\begin{table}[ht]\centering\small
+\caption{Reviewer calibration on the five seeded pull requests: outcome of every trial. A correct pull request should be approved; a wrong one should be rejected.}\label{tab:seeded}
+\begin{tabular}{@{}l l l l@{}}
+\toprule
+Variant & PR (label) & Outcomes by trial & Right/valid \\ \midrule
+independent & \#13 (correct) & approved, no valid review, approved & 2/2 \\
+independent & \#14 (wrong) & caught, caught, caught & 3/3 \\
+independent & \#15 (correct) & approved, approved, approved & 3/3 \\
+independent & \#16 (wrong) & missed, missed, no valid review & 0/2 \\
+independent & \#17 (wrong) & caught, caught, caught & 3/3 \\
+\bottomrule\end{tabular}
+\end{table}

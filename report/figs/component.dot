@@ -1,0 +1,43 @@
+digraph G {
+  rankdir=LR; fontname="DejaVu Sans"; fontsize=10; nodesep=0.28; ranksep=0.45;
+  node [shape=box, style="rounded,filled", fillcolor="#f4f4f4", fontname="DejaVu Sans", fontsize=9, margin="0.08,0.05"];
+  edge [fontname="DejaVu Sans", fontsize=8, color="#555555"];
+
+  ev [label="issue label\n/autose comment", shape=oval, fillcolor="#ffffff"];
+  human [label="person:\nmerge or close", shape=oval, fillcolor="#ffffff"];
+
+  subgraph cluster_gate { label="job gate (contents: read)"; style="rounded"; color="#888888"; fontsize=9;
+    gate [label="permission check\nconcurrency check\nprompt-injection screen\n(prompt-guard-2-86m)"]; }
+
+  subgraph cluster_build { label="job build (contents: write)"; style="rounded"; color="#888888"; fontsize=9;
+    orch [label="Orchestrator\nstate machine, gates,\nbudgets (code)", fillcolor="#dbe8ff"];
+    plan [label="Planner\nstages 1-2\ngpt-oss-120b", fillcolor="#e8f5e1"];
+    impl [label="Implementer\nstage 3\ngpt-oss-120b", fillcolor="#e8f5e1"];
+    test [label="Tester\nstage 4\ngpt-oss-20b", fillcolor="#e8f5e1"];
+    rel  [label="Release\nstage 5 (code)", fillcolor="#dbe8ff"];
+    orch -> plan; orch -> impl; orch -> test; orch -> rel; }
+
+  ci [label="job ci\nreusable workflow\non the PR head", fillcolor="#ffffff"];
+
+  subgraph cluster_rev { label="job review (contents: read)"; style="rounded"; color="#888888"; fontsize=9;
+    rev [label="Reviewer\nstage 6\nnemotron-3.5-super →\nnemotron-3-ultra → qwen3.8-27b", fillcolor="#ffe3d1"]; }
+
+  nxt [label="job next\npost review, re-dispatch\nround+1 (at most twice)", fillcolor="#ffffff"];
+
+  runs [label="branch autose-runs\nartifacts + state.json", shape=cylinder, fillcolor="#fff8d6"];
+  code [label="branch autose/issue-N\n(code only)", shape=cylinder, fillcolor="#fff8d6"];
+  pr [label="pull request", shape=cylinder, fillcolor="#fff8d6"];
+
+  ev -> gate -> orch [label="sanitised issue"];
+  plan -> code [label="read-only tools", style=dashed];
+  impl -> code [label="edit, run", style=dashed];
+  test -> code [label="own test file, run", style=dashed];
+  orch -> runs [label="artifacts"];
+  rel -> pr [label="push, open"];
+  pr -> ci -> rev;
+  rev -> nxt [label="review.json"];
+  nxt -> pr [label="review comment"];
+  nxt -> runs;
+  nxt -> gate [label="workflow_dispatch", style=dotted, constraint=false];
+  nxt -> human [label="approved or rounds used"];
+}

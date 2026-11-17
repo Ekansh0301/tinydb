@@ -8,7 +8,7 @@ LABEL = "autose"
 MAX_FIX_CYCLES = 2          # review feedback sent back at most twice (so up to three reviews)
 
 # Top-level paths agents can neither read nor write (ADR-009, ADR-003).
-DENY = {"experiment", "architecture", "workflow", "results", ".github", ".git",
+DENY = {"experiment", "architecture", "workflow", "results", "report", ".github", ".git",
         "report.pdf", "README.md", "AI.md"}
 
 BUDGET = {

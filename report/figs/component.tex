@@ -1,0 +1,49 @@
+\begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily\scriptsize,
+  box/.style={draw,rounded corners=2pt,align=center,inner sep=3pt,minimum height=0.9cm},
+  code/.style={box,fill=blue!10},
+  agent/.style={box,fill=green!14,minimum width=2.7cm},
+  rev/.style={box,fill=orange!22,minimum width=3.4cm},
+  store/.style={draw,cylinder,shape border rotate=90,aspect=0.25,fill=yellow!20,align=center,inner sep=2pt,minimum height=0.9cm,minimum width=2.2cm},
+  plain/.style={box,fill=white},
+  a/.style={-{Stealth[length=1.6mm]},semithick},
+  t/.style={-{Stealth[length=1.4mm]},dashed,gray!80!black},
+  lab/.style={font=\sffamily\tiny,fill=white,inner sep=0.5pt}]
+  % frames
+  \draw[rounded corners=4pt,gray] (-0.2,-2.2) rectangle (3.5,2.2); \node[gray,anchor=north west] at (-0.15,2.2) {gate job (read only)};
+  \draw[rounded corners=4pt,gray] (4.0,-2.45) rectangle (12.5,2.8); \node[gray,anchor=north west] at (4.05,2.8) {build job (contents: write)};
+  \draw[rounded corners=4pt,gray] (7.3,-6.6) rectangle (12.5,-3.7); \node[gray,anchor=north west] at (7.35,-3.7) {review job (contents: read)};
+  % top row
+  \node[plain] (ev) at (1.6,1.25) {issue label\\ or \texttt{/autose}\\ (write access)};
+  \node[code] (gate) at (1.6,-0.65) {permission check,\\ no run active,\\ injection screen\\ (prompt-guard)};
+  \node[code,minimum width=2.6cm,minimum height=1.6cm] (orch) at (5.5,0.2) {\textbf{Orchestrator}\\ state machine,\\ gates, budgets\\ (code)};
+  \node[agent] (plan) at (10.0,2.0) {Planner, stages 1--2\\ \texttt{gpt-oss-120b}};
+  \node[agent] (impl) at (10.0,0.85) {Implementer, stage 3\\ \texttt{gpt-oss-120b}};
+  \node[agent] (test) at (10.0,-0.3) {Tester, stage 4\\ \texttt{gpt-oss-20b}};
+  \node[code,minimum width=2.7cm] (rel) at (10.0,-1.55) {Release, stage 5\\ (code, no model)};
+  \node[store] (code) at (15.1,0.9) {branch\\ \texttt{autose/issue-N}\\ (code only)};
+  \node[store] (runs) at (5.5,-3.1) {branch \texttt{autose-runs}\\ artifacts, state.json};
+  \node[store] (pr) at (15.1,-1.55) {pull request};
+  \node[plain,minimum width=2.4cm] (ci) at (15.1,-4.6) {ci job\\ (PR head)};
+  \node[rev] (rev) at (10.0,-5.15) {\textbf{Reviewer}, stage 6\\ \texttt{nemotron-3.5-super} $\to$\\ \texttt{nemotron-3-ultra} $\to$ \texttt{qwen3.8-27b}};
+  \node[plain,minimum width=2.6cm] (next) at (4.8,-5.15) {next job:\\ post review, round+1\\ (at most twice)};
+  \node[plain] (human) at (1.2,-5.15) {person:\\ merge or close};
+  % arrows
+  \draw[a] (ev) -- (gate);
+  \draw[a] (gate.east) -- node[lab,above] {sanitised issue} (orch.west);
+  \draw[a] (orch.north east) -- (plan.west);
+  \draw[a] (orch.east) -- (impl.west);
+  \draw[a] (orch.south east) -- (test.west);
+  \draw[a] (orch.south east) to[out=-30,in=180] (rel.west);
+  \draw[t] (plan.east) to[out=0,in=130] node[lab,pos=0.55] {read only} (code.north west);
+  \draw[t] (impl.east) -- node[lab] {edit, run} (code.west);
+  \draw[t] (test.east) to[out=0,in=220] node[lab,pos=0.5] {own test file, run} (code.south west);
+  \draw[a] (orch.south) -- node[lab,right] {artifacts} (runs.north);
+  \draw[a] (rel.east) -- node[lab] {push, open} (pr.west);
+  \draw[a] (pr.south) -- (ci.north);
+  \draw[a] (ci.south west) to[out=-120,in=0] (rev.east);
+  \draw[t] (pr.south east) to[out=-60,in=20] node[lab,pos=0.3,right] {issue, diff, repo at PR head only} (rev.north east);
+  \draw[a] (rev.west) -- node[lab,above] {review.json} (next.east);
+  \draw[a] (next.west) -- node[lab,above] {approved or rounds used} (human.east);
+  \draw[a] (next.north west) to[out=110,in=-80] node[lab,left,pos=0.55] {\texttt{workflow\_dispatch}, next round} (gate.south);
+  \draw[t] (next.north east) -- node[lab,right] {record} (runs.south west);
+\end{tikzpicture}
