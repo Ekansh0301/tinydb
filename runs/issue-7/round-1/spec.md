@@ -1,28 +1,31 @@
 # Spec
 ## Source statements
-S1: "When I show results in a UI I only need the first few matches, but `search()` always returns everything."  
-S2: "Could `search()` take an optional `limit` argument so that `db.search(where('type') == 'log', limit=10)` returns at most 10 documents, in the order they are stored?"  
-S3: "Without `limit` nothing should change."  
-S4: "It should work on named tables too."
+S1: "When I show results in a UI I only need the first few matches, but `search()` always returns everything."
+S2: "`first_ten = db.search(where('type') == 'log')[:10]`"
+S3: "Could `search()` take an optional `limit` argument so that `db.search(where('type') == 'log', limit=10)` returns at most 10 documents, in the order they are stored?"
+S4: "Without `limit` nothing should change."
+S5: "It should work on named tables too."
 
 ## Requirements
-- FR-1 [STATED] The `search()` function shall accept an optional keyword argument `limit`. (S2)  
-- FR-2 [STATED] When a positive integer `limit` is supplied, `search()` shall return **at most** `limit` documents that satisfy the query, preserving the order in which the documents are stored. (S2)  
-- FR-3 [STATED] When `limit` is omitted, `search()` shall behave exactly as it does today, returning all matching documents. (S3)  
-- FR-4 [STATED] The `limit` argument shall be supported for searches on the default table as well as on any named table. (S4)  
+- FR-1 [STATED] The `search()` function shall accept an optional keyword argument `limit` of type integer. (S3)  
+- FR-2 [STATED] When `limit` is provided, `search()` shall return at most `limit` documents, preserving the order in which the documents are stored. (S3)  
+- FR-3 [STATED] When `limit` is omitted, `search()` shall behave exactly as it does today, returning all matching documents. (S4)  
+- FR-4 [STATED] The `limit` argument shall be applicable when `search()` is invoked on any table, including named tables. (S5)  
+- FR-5 [INFERRED] If `limit` is a non‑positive integer (zero or negative), `search()` shall return an empty list. (S3)  
+- FR-6 [INFERRED] If `limit` is not an integer, `search()` shall raise a `TypeError`. (S3)
 
 ## Acceptance criteria
-- AC-1 (FR-1): Given a call `db.search(where('type') == 'log')`, when the call is executed, then the function signature includes a keyword argument `limit` that can be passed without raising a `TypeError`.  
-- AC-2 (FR-2): Given a call `db.search(where('type') == 'log', limit=5)`, when the query matches 12 documents, then the returned list length is `5` and the first 5 elements are the same as the first 5 elements of the list returned by `db.search(where('type') == 'log')`.  
-- AC-3 (FR-2): Given a call `db.search(where('type') == 'log', limit=0)`, when the query matches any documents, then the returned list length is `0`.  
-- AC-4 (FR-3): Given a call `db.search(where('type') == 'log')` before and after the implementation of `limit`, when the same database state is used, then the two returned lists are identical in content and order.  
-- AC-5 (FR-4): Given a call `db.search(where('type') == 'log', limit=3, table='archive')`, when the named table `archive` contains 8 matching documents, then the returned list length is `3` and the elements correspond to the first three stored documents in `archive`.  
+- AC-1 (FR-1): Given a call `db.search(where('type') == 'log', limit=10)`, when the function is executed, then the call completes without raising an exception and the returned object is a list.  
+- AC-2 (FR-2): Given a table containing 25 matching documents, when `db.search(where('type') == 'log', limit=10)` is called, then the returned list contains exactly 10 documents ordered identically to their storage order.  
+- AC-3 (FR-3): Given a call `db.search(where('type') == 'log')` (no `limit` argument), when the function is executed, then the returned list contains all matching documents (e.g., 25 in the above scenario).  
+- AC-4 (FR-4): Given a named table `logs` with 15 matching documents, when `db.search(where('type') == 'log', limit=5, table='logs')` is called, then the returned list contains exactly 5 documents from that named table in storage order.  
+- AC-5 (FR-5): Given a call `db.search(where('type') == 'log', limit=0)`, when the function is executed, then the returned list is empty (`len(result) == 0`).  
+- AC-6 (FR-6): Given a call `db.search(where('type') == 'log', limit='ten')`, when the function is executed, then a `TypeError` is raised.
 
 ## Assumptions and open questions
-- A-1 [ASSUMED] `limit` will be validated as a non‑negative integer; negative values will raise a `ValueError`. Impact if wrong: callers might receive unexpected results or uncaught exceptions. Question: Should negative limits be treated as zero, ignored, or cause an error?  
-- A-2 [ASSUMED] The order “in which they are stored” is the same order currently used by `search()` when returning all results. Impact if wrong: The returned subset could appear out of expected order, breaking UI expectations. Question: Does the storage order ever differ from the order of iteration in the existing implementation?  
+- A-1 [ASSUMED] The phrase “in the order they are stored” refers to the natural iteration order of the underlying storage engine (e.g., insertion order). Impact if wrong: If the system defines a different default ordering (e.g., primary‑key order), the implementation may need to sort accordingly, affecting performance. Question: What exact ordering semantics does the current `search()` use when no explicit ordering is specified?  
 
 ## Non-goals
-- Pagination mechanisms beyond a simple `limit` (e.g., offset, cursor).  
-- Changing the underlying storage order or providing sorting options.  
-- Performance optimizations for large limits; the implementation may still scan all matching documents.
+- Changing the default ordering of `search()` results.  
+- Adding pagination or offset support beyond the simple `limit` parameter.  
+- Modifying the API of `where()` or other query‑building helpers.
