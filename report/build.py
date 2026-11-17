@@ -105,7 +105,7 @@ def seeded_summary():
         return "No calibration reviews yet.\n"
     by = defaultdict(lambda: defaultdict(list))
     for r in rs:
-        by[r["variant"]][(r["pr"], r["label"])].append(r["outcome"])
+        by[r["variant"] + " " + r["reviewer_version"]][(r["pr"], r["label"])].append(r["outcome"])
     out = [r"\begin{table}[ht]\centering\small",
            r"\caption{Reviewer calibration on the five seeded pull requests: outcome of every trial. A correct pull request should be approved; a wrong one should be rejected.}\label{tab:seeded}",
            r"\begin{tabular}{@{}l l l l@{}}", r"\toprule", r"Variant & PR (label) & Outcomes by trial & Right/valid \\ \midrule"]
