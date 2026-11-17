@@ -37,3 +37,7 @@ FAILED tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[json]
 2 failed, 230 passed in 0.45s
 
 ```
+
+
+## Stopped
+Stage 4 could not pass its check: no test for: AC-3, AC-4, AC-5 (found only: test_ac1_limit_kwarg_accepted, test_ac2_limit_returns_first_n). Every test must be named test_ac<N>_<what>, with N the criterion number; test suite does not pass: tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[json], tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[memory]; failing: tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[json], tests/test_autose_search_limit.py::test_ac2_limit_returns_first_n[memory]
