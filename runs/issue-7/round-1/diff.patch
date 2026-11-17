@@ -1,5 +1,5 @@
 diff --git a/tinydb/table.py b/tinydb/table.py
-index 76470aa..073e8ad 100644
+index 76470aa..92eff4c 100644
 --- a/tinydb/table.py
 +++ b/tinydb/table.py
 @@ -246,7 +246,7 @@ class Table:
@@ -7,20 +7,21 @@ index 76470aa..073e8ad 100644
          return list(iter(self))
  
 -    def search(self, cond: QueryLike) -> list[Document]:
-+    def search(self, cond: QueryLike, *, limit: int | None = None) -> list[Document]:
++    def search(self, cond: QueryLike, limit: int | None = None) -> list[Document]:
          """
          Search for all documents matching a 'where' cond.
  
-@@ -275,6 +275,12 @@ class Table:
-             if cond(doc)
-         ]
+@@ -294,7 +294,12 @@ class Table:
+             # Update the query cache
+             self._query_cache[cond] = docs[:]
  
-+        # If a limit is provided, validate it and return limited results without caching.
+-        return docs
++        # Apply limit if provided
 +        if limit is not None:
-+            if not isinstance(limit, int) or limit < 1:
-+                raise TypeError('limit must be an integer >= 1')
++            if not isinstance(limit, int) or limit < 0:
++                raise ValueError('limit must be a non‑negative integer')
 +            return docs[:limit]
-+
-         # Only cache cacheable queries.
-         #
-         # This weird `getattr` dance is needed to make MyPy happy as
++        return docs[:]
+ 
+     @overload
+     def get(self) -> NoReturn: ...
