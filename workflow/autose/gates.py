@@ -96,8 +96,8 @@ def gate_design(design, spec, workdir):
             if not is_new:
                 r.append("file does not exist: %s (mark it NEW if you will create it)" % f)
             continue
-        name = re.split(r"[.\s(,]", fn.strip())[-1] if fn.strip() else ""
-        name = re.sub(r"\W", "", name)
+        m = re.match(r"\s*([A-Za-z_][\w.]*)", fn)          # first dotted name, e.g. "Table.search (signature)" -> search
+        name = m.group(1).split(".")[-1] if m else ""
         if name and not is_new and name.lower() not in ("none", "module", "n/a"):
             if not re.search(r"\b%s\b" % re.escape(name), p.read_text(errors="replace")):
                 r.append("`%s` not found in %s (mark it NEW if it is new)" % (name, f))
