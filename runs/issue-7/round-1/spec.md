@@ -6,22 +6,23 @@ S3: "Without `limit` nothing should change."
 S4: "It should work on named tables too."
 
 ## Requirements
-- FR-1 [STATED] The `search()` function shall accept an optional keyword argument `limit` of type integer (≥ 1). (S2)  
-- FR-2 [STATED] When `limit` is supplied, `search()` shall return a sequence containing **at most** `limit` documents that satisfy the query, ordered by the internal storage order of the table. (S2)  
-- FR-3 [STATED] When `limit` is omitted, `search()` shall exhibit the same behavior as the current implementation (i.e., return all matching documents). (S3)  
-- FR-4 [STATED] The `limit` argument shall be supported for searches on the default table and on any named table passed to `search()`. (S4)  
+- FR-1 [STATED] The `search()` function shall accept an optional keyword argument `limit`. (S2)  
+- FR-2 [STATED] When a positive integer `limit` is supplied, `search()` shall return **at most** that many documents, preserving the order in which the documents are stored. (S2)  
+- FR-3 [STATED] When `limit` is omitted, `search()` shall behave exactly as it does today, returning all matching documents. (S3)  
+- FR-4 [STATED] The `limit` argument shall be supported for searches on both the default table and any named table. (S4)  
 
 ## Acceptance criteria
-- AC-1 (FR-1): Given a call `db.search(where('type') == 'log', limit=5)`, when the function is invoked, then the call completes without raising a TypeError and the returned object is iterable.  
-- AC-2 (FR-2): Given a table containing 20 documents matching `where('type') == 'log'`, when `db.search(where('type') == 'log', limit=7)` is executed, then the returned sequence length is 7 and the documents appear in the same order as they are stored in the table.  
-- AC-3 (FR-2): Given a table containing 3 documents matching the query, when `db.search(where('type') == 'log', limit=10)` is executed, then the returned sequence length is 3 (i.e., not more than the limit).  
-- AC-4 (FR-3): Given a table with 15 matching documents, when `db.search(where('type') == 'log')` is executed (no limit argument), then the returned sequence length is 15, identical to the current behavior without the new feature.  
-- AC-5 (FR-4): Given a named table `db.table('archive')` containing 12 matching documents, when `db.table('archive').search(where('type') == 'log', limit=4)` is executed, then the returned sequence length is 4 and the order matches the storage order of the `archive` table.  
+- AC-1 (FR-1): Given a call `db.search(where('type') == 'log')`, when the call includes `limit=5`, then the returned collection length shall be ≤ 5.  
+- AC-2 (FR-2): Given a dataset where documents are stored in order D1, D2, D3, D4, D5, D6, when `db.search(where('type') == 'log', limit=3)` is executed, then the returned list shall be `[D1, D2, D3]`.  
+- AC-3 (FR-3): Given a call `db.search(where('type') == 'log')` without a `limit` argument, when the call is executed on a database containing 12 matching documents, then the returned collection shall contain exactly 12 documents.  
+- AC-4 (FR-4): Given a named table `logs` containing 8 matching documents, when `db.search(where('type') == 'log', limit=4, table='logs')` is executed, then the returned collection shall contain exactly 4 documents in storage order.  
 
 ## Assumptions and open questions
-- A-1 [ASSUMED] The internal storage order is deterministic and observable via the existing `search()` results; otherwise “order they are stored” cannot be verified. Impact if wrong: the AC‑2 and AC‑5 checks may be flaky if storage order changes between calls. Question: Does the current implementation guarantee a stable order for identical queries?  
+- A-1 [ASSUMED] `limit` must be a non‑negative integer. Impact if wrong: If callers pass non‑integer or negative values, the function may raise a TypeError or behave unpredictably. Question: Should the API raise a specific exception (e.g., `ValueError`) for invalid limits?  
+- A-2 [ASSUMED] The storage order is the order defined by the underlying database iterator (e.g., insertion order). Impact if wrong: If the database does not guarantee a deterministic order, the “order they are stored” requirement may be ambiguous. Question: Is a stable ordering guaranteed for all back‑ends?  
+- A-3 [ASSUMED] The `limit` argument does not affect other side effects of `search()` (e.g., cursor opening, logging). Impact if wrong: Additional side effects could change performance characteristics. Question: Should any performance metrics be part of the specification?  
 
 ## Non-goals
-- Pagination or offset handling beyond the simple `limit` parameter.  
-- Changing the default ordering of results; the feature only preserves existing order.  
-- Performance optimizations for limiting results; the implementation may still scan the full table internally.
+- Implementing pagination or offset handling beyond the simple `limit` parameter.  
+- Changing the default ordering of results; the specification only preserves existing storage order.  
+- Providing a `limit` argument for non‑search related APIs.
