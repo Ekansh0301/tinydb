@@ -83,10 +83,10 @@ def test_stage1_gets_two_retries_then_stops_and_explains_in_artifact(script):
 
 def test_failing_tests_go_back_to_implementation_at_most_twice(script):
     fail = stages.Outcome(False, ["suite"], route="impl", data={"failed": ["tests/test_autose_x.py::test_ac1_a"]})
-    calls = script(s1=[OK], s2=[OK, OK], s3=[OK, OK, OK], s4=[fail, fail, OK])
-    # the same criterion failing twice sends the run back to design once
+    calls = script(s1=[OK, OK], s2=[OK, OK], s3=[OK, OK, OK], s4=[fail, fail, OK])
+    # the same criterion failing twice sends the run back to the requirements once
     res = orchestrator.build(make_ctx(), 1)
-    assert calls == ["s1", "s2", "s3", "s4", "s3", "s4", "s2", "s3", "s4"]
+    assert calls == ["s1", "s2", "s3", "s4", "s3", "s4", "s1", "s2", "s3", "s4"]
     assert res["status"] == "RELEASED"
 
 
