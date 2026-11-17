@@ -38,6 +38,13 @@ def sanitize(ctx):
         gitops.run(["rm", "-rf", f], ctx.workdir, check=False)
 
 
+def discard_changes(ctx):
+    """Back to the last commit (the base, or the head of the pull request in a later round)."""
+    gitops.run(["git", "reset", "-q", "--hard", "HEAD"], ctx.workdir, check=False)
+    gitops.run(["git", "clean", "-fdq"], ctx.workdir, check=False)
+    ctx.log("discarded partial edits")
+
+
 def commit_code(ctx, message):
     sanitize(ctx)
     gitops.run(["git", "add", "-u"], ctx.workdir)        # tracked files that changed
@@ -80,6 +87,8 @@ def build(ctx, from_stage):
                 commit_code(ctx, "autose: implement #%d" % ctx.issue_no)
                 stage, notes = 4, []
                 continue
+            if any("model unavailable" in r for r in o.reasons):
+                discard_changes(ctx)       # a model that vanished mid-edit leaves a half-written file
             if ctx.bump("impl") >= LIMITS["impl"]:
                 return stop(ctx, 3, o.reasons)
             notes = o.reasons
