@@ -47,6 +47,12 @@ def issue_state(issue):
         return {}
 
 
+def trusted_dispatch(event_name, sender):
+    """The next round is started by this workflow's own token (the `next` job). GitHub only lets a user with
+    write access, or a workflow of this repository, create a workflow_dispatch event, so the bot sender is trusted."""
+    return event_name == "workflow_dispatch" and sender == "github-actions[bot]"
+
+
 def cmd_gate(_):
     gitops.assert_our_repo()
     ev = json.load(open(os.environ["GITHUB_EVENT_PATH"]))
@@ -82,8 +88,9 @@ def cmd_gate(_):
         extra["variant"] = i.get("variant") or "pipeline"
     else:
         return out(**{**base, "reason": "unsupported event"})
-    perm = gitops.gh(["api", "repos/%s/collaborators/%s/permission" % (config.REPO, sender), "--jq", ".permission"], check=False)
-    if perm not in ("admin", "write", "maintain"):
+    perm = "" if trusted_dispatch(name, sender) else gitops.gh(
+        ["api", "repos/%s/collaborators/%s/permission" % (config.REPO, sender), "--jq", ".permission"], check=False)
+    if not trusted_dispatch(name, sender) and perm not in ("admin", "write", "maintain"):
         return out(**{**base, "reason": "sender %s has permission '%s'" % (sender, perm)})
     st = issue_state(issue)
     if name != "workflow_dispatch" and st.get("status") == "running" and \
