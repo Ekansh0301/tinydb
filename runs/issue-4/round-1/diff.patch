@@ -1,0 +1,58 @@
+diff --git a/tinydb/queries.py b/tinydb/queries.py
+index e106c5d..61e40df 100644
+--- a/tinydb/queries.py
++++ b/tinydb/queries.py
+@@ -17,6 +17,18 @@ False
+ """
+ 
+ import re
++
++def _safe_compare(value, rhs, op):
++    """Return op(value, rhs) but treat TypeError as non‑match.
++
++    If the comparison raises TypeError (e.g., value is None or incomparable),
++    return False so the document is skipped.
++    """
++    try:
++        return op(value, rhs)
++    except TypeError:
++        return False
++
+ from collections.abc import Mapping, Callable, Sequence
+ from typing import Any, Union, Optional, Protocol
+ 
+@@ -286,7 +298,7 @@ class Query(QueryInstance):
+         :param rhs: The value to compare against
+         """
+         return self._generate_test(
+-            lambda value: value < rhs,
++            lambda value: _safe_compare(value, rhs, lambda a, b: a < b),
+             ('<', self._path, rhs)
+         )
+ 
+@@ -299,7 +311,7 @@ class Query(QueryInstance):
+         :param rhs: The value to compare against
+         """
+         return self._generate_test(
+-            lambda value: value <= rhs,
++            lambda value: _safe_compare(value, rhs, lambda a, b: a <= b),
+             ('<=', self._path, rhs)
+         )
+ 
+@@ -312,7 +324,7 @@ class Query(QueryInstance):
+         :param rhs: The value to compare against
+         """
+         return self._generate_test(
+-            lambda value: value > rhs,
++            lambda value: _safe_compare(value, rhs, lambda a, b: a > b),
+             ('>', self._path, rhs)
+         )
+ 
+@@ -325,7 +337,7 @@ class Query(QueryInstance):
+         :param rhs: The value to compare against
+         """
+         return self._generate_test(
+-            lambda value: value >= rhs,
++            lambda value: _safe_compare(value, rhs, lambda a, b: a >= b),
+             ('>=', self._path, rhs)
+         )
