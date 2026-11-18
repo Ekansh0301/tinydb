@@ -93,6 +93,9 @@ def gate_design(design, spec, workdir):
             r.append("`%s` is not a file you may change" % f)
             continue
         is_new = "new" in (fn + " " + change).lower()
+        if p.is_dir():
+            r.append("`%s` is a directory; name the file you will change" % f)
+            continue
         if not p.exists():
             if not is_new:
                 r.append("file does not exist: %s (mark it NEW if you will create it)" % f)
