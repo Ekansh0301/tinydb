@@ -1,0 +1,12 @@
+{
+ "run_id": "44401140674",
+ "attempt": "1",
+ "event": "workflow_dispatch",
+ "issue": 4,
+ "variant": "single",
+ "round": 1,
+ "from_stage": 1,
+ "base_sha": "286f876b5a1b4e148e9e867b74b0072e07673ff4",
+ "branch": "autose-single/issue-4",
+ "started": "2026-11-18T21:24:53Z"
+}
