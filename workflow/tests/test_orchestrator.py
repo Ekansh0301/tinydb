@@ -29,7 +29,8 @@ class FakeRuns:
 
 
 def make_ctx():
-    c = Ctx(issue_no=1, issue_title="t", issue_text="b", round_no=1, workdir=".", base_sha="abc",
+    # a path that does not exist: a test must never run git commands in a real repository
+    c = Ctx(issue_no=1, issue_title="t", issue_text="b", round_no=1, workdir="/nonexistent-autose-workdir", base_sha="abc",
             branch="autose/issue-1", runs=FakeRuns(), local=True)
     return c
 
@@ -119,6 +120,7 @@ def test_single_agent_output_is_split_into_spec_and_design():
 
 def test_single_variant_stops_after_three_attempts(monkeypatch):
     calls = []
+    monkeypatch.setattr(orchestrator.gitops, "run", lambda *a, **k: "")
     monkeypatch.setattr(stages, "stage_single", lambda ctx, notes: (calls.append(1), stages.Outcome(False, ["[stage 1] x"], data={"gates": [False] * 4}))[1])
     ctx = make_ctx()
     res = orchestrator.build_single(ctx)

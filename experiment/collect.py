@@ -229,7 +229,7 @@ def write_seeded(rb):
             outcome = "caught" if verdict == "REQUEST_CHANGES" else "missed"
         else:
             outcome = "approved" if verdict == "APPROVE" else "false rejection"
-        version = "v2" if int(run_id) >= 44162000000 else "v1"       # v2: reviewer with the JSON formatting step and wrap-up
+        version = "v3" if int(run_id) >= 44366000000 else ("v2" if int(run_id) >= 44162000000 else "v1")   # v2: JSON formatting step and wrap-up; v3: retry on the next tier (final)
         rows.append({"pr": pr, "label": label, "variant": variant, "reviewer_version": version, "trial": trial, "run_id": run_id, "verdict": verdict,
                      "outcome": outcome, "tier": sorted(set(meta.get("tiers", [])))[0] if meta.get("tiers") else "",
                      "tokens": meta.get("tokens", ""), "problems": "; ".join(meta.get("problems") or [])[:120]})

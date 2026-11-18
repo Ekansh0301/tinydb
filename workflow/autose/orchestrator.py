@@ -45,8 +45,11 @@ def sanitize(ctx):
 
 def discard_changes(ctx):
     """Back to the last commit (the base, or the head of the pull request in a later round)."""
-    gitops.run(["git", "reset", "-q", "--hard", "HEAD"], ctx.workdir, check=False)
-    gitops.run(["git", "clean", "-fdq"], ctx.workdir, check=False)
+    try:
+        gitops.run(["git", "reset", "-q", "--hard", "HEAD"], ctx.workdir, check=False)
+        gitops.run(["git", "clean", "-fdq"], ctx.workdir, check=False)
+    except OSError:
+        return
     ctx.log("discarded partial edits")
 
 
@@ -175,4 +178,6 @@ def build_single(ctx):
             ctx.persist()
             return {"status": "RELEASED", "pr": r.data.get("pr"), "sha": r.data.get("sha")}
         notes = o.reasons[:8]
+        if o.data.get("gates", [True] * 4)[2] is False:
+            discard_changes(ctx)        # the code does not even compile or import: start the next attempt from a clean tree
     return stop(ctx, "single", notes)
