@@ -18,17 +18,20 @@
       "tokens": 215385
     },
     "2": {
-      "calls": 0,
-      "models": [],
+      "calls": 15,
+      "models": [
+        "groq:openai/gpt-oss-120b",
+        "groq:openai/gpt-oss-20b"
+      ],
       "reason": "",
-      "stage": "3",
-      "status": "running",
-      "tokens": 0
+      "stage": "5",
+      "status": "released",
+      "tokens": 23821
     }
   },
-  "stage": "3",
-  "status": "running",
-  "tokens": 238950,
-  "tokens_total": 215385,
-  "updated": "2026-11-18T19:57:09Z"
+  "stage": "5",
+  "status": "released",
+  "tokens": 215385,
+  "tokens_total": 239206,
+  "updated": "2026-11-18T19:58:25Z"
 }
