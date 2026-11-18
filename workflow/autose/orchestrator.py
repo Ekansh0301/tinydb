@@ -62,6 +62,14 @@ def commit_code(ctx, message):
         gitops.run(["git", "commit", "-q", "-m", message], ctx.workdir)
 
 
+def guarded(fn, *args):
+    """A bug in a stage or a gate must end as a recorded stop with its reason, never as a dead job."""
+    try:
+        return fn(*args)
+    except Exception as e:                                   # noqa: BLE001
+        return stages.Outcome(False, ["internal error in %s: %s: %s" % (fn.__name__, type(e).__name__, str(e)[:160])])
+
+
 def build(ctx, from_stage):
     ctx.snapshot(str(from_stage), "running")
     stage, notes = from_stage, []
@@ -69,9 +77,9 @@ def build(ctx, from_stage):
         ctx.persist()
         if stage == 1:
             ctx.log("stage 1 requirements")
-            o = stages.stage1(ctx, notes)
+            o = guarded(stages.stage1, ctx, notes)
             record(ctx, 1, o)
-            if budget_spent(o):
+            if budget_spent(o) or any(r.startswith("internal error") for r in o.reasons):
                 return stop(ctx, 1, o.reasons)
             if o.ok:
                 stage, notes = 2, []
@@ -81,9 +89,9 @@ def build(ctx, from_stage):
             notes = o.reasons
         elif stage == 2:
             ctx.log("stage 2 design")
-            o = stages.stage2(ctx, notes)
+            o = guarded(stages.stage2, ctx, notes)
             record(ctx, 2, o)
-            if budget_spent(o):
+            if budget_spent(o) or any(r.startswith("internal error") for r in o.reasons):
                 return stop(ctx, 2, o.reasons)
             if o.ok:
                 stage, notes = 3, []
@@ -93,9 +101,9 @@ def build(ctx, from_stage):
             notes = o.reasons
         elif stage == 3:
             ctx.log("stage 3 implementation (attempt %d)" % (ctx.counters.get("impl", 0) + 1))
-            o = stages.stage3(ctx, notes)
+            o = guarded(stages.stage3, ctx, notes)
             record(ctx, 3, o)
-            if budget_spent(o):
+            if budget_spent(o) or any(r.startswith("internal error") for r in o.reasons):
                 return stop(ctx, 3, o.reasons)
             if o.ok:
                 commit_code(ctx, "autose: implement #%d" % ctx.issue_no)
@@ -108,9 +116,9 @@ def build(ctx, from_stage):
             notes = o.reasons
         elif stage == 4:
             ctx.log("stage 4 testing (attempt %d)" % (ctx.counters.get("tests", 0) + 1))
-            o = stages.stage4(ctx, notes)
+            o = guarded(stages.stage4, ctx, notes)
             record(ctx, 4, o)
-            if budget_spent(o):
+            if budget_spent(o) or any(r.startswith("internal error") for r in o.reasons):
                 return stop(ctx, 4, o.reasons)
             if o.ok:
                 commit_code(ctx, "autose: tests for #%d" % ctx.issue_no)

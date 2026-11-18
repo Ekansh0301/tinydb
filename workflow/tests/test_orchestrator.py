@@ -131,3 +131,13 @@ def test_an_exhausted_run_budget_stops_the_run_at_once(script):
     calls = script(s1=[OK], s2=[OK], s3=[OK], s4=[stages.Outcome(False, ["run token budget (400000) exhausted"], route="tests")])
     res = orchestrator.build(make_ctx(), 1)
     assert res["status"] == "STOPPED" and res["stage"] == "4" and calls.count("s4") == 1
+
+
+def test_a_crashing_stage_ends_the_run_with_a_recorded_reason(script, monkeypatch):
+    script(s1=[OK])
+    def boom(ctx, notes):
+        raise IsADirectoryError("tests")
+    monkeypatch.setattr(stages, "stage2", boom)
+    ctx = make_ctx()
+    res = orchestrator.build(ctx, 1)
+    assert res["status"] == "STOPPED" and "internal error" in res["reason"] and "IsADirectoryError" in res["reason"]

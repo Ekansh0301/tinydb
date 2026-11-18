@@ -43,7 +43,7 @@ A comment `/autose` on an open autose pull request asks for a fresh review of th
 
 ## Frozen version and run protocol
 
-The workflow code, prompts, gates and model assignment used for the recorded runs are tagged **`autose-v1`** (commit `de625a2`).
+The workflow code, prompts, gates and model assignment used for the recorded runs are tagged **`autose-v1`** (commit `de625a2`); one crash fix after the first runs is tagged `autose-v1.1` (ADR-007 amendment).
 `experiment/protocol.md` says what was fixed before the remaining runs, what counts as a rerun, and the token budget;
 `experiment/rehearsal.md` records the development runs that preceded the freeze; every attempt, including stopped and cancelled
 ones, is listed with a note in `results/runs.md`.
