@@ -1,5 +1,5 @@
 diff --git a/tinydb/table.py b/tinydb/table.py
-index 76470aa..4e7ce1d 100644
+index 76470aa..643b6c4 100644
 --- a/tinydb/table.py
 +++ b/tinydb/table.py
 @@ -9,8 +9,9 @@ from typing import (
@@ -13,16 +13,18 @@ index 76470aa..4e7ce1d 100644
  
  from .queries import QueryLike
  from .storages import Storage
-@@ -33,6 +34,8 @@ class Document(dict):
+@@ -33,6 +34,10 @@ class Document(dict):
  
  
  class Table:
++    #: Whether search should return deep copies (default True)
++    return_copies: bool = True
 +    #: Return deep copies of documents on search by default
 +    return_copies: bool = True
      """
      Represents a single TinyDB table.
  
-@@ -108,6 +111,8 @@ class Table:
+@@ -108,6 +113,8 @@ class Table:
              = self.query_cache_class(capacity=cache_size)
  
          self._next_id: Optional[int] = None
@@ -31,7 +33,7 @@ index 76470aa..4e7ce1d 100644
          # Only persist a brand-new empty table. Never clear existing documents
          # when reopen/construct with persist_empty=True (see issue #636).
          if persist_empty and not self._read_table():
-@@ -256,6 +261,20 @@ class Table:
+@@ -256,6 +263,20 @@ class Table:
          read-only, since mutating one (a key or a nested value) corrupts
          what a later identical search returns.
  
@@ -52,7 +54,7 @@ index 76470aa..4e7ce1d 100644
          :param cond: the condition to check against
          :returns: list of matching documents
          """
-@@ -264,7 +283,10 @@ class Table:
+@@ -264,7 +285,10 @@ class Table:
          # query
          cached_results = self._query_cache.get(cond)
          if cached_results is not None:
@@ -64,12 +66,14 @@ index 76470aa..4e7ce1d 100644
  
          # Perform the search by applying the query to all documents.
          # Then, only if the document matches the query, convert it
-@@ -292,8 +314,12 @@ class Table:
+@@ -292,8 +316,14 @@ class Table:
                                                     lambda: True)
          if is_cacheable():
              # Update the query cache
 +            if self._return_copies:
-+            self._query_cache[cond] = [copy.deepcopy(doc) for doc in docs]
++                self._query_cache[cond] = [copy.deepcopy(doc) for doc in docs]
++            else:
++                self._query_cache[cond] = docs[:]
 +        else:
              self._query_cache[cond] = docs[:]
  
