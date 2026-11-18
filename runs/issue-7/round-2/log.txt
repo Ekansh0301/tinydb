@@ -1,30 +1,22 @@
-[19:54:41] stage 3 implementation (attempt 1)
-[19:54:41] groq: 6 API key(s) available
-[19:54:41] call groq:openai/gpt-oss-120b key#0 prompt~2441 used 1985 in 0.6s
-[19:54:42] call groq:openai/gpt-oss-120b key#1 prompt~3280 used 2596 in 0.8s
-[19:54:42] key#2 of groq rate limited, set aside 900s: t-oss-120b` in organization `org_01m48r6venes7bvn0c3v1w4m06` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 196757, Re
-[19:54:43] call groq:openai/gpt-oss-120b key#3 prompt~4118 used 3447 in 0.9s
-[19:54:44] malformed tool call: {"error":{"message":"Failed to parse tool call arguments as JSON","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"run\", \"arguments\": {\"command\":\"python -m pytest -q\"], \"timeout\": 100000}\"}"}} 
-[19:54:44] malformed tool call: {"error":{"message":"Failed to parse tool call arguments as JSON","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"run\", \"arguments\": {\"command\":\"python -m pytest -q\"], \"timeout\": 100000}\"}"}} 
-[19:54:44] key#4 of groq rate limited, set aside 900s: t-oss-120b` in organization `org_01knz0bvj3f2wbzwfq04phs5md` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 196974, Re
-[19:54:44] key#5 of groq rate limited, set aside 900s: t-oss-120b` in organization `org_01m5tfj3seex9b48asjn43eddz` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 196462, Re
-[19:55:42] key#0 of groq rate limited, set aside 900s: t-oss-120b` in organization `org_01kpk2g4maef5s8cpscrj2v0t6` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 197132, Re
-[19:55:45] call groq:openai/gpt-oss-120b key#1 prompt~4420 used 3439 in 0.6s
-[19:55:45] key#3 of groq rate limited, set aside 1141s: t-oss-120b` in organization `org_01kqqea6yje2krg41j2m5b0zf3` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198823, Re
-[19:56:46] call groq:openai/gpt-oss-120b key#1 prompt~4652 used 3629 in 0.6s
-[19:57:47] call groq:openai/gpt-oss-120b key#1 prompt~5097 used 4113 in 0.9s
-[19:58:48] call groq:openai/gpt-oss-120b key#1 prompt~5401 used 4356 in 0.9s
-[19:59:48] key#1 of groq rate limited, set aside 1213s: t-oss-120b` in organization `org_01m48qqh3ve6qs4vw185yg0c35` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198092, Re
-[19:59:48] tier failed, trying next: every groq key is rate limited for another 594 s
-[19:59:50] stage 3 implementation (attempt 2)
-[19:59:50] tier failed, trying next: every groq key is rate limited for another 593 s
-[19:59:51] stage 3 implementation (attempt 3)
-[19:59:51] tier failed, trying next: every groq key is rate limited for another 591 s
-[19:59:51] STOPPED at stage 3: agent stopped: model unavailable: all tiers failed: every groq key is rate limited for another 591 s; compileall failed: *** Error compiling 'tinydb/table.py'...
-Sorry: IndentationError: expected an indented block after 'if' statement on line 266 (table.py, line 268)
-; import tinydb failed: le "/home/runner/work/tinydb/tinydb/tinydb/database.py", line 9, in <module>
-    from .table import Table, Document
-  File "/home/runner/work/tinydb/tinydb/tinydb/table.py", line 268
-    +            if limit is not None:
-IndentationError: expected an indented block after 'if' statement on line 266
-
+[19:57:10] stage 3 implementation (attempt 1)
+[19:57:10] groq: 6 API key(s) available
+[19:57:11] call groq:openai/gpt-oss-120b key#0 prompt~2441 used 1980 in 0.5s
+[19:57:11] call groq:openai/gpt-oss-120b key#1 prompt~3280 used 2596 in 0.6s
+[19:57:12] call groq:openai/gpt-oss-120b key#2 prompt~4118 used 3484 in 1.0s
+[19:57:13] malformed tool call: {"error":{"message":"Failed to parse tool call arguments as JSON","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"run\", \"arguments\": {\"command\":\"python -m pytest -q\"],\"timeout\": 100000}\"}"}} 
+[19:57:13] malformed tool call: {"error":{"message":"Failed to parse tool call arguments as JSON","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"run\", \"arguments\": {\"command\":\"python -m pytest -q\"], \"timeout\": 100000}\"}"}} 
+[19:57:14] malformed tool call: {"error":{"message":"Failed to parse tool call arguments as JSON","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"run\", \"arguments\": {\"command\":\"python -m pytest -q\"], \"timeout\": 100000}\"}"}} 
+[19:57:14] malformed tool call: {"error":{"message":"Failed to parse tool call arguments as JSON","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"run\", \"arguments\": {\"command\":\"python -m pytest -q\"],\"timeout\": 100000}\"}"}} 
+[19:57:15] malformed tool call: {"error":{"message":"Failed to parse tool call arguments as JSON","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"run\", \"arguments\": {\"command\":\"python -m pytest -q\"], \"timeout\": 100000}\"}"}} 
+[19:57:15] malformed tool call: {"error":{"message":"Failed to parse tool call arguments as JSON","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"run\", \"arguments\": {\"command\":\"python -m pytest -q\"], \"timeout\": 100000}\"}"}} 
+[19:57:15] key#3 of groq rate limited, set aside 20s: t-oss-120b` in organization `org_01kqqea6yje2krg41j2m5b0zf3` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6910, Req
+[19:57:15] key#4 of groq rate limited, set aside 20s: t-oss-120b` in organization `org_01knz0bvj3f2wbzwfq04phs5md` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6975, Req
+[19:57:15] key#5 of groq rate limited, set aside 21s: t-oss-120b` in organization `org_01m5tfj3seex9b48asjn43eddz` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7059, Req
+[19:58:13] call groq:openai/gpt-oss-120b key#0 prompt~4553 used 3537 in 0.5s
+[19:58:15] call groq:openai/gpt-oss-120b key#1 prompt~4730 used 3624 in 0.6s
+[19:58:16] stage 4 testing (attempt 1)
+[19:58:17] call groq:openai/gpt-oss-20b key#2 prompt~1830 used 1508 in 0.8s
+[19:58:18] call groq:openai/gpt-oss-20b key#3 prompt~2142 used 2285 in 0.9s
+[19:58:18] call groq:openai/gpt-oss-20b key#4 prompt~2736 used 2365 in 0.4s
+[19:58:19] call groq:openai/gpt-oss-20b key#5 prompt~2853 used 2442 in 0.5s
+[19:58:21] stage 5 release
