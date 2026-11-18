@@ -1,5 +1,5 @@
 diff --git a/tinydb/queries.py b/tinydb/queries.py
-index e106c5d..dc5e68b 100644
+index e106c5d..0154a77 100644
 --- a/tinydb/queries.py
 +++ b/tinydb/queries.py
 @@ -17,6 +17,16 @@ False
@@ -35,4 +35,22 @@ index e106c5d..dc5e68b 100644
 -            lambda value: value <= rhs,
 +            lambda value: _safe_compare(value, rhs, lambda a,b: a <= b),
              ('<=', self._path, rhs)
+         )
+ 
+@@ -312,7 +322,7 @@ class Query(QueryInstance):
+         :param rhs: The value to compare against
+         """
+         return self._generate_test(
+-            lambda value: value > rhs,
++            lambda value: _safe_compare(value, rhs, lambda a,b: a > b),
+             ('>', self._path, rhs)
+         )
+ 
+@@ -325,7 +335,7 @@ class Query(QueryInstance):
+         :param rhs: The value to compare against
+         """
+         return self._generate_test(
+-            lambda value: value >= rhs,
++            lambda value: _safe_compare(value, rhs, lambda a,b: a >= b),
+             ('>=', self._path, rhs)
          )
