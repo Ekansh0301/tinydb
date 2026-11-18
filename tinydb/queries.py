@@ -384,23 +384,6 @@ class Query(QueryInstance):
             return value.endswith(suffix)
 
         return self._generate_test(test, ('endswith', self._path, suffix))
-        """
-        Run a regex test against a dict value (whole string has to match).
-
-        >>> Query().f1.matches(r'^\\w+$')
-
-        :param regex: The regular expression to use for matching
-        :param flags: regex flags to pass to ``re.match``
-        """
-        def test(value):
-            if not isinstance(value, str):
-                return False
-
-            return re.match(regex, value, flags) is not None
-
-        # Include flags in the hash so queries that differ only by flags do not
-        # share a Table query-cache entry (see issue #637).
-        return self._generate_test(test, ('matches', self._path, regex, flags))
 
     def search(self, regex: str, flags: int = 0) -> QueryInstance:
         """
