@@ -1,0 +1,36 @@
+name: probe-models
+
+# Measures how the model endpoints answer from a GitHub runner (decision ADR-006).
+# Manual only; prints latency and status per call and uses no repository data.
+
+on:
+  workflow_dispatch:
+    inputs:
+      models:
+        description: comma separated NVIDIA model ids
+        default: "poolside/laguna-xs-2.1,nvidia/nemotron-3-ultra-550b-a55b"
+      calls:
+        description: calls per model
+        default: "6"
+
+permissions: {}
+
+jobs:
+  probe:
+    if: github.repository == 'Ekansh0301/tinydb'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python experiment/probe_models.py
+        env:
+          MODELS: ${{ inputs.models }}
+          CALLS: ${{ inputs.calls }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}

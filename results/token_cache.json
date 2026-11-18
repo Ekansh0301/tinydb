@@ -1,0 +1,397 @@
+{
+ "43920591950": {
+  "tokens": {},
+  "workflow": "autose"
+ },
+ "43923180454": {
+  "tokens": {},
+  "workflow": "autose"
+ },
+ "43923968438": {
+  "tokens": {},
+  "workflow": "autose"
+ },
+ "43930795598": {
+  "tokens": {},
+  "workflow": "autose"
+ },
+ "43938183218": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 59918,
+   "nvidia:poolside/laguna-xs-2.1": 216845
+  },
+  "workflow": "autose"
+ },
+ "43938734137": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 65072
+  },
+  "workflow": "review-seeded"
+ },
+ "43938800731": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 39481
+  },
+  "workflow": "review-seeded"
+ },
+ "43938865666": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 31739
+  },
+  "workflow": "review-seeded"
+ },
+ "43938928895": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 45786
+  },
+  "workflow": "review-seeded"
+ },
+ "43938994841": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 24390
+  },
+  "workflow": "review-seeded"
+ },
+ "43939329566": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 80107
+  },
+  "workflow": "review-seeded"
+ },
+ "43939390061": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 65675
+  },
+  "workflow": "review-seeded"
+ },
+ "43939450019": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 48074
+  },
+  "workflow": "review-seeded"
+ },
+ "43939505787": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 72323
+  },
+  "workflow": "review-seeded"
+ },
+ "43939564463": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 36809
+  },
+  "workflow": "review-seeded"
+ },
+ "43939623536": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 66886
+  },
+  "workflow": "review-seeded"
+ },
+ "43939682492": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 33005
+  },
+  "workflow": "review-seeded"
+ },
+ "43939740474": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 24920
+  },
+  "workflow": "review-seeded"
+ },
+ "43939799354": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 83508
+  },
+  "workflow": "review-seeded"
+ },
+ "43939856408": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 88716
+  },
+  "workflow": "review-seeded"
+ },
+ "43943135327": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 50226,
+   "nvidia:poolside/laguna-xs-2.1": 81612
+  },
+  "workflow": "autose"
+ },
+ "43953452086": {
+  "tokens": {
+   "nvidia:poolside/laguna-xs-2.1": 184378
+  },
+  "workflow": "autose"
+ },
+ "43954623138": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 12976
+  },
+  "workflow": "autose"
+ },
+ "44138342662": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 47290,
+   "nvidia:poolside/laguna-xs-2.1": 18938
+  },
+  "workflow": "autose"
+ },
+ "44144840492": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 71224,
+   "nvidia:poolside/laguna-xs-2.1": 176490
+  },
+  "workflow": "autose"
+ },
+ "44148348750": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 152080,
+   "groq:qwen/qwen3.8-27b": 56701
+  },
+  "workflow": "autose"
+ },
+ "44150591768": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 3371
+  },
+  "workflow": "autose"
+ },
+ "44150971867": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 132558,
+   "groq:qwen/qwen3.8-27b": 48295
+  },
+  "workflow": "autose"
+ },
+ "44152805967": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 89461,
+   "groq:qwen/qwen3.8-27b": 148990
+  },
+  "workflow": "autose"
+ },
+ "44155499158": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 86502,
+   "groq:qwen/qwen3.8-27b": 148090
+  },
+  "workflow": "autose"
+ },
+ "44158195212": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 187263,
+   "groq:openai/gpt-oss-20b": 28122,
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 85409
+  },
+  "workflow": "autose"
+ },
+ "44161590347": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 120212
+  },
+  "workflow": "autose"
+ },
+ "44162266775": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 73043
+  },
+  "workflow": "autose"
+ },
+ "44162669429": {
+  "tokens": {},
+  "workflow": "autose"
+ },
+ "44163107176": {
+  "tokens": {},
+  "workflow": "autose"
+ },
+ "44163578253": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 23565
+  },
+  "workflow": "autose"
+ },
+ "44196827359": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 31689
+  },
+  "workflow": "review-seeded"
+ },
+ "44196899726": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 72655
+  },
+  "workflow": "review-seeded"
+ },
+ "44196972064": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 17785
+  },
+  "workflow": "review-seeded"
+ },
+ "44197046732": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 20630
+  },
+  "workflow": "review-seeded"
+ },
+ "44197118725": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 33136
+  },
+  "workflow": "review-seeded"
+ },
+ "44197193231": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 52874
+  },
+  "workflow": "review-seeded"
+ },
+ "44197263870": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 51274
+  },
+  "workflow": "review-seeded"
+ },
+ "44197334300": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 35516
+  },
+  "workflow": "review-seeded"
+ },
+ "44197408722": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 61767
+  },
+  "workflow": "review-seeded"
+ },
+ "44197480098": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 50611
+  },
+  "workflow": "review-seeded"
+ },
+ "44197547482": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 50926
+  },
+  "workflow": "review-seeded"
+ },
+ "44197613994": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 27526
+  },
+  "workflow": "review-seeded"
+ },
+ "44197680333": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 20331
+  },
+  "workflow": "review-seeded"
+ },
+ "44197751822": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 77294
+  },
+  "workflow": "review-seeded"
+ },
+ "44197821544": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 26128
+  },
+  "workflow": "review-seeded"
+ },
+ "44366382275": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 58177
+  },
+  "workflow": "review-seeded"
+ },
+ "44366468077": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 118743,
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 80747
+  },
+  "workflow": "review-seeded"
+ },
+ "44366554702": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 25013
+  },
+  "workflow": "review-seeded"
+ },
+ "44366639371": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 36423
+  },
+  "workflow": "review-seeded"
+ },
+ "44366728100": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 33103
+  },
+  "workflow": "review-seeded"
+ },
+ "44366817676": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 36068
+  },
+  "workflow": "review-seeded"
+ },
+ "44366904659": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 29166
+  },
+  "workflow": "review-seeded"
+ },
+ "44366987301": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 34034
+  },
+  "workflow": "review-seeded"
+ },
+ "44367072607": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 103913
+  },
+  "workflow": "review-seeded"
+ },
+ "44367159548": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 33672
+  },
+  "workflow": "review-seeded"
+ },
+ "44367245618": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 57106
+  },
+  "workflow": "review-seeded"
+ },
+ "44367330785": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 30226
+  },
+  "workflow": "review-seeded"
+ },
+ "44367415632": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 31877
+  },
+  "workflow": "review-seeded"
+ },
+ "44367504001": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 82164
+  },
+  "workflow": "review-seeded"
+ },
+ "44367591704": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 21429
+  },
+  "workflow": "review-seeded"
+ }
+}

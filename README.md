@@ -41,6 +41,23 @@ and `experiment/model_probe.md`.
 
 A comment `/autose` on an open autose pull request asks for a fresh review of that pull request only.
 
+## Frozen version and run protocol
+
+The workflow code, prompts, gates and model assignment used for the recorded runs are tagged **`autose-v1`** (commit `de625a2`).
+`experiment/protocol.md` says what was fixed before the remaining runs, what counts as a rerun, and the token budget;
+`experiment/rehearsal.md` records the development runs that preceded the freeze; every attempt, including stopped and cancelled
+ones, is listed with a note in `results/runs.md`.
+
+## Scripts
+
+| Script | What it does |
+|---|---|
+| `experiment/drive.py <issue> [--variant single]` | starts one recorded run and waits until it and its review rounds finish |
+| `experiment/score.py --issue <1..5> --branch <b> [--sha <s>]` | hidden acceptance tests and the 228 baseline tests |
+| `experiment/collect.py` | builds `results/runs.md`, `results.csv`, `seeded.csv`, `stage_pass_rates.csv` from GitHub and the `autose-runs` branch |
+| `experiment/tokens.py` | token totals by model from the logs of every run |
+| `report/build.py` | builds `report.pdf` from `results/*.csv` (xelatex) |
+
 ## Layout
 
 ```
