@@ -1,5 +1,6 @@
 variant,stage,attempts,attempts_passed,attempt_pass_rate,rounds_reaching_stage,first_attempt_passed,first_attempt_pass_rate
-pipeline,1,8,6,0.75,6,5,0.83
-pipeline,2,8,6,0.75,5,3,0.6
-pipeline,3,12,9,0.75,6,5,0.83
-pipeline,4,14,1,0.07,5,0,0.0
+pipeline,1,14,11,0.79,11,9,0.82
+pipeline,2,17,9,0.53,10,5,0.5
+pipeline,3,19,15,0.79,11,9,0.82
+pipeline,4,20,5,0.25,10,4,0.4
+single,single,3,0,0.0,1,0,0.0
