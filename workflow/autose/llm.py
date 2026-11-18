@@ -26,9 +26,9 @@ _SHARED = {"window": {}, "cooldown": {}, "rr": {}}    # one view of every key's 
 
 
 class Client:
-    def __init__(self, role, log=print):
+    def __init__(self, role, log=print, tiers=None):
         self.role = role
-        self.tiers = config.tiers(role)
+        self.tiers = tiers or config.tiers(role)
         self.log = log
         self.window = _SHARED["window"]      # (provider, key index) -> [(time, tokens)]
         self.cooldown = _SHARED["cooldown"]  # (provider, key index) -> time until usable

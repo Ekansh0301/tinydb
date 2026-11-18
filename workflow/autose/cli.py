@@ -180,7 +180,9 @@ def cmd_review(_):
     outdir.mkdir(exist_ok=True)
     js, why, client, res = review.run_review(os.getcwd(), os.environ["BASE_SHA"], issue["title"] or "", issue["body"] or "")
     tier = ", ".join(sorted(set(client.served))) or "none"
-    meta = {"tiers": client.served, "tokens": client.tokens_used, "calls": client.calls, "problems": why,
+    attempts = getattr(client, "attempts", [])
+    meta = {"tiers": client.served, "tokens": sum(a["tokens"] for a in attempts) or client.tokens_used, "calls": client.calls,
+            "problems": why, "attempts": attempts,
             "run_id": os.environ.get("GITHUB_RUN_ID")}
     (outdir / "meta.json").write_text(json.dumps(meta))
     (outdir / "transcript_6.jsonl").write_text("\n".join(json.dumps(x) for x in getattr(client, "last_transcript", [])))
