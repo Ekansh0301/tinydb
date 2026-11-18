@@ -65,7 +65,7 @@ index 0000000..0ef883f
 +
 +# end of tests
 diff --git a/tinydb/table.py b/tinydb/table.py
-index 76470aa..778899a 100644
+index 76470aa..fa30f43 100644
 --- a/tinydb/table.py
 +++ b/tinydb/table.py
 @@ -246,7 +246,7 @@ class Table:
@@ -77,20 +77,18 @@ index 76470aa..778899a 100644
          """
          Search for all documents matching a 'where' cond.
  
-@@ -264,7 +264,12 @@ class Table:
+@@ -264,6 +264,11 @@ class Table:
          # query
          cached_results = self._query_cache.get(cond)
          if cached_results is not None:
--            return cached_results[:]
-+            # If a limit is provided, validate it and apply to the cached results
-++            if limit is not None:
-++                if not isinstance(limit, int) or limit <= 0:
-++                    raise ValueError('limit must be a positive integer')
-++                return cached_results[:limit]
-++            return cached_results[:]
++            # Apply limit if provided, after retrieving cached results
++            if limit is not None:
++                if not isinstance(limit, int) or limit <= 0:
++                    raise ValueError('limit must be a positive integer')
++                return cached_results[:limit]
+             return cached_results[:]
  
          # Perform the search by applying the query to all documents.
-         # Then, only if the document matches the query, convert it
 @@ -294,6 +299,11 @@ class Table:
              # Update the query cache
              self._query_cache[cond] = docs[:]
@@ -103,14 +101,3 @@ index 76470aa..778899a 100644
          return docs
  
      @overload
-
-
-## Stopped
-Stage 3 could not pass its check: agent stopped: model unavailable: all tiers failed: every groq key is rate limited for another 591 s; compileall failed: *** Error compiling 'tinydb/table.py'...
-Sorry: IndentationError: expected an indented block after 'if' statement on line 266 (table.py, line 268)
-; import tinydb failed: le "/home/runner/work/tinydb/tinydb/tinydb/database.py", line 9, in <module>
-    from .table import Table, Document
-  File "/home/runner/work/tinydb/tinydb/tinydb/table.py", line 268
-    +            if limit is not None:
-IndentationError: expected an indented block after 'if' statement on line 266
-
