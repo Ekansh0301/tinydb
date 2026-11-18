@@ -1,0 +1,79 @@
+diff --git a/tinydb/table.py b/tinydb/table.py
+index 76470aa..4e7ce1d 100644
+--- a/tinydb/table.py
++++ b/tinydb/table.py
+@@ -9,8 +9,9 @@ from typing import (
+     Optional,
+     Union,
+     cast,
+-    overload
++    overload,
+ )
++import copy
+ 
+ from .queries import QueryLike
+ from .storages import Storage
+@@ -33,6 +34,8 @@ class Document(dict):
+ 
+ 
+ class Table:
++    #: Return deep copies of documents on search by default
++    return_copies: bool = True
+     """
+     Represents a single TinyDB table.
+ 
+@@ -108,6 +111,8 @@ class Table:
+             = self.query_cache_class(capacity=cache_size)
+ 
+         self._next_id: Optional[int] = None
++        # Whether to return deep copies of documents on search
++        self._return_copies: bool = self.return_copies
+         # Only persist a brand-new empty table. Never clear existing documents
+         # when reopen/construct with persist_empty=True (see issue #636).
+         if persist_empty and not self._read_table():
+@@ -256,6 +261,20 @@ class Table:
+         read-only, since mutating one (a key or a nested value) corrupts
+         what a later identical search returns.
+ 
++        With ``return_copies`` enabled (default), deep copies of the
++        documents are returned and cached, ensuring modifications to the
++        result do not affect later searches.
++        """
++
++        """
++        Search for all documents matching a 'where' cond.
++
++        Note: a repeated search with the same ``cond`` is served from an
++        internal cache. The returned list is a fresh copy, but its
++        documents are the same objects held by the cache -- treat them as
++        read-only, since mutating one (a key or a nested value) corrupts
++        what a later identical search returns.
++
+         :param cond: the condition to check against
+         :returns: list of matching documents
+         """
+@@ -264,7 +283,10 @@ class Table:
+         # query
+         cached_results = self._query_cache.get(cond)
+         if cached_results is not None:
+-            return cached_results[:]
++            if self._return_copies:
++                return [copy.deepcopy(doc) for doc in cached_results]
++            else:
++                return cached_results[:]
+ 
+         # Perform the search by applying the query to all documents.
+         # Then, only if the document matches the query, convert it
+@@ -292,8 +314,12 @@ class Table:
+                                                    lambda: True)
+         if is_cacheable():
+             # Update the query cache
++            if self._return_copies:
++            self._query_cache[cond] = [copy.deepcopy(doc) for doc in docs]
++        else:
+             self._query_cache[cond] = docs[:]
+ 
++
+         return docs
+ 
+     @overload
