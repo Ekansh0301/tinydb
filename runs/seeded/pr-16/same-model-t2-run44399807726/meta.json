@@ -1,0 +1,1 @@
+{"tiers": ["groq:openai/gpt-oss-120b", "groq:openai/gpt-oss-120b"], "tokens": 2838, "calls": 2, "problems": [], "attempts": [{"tier": "groq:openai/gpt-oss-120b", "ok": true, "problems": [], "tokens": 2838}], "run_id": "44399807726"}
