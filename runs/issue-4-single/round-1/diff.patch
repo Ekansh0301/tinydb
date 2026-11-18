@@ -1,0 +1,38 @@
+diff --git a/tinydb/queries.py b/tinydb/queries.py
+index e106c5d..dc5e68b 100644
+--- a/tinydb/queries.py
++++ b/tinydb/queries.py
+@@ -17,6 +17,16 @@ False
+ """
+ 
+ import re
++
++def _safe_compare(value, rhs, op):
++    """Return result of op(value, rhs) unless comparison raises TypeError or value is None, then False."""
++    if value is None:
++        return False
++    try:
++        return op(value, rhs)
++    except TypeError:
++        return False
++
+ from collections.abc import Mapping, Callable, Sequence
+ from typing import Any, Union, Optional, Protocol
+ 
+@@ -286,7 +296,7 @@ class Query(QueryInstance):
+         :param rhs: The value to compare against
+         """
+         return self._generate_test(
+-            lambda value: value < rhs,
++            lambda value: _safe_compare(value, rhs, lambda a,b: a < b),
+             ('<', self._path, rhs)
+         )
+ 
+@@ -299,7 +309,7 @@ class Query(QueryInstance):
+         :param rhs: The value to compare against
+         """
+         return self._generate_test(
+-            lambda value: value <= rhs,
++            lambda value: _safe_compare(value, rhs, lambda a,b: a <= b),
+             ('<=', self._path, rhs)
+         )
