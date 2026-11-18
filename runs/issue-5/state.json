@@ -1,23 +1,28 @@
 {
   "base_sha": "286f876b5a1b4e148e9e867b74b0072e07673ff4",
   "branch": "autose/issue-5",
-  "counters": {},
+  "counters": {
+    "impl": 3
+  },
   "issue": 5,
-  "reason": "",
+  "reason": "test suite does not pass: tests/test_tables.py::test_query_cache_with_mutable_callable[json], tests/test_tables.py::test_query_cache_with_mutable_callable[memory], tests/test_tinydb.py::test_lambda_query, tests/test_tinydb.py::test_query_cache_documents_are_shared_with_cache; failing: tests/test_tables.py::test_query_cache_with_mutable_callable[json], tests/test_tables.py::test_query_cache_with_mutable_callable[memory], tests/test_tinydb.py::test_lambda_query, tests/test_tinydb.py::test_query_cache_documents_are_shared_with_cache",
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 0,
-      "models": [],
-      "reason": "",
-      "stage": "1",
-      "status": "running",
-      "tokens": 0
+      "calls": 83,
+      "models": [
+        "groq:openai/gpt-oss-120b",
+        "groq:openai/gpt-oss-20b"
+      ],
+      "reason": "test suite does not pass: tests/test_tables.py::test_query_cache_with_mutable_callable[json], tests/test_tables.py::test_query_cache_with_mutable_callable[memory], tests/test_tinydb.py::test_lambda_query, tests/test_tinydb.py::test_query_cache_documents_are_shared_with_cache; failing: tests/test_tables.py::test_query_cache_with_mutable_callable[json], tests/test_tables.py::test_query_cache_with_mutable_callable[memory], tests/test_tinydb.py::test_lambda_query, tests/test_tinydb.py::test_query_cache_documents_are_shared_with_cache",
+      "stage": "4",
+      "status": "STOPPED",
+      "tokens": 227977
     }
   },
-  "stage": "1",
-  "status": "running",
+  "stage": "4",
+  "status": "STOPPED",
   "tokens": 0,
-  "tokens_total": 0,
-  "updated": "2026-11-18T20:33:51Z"
+  "tokens_total": 227977,
+  "updated": "2026-11-18T20:45:32Z"
 }
