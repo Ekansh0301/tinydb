@@ -23,7 +23,7 @@ that explain why it is built this way. It is the submission for assignment 3 (ro
 | Reviewer (stage 6) | `nvidia/nemotron-3.5-super-vl-120b-a12b`, then `nemotron-3-ultra-550b-a55b`, then `qwen/qwen3.8-27b` (Groq) |
 | Prompt-injection screen | `meta-llama/llama-prompt-guard-2-86m` (Groq) |
 
-All are free tiers; the spending limit is therefore zero. Reasons and measurements: `architecture/decisions/ADR-006.md`
+All are free tiers; the spending limit is therefore zero. Reasons and measurements: `architecture/decisions/ADR-012.md` (history: ADR-006)
 and `experiment/model_probe.md`.
 
 ## How to trigger the workflow

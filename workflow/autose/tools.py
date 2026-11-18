@@ -220,8 +220,11 @@ def run_isolated(argv, cwd, timeout=None):
     cmd = list(argv)
     if _bwrap_ok():
         cmd = ["bwrap", "--ro-bind", "/", "/", "--dev", "/dev", "--proc", "/proc",
-               "--tmpfs", "/home", "--tmpfs", "/root", "--bind", str(cwd), str(cwd),
-               "--bind", home, home, "--unshare-net", "--chdir", str(cwd)] + cmd
+               "--tmpfs", "/home", "--tmpfs", "/root"]
+        for prefix in {sys.prefix, sys.base_prefix}:         # an interpreter that lives under /home must stay visible
+            if prefix.startswith(("/home", "/root")):
+                cmd += ["--ro-bind", prefix, prefix]
+        cmd += ["--bind", str(cwd), str(cwd), "--bind", home, home, "--unshare-net", "--chdir", str(cwd)] + list(argv)
     try:
         r = subprocess.run(cmd, cwd=cwd, env=env, capture_output=True, text=True,
                            timeout=timeout or config.BUDGET["run_timeout"])

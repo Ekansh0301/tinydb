@@ -43,7 +43,7 @@ The workflow turns an issue into a tested and reviewed pull request through the 
 \textbf{How the pieces fit.} The orchestrator (plain Python, \adr{002}) owns the state machine, the gates and the budgets; agents decide only what to write or edit inside a stage. Agents receive artifacts, never each other's conversations (\adr{003}, \adr{011}). State lives on a separate branch \code{autose-runs} and as workflow artifacts, so a pull request contains only code (\adr{004}). The reviewer is a separate job with \code{contents: read}, a different model family and its own prompt; its verdict leaves the job as a file and a later job posts it (\adr{008}). Anyone with write access can start a run with a label or the comment \code{/autose}; the issue text is screened and passed to agents as delimited data (\adr{009}, \adr{010}).
 
 \section{Design decisions}
-Table~\ref{tab:adr} summarises all eleven records. The full ADRs, including the evidence behind each amendment, are in \code{architecture/decisions/}; they follow the Nygard format used in the earlier study (status, context, decision, alternatives, consequences).
+Table~\ref{tab:adr} summarises all twelve records. The full ADRs, including the evidence behind each amendment, are in \code{architecture/decisions/}; they follow the Nygard format used in the earlier study (status, context, decision, alternatives, consequences).
 
 \input{generated/adr_table.tex}
 
