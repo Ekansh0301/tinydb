@@ -123,3 +123,9 @@ def test_single_variant_stops_after_three_attempts(monkeypatch):
     ctx = make_ctx()
     res = orchestrator.build_single(ctx)
     assert res["status"] == "STOPPED" and len(calls) == 3
+
+
+def test_an_exhausted_run_budget_stops_the_run_at_once(script):
+    calls = script(s1=[OK], s2=[OK], s3=[OK], s4=[stages.Outcome(False, ["run token budget (400000) exhausted"], route="tests")])
+    res = orchestrator.build(make_ctx(), 1)
+    assert res["status"] == "STOPPED" and res["stage"] == "4" and calls.count("s4") == 1

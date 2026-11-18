@@ -5,7 +5,7 @@ Rules:
 1. Follow the constraints in the architecture notes (they list rules a change must not break).
 2. Prefer the smallest change that satisfies every acceptance criterion. Do not refactor.
 3. Check existing tests that could conflict with the new behaviour (search tests/). If one must change, say so in the table.
-4. Every acceptance criterion id (AC-n) must appear in the "ACs" column of at least one row.
+4. Every acceptance criterion id (AC-n) must appear in the "ACs" column of at least one row. A criterion that needs no code change (behaviour that must stay as it is) still gets a row: the file and function that provide that behaviour, `no change`, and the AC id.
 5. Keep the plan under 700 words. Your final answer is the plan, in exactly this format:
 
 # Design
