@@ -15,6 +15,11 @@ def record(ctx, stage, outcome):
         "calls_so_far": ctx.calls, "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}) + "\n")
 
 
+def budget_spent(outcome):
+    """The run's token budget is gone: retrying cannot help, so the run stops at once."""
+    return (not outcome.ok) and any("run token budget" in r for r in outcome.reasons)
+
+
 def stop(ctx, stage, reasons):
     msg = "; ".join(reasons) or "no reason recorded"
     name = {"1": "spec.md", "2": "design.md", "3": "diff.patch", "4": "test_report.md", "5": "pr.md"}.get(str(stage), "state.json")
@@ -63,6 +68,8 @@ def build(ctx, from_stage):
             ctx.log("stage 1 requirements")
             o = stages.stage1(ctx, notes)
             record(ctx, 1, o)
+            if budget_spent(o):
+                return stop(ctx, 1, o.reasons)
             if o.ok:
                 stage, notes = 2, []
                 continue
@@ -73,6 +80,8 @@ def build(ctx, from_stage):
             ctx.log("stage 2 design")
             o = stages.stage2(ctx, notes)
             record(ctx, 2, o)
+            if budget_spent(o):
+                return stop(ctx, 2, o.reasons)
             if o.ok:
                 stage, notes = 3, []
                 continue
@@ -83,6 +92,8 @@ def build(ctx, from_stage):
             ctx.log("stage 3 implementation (attempt %d)" % (ctx.counters.get("impl", 0) + 1))
             o = stages.stage3(ctx, notes)
             record(ctx, 3, o)
+            if budget_spent(o):
+                return stop(ctx, 3, o.reasons)
             if o.ok:
                 commit_code(ctx, "autose: implement #%d" % ctx.issue_no)
                 stage, notes = 4, []
@@ -96,6 +107,8 @@ def build(ctx, from_stage):
             ctx.log("stage 4 testing (attempt %d)" % (ctx.counters.get("tests", 0) + 1))
             o = stages.stage4(ctx, notes)
             record(ctx, 4, o)
+            if budget_spent(o):
+                return stop(ctx, 4, o.reasons)
             if o.ok:
                 commit_code(ctx, "autose: tests for #%d" % ctx.issue_no)
                 stage = 5
