@@ -1,0 +1,1 @@
+{"tiers": ["groq:openai/gpt-oss-120b", "groq:openai/gpt-oss-120b"], "tokens": 2803, "calls": 2, "problems": ["reviewer stopped: model kept producing malformed tool calls"], "attempts": [{"tier": "groq:openai/gpt-oss-120b", "ok": false, "problems": ["reviewer stopped: model kept producing malformed tool calls"], "tokens": 2803}], "run_id": "44397881308"}
