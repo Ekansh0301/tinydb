@@ -119,6 +119,56 @@ def seeded_summary():
     return "\n".join(out)
 
 
+
+def e2_summary():
+    rs = [r for r in rows("seeded.csv") if r["reviewer_version"] == "v3"]
+    if not rs:
+        return "No calibration reviews with the final reviewer yet.\n"
+    by = defaultdict(list)
+    for r in rs:
+        by[r["variant"]].append(r)
+    out = [r"\begin{table}[ht]\centering\small",
+           r"\caption{E2, reviewer independence: all reviews by the final reviewer on the five seeded pull requests (three trials per pull request).}\label{tab:e2}",
+           r"\begin{tabular}{@{}l r r r r r r r@{}}", r"\toprule",
+           r"Variant & Reviews & Valid & Wrong PRs caught & Wrong PRs missed & Correct PRs approved & Correct PRs rejected & Mean tokens \\ \midrule"]
+    for variant, xs in sorted(by.items()):
+        wrong = [x for x in xs if x["label"] == "wrong"]
+        corr = [x for x in xs if x["label"] == "correct"]
+        valid = [x for x in xs if x["outcome"] != "no valid review"]
+        toks = [int(x["tokens"]) for x in xs if x["tokens"]]
+        out.append("%s & %d & %d & %d/%d & %d/%d & %d/%d & %d/%d & %s \\\\" % (
+            tex(variant), len(xs), len(valid),
+            sum(x["outcome"] == "caught" for x in wrong), len(wrong), sum(x["outcome"] == "missed" for x in wrong), len(wrong),
+            sum(x["outcome"] == "approved" for x in corr), len(corr), sum(x["outcome"] == "false rejection" for x in corr), len(corr),
+            "%d" % (sum(toks) / len(toks)) if toks else "--"))
+    out += [r"\bottomrule\end{tabular}", r"\end{table}"]
+    return "\n".join(out)
+
+
+def e1_summary():
+    rs = [r for r in rows("results.csv") if r["round"] == "1"]
+    if not any(r["variant"] == "single" for r in rs):
+        return "The single-agent variant has no recorded runs yet.\n"
+    by = defaultdict(dict)
+    for r in rs:
+        by[r["issue"]][r["variant"]] = r
+    out = [r"\begin{table}[ht]\centering\small",
+           r"\caption{E1, splitting the work: the split pipeline and the single agent on the same issues, compared at the end of round 1 (before any review feedback).}\label{tab:e1}",
+           r"\begin{tabular}{@{}r l c c c c r@{}}", r"\toprule",
+           r"Issue & Variant & PR opened & Hidden tests & Regressions & First-try gates 1--4 & Tokens \\ \midrule"]
+    for issue in sorted(by, key=int):
+        for variant in ("pipeline", "single"):
+            r = by[issue].get(variant)
+            if not r:
+                continue
+            gates = sum(int(r["stage%d_first_try" % n] or 0) for n in (1, 2, 3, 4)) if variant == "pipeline" else "--"
+            hid = "%s/%s" % (r["hidden_passed"], r["hidden_total"]) if r["hidden_total"] else tex(r["hidden_outcome"])
+            out.append("\\#%s & %s & %s & %s & %s & %s & %s \\\\" % (issue, variant, "yes" if r["released"] == "yes" else "no", hid,
+                       r["regressions"] or "--", gates, r["tokens"] or "--"))
+    out += [r"\bottomrule\end{tabular}", r"\end{table}"]
+    return "\n".join(out)
+
+
 def write(name, text):
     (GEN / name).write_text(text)
 
@@ -126,7 +176,8 @@ def write(name, text):
 def main():
     write("stage_table.tex", STAGES)
     write("adr_table.tex", adr_table())
-    write("experiments.tex", (R / "text" / "experiments.tex").read_text() if (R / "text" / "experiments.tex").exists() else "Pending.\n")
+    write("experiments.tex", e1_summary() + "\n" + e2_summary() + "\n" +
+          ((R / "text" / "experiments.tex").read_text() if (R / "text" / "experiments.tex").exists() else ""))
     write("results.tex", stage_rates() + "\n" + per_issue() + "\n" + seeded_summary() + "\n" +
           ((R / "text" / "results.tex").read_text() if (R / "text" / "results.tex").exists() else ""))
     for n in ("hindsight", "limitations", "appendix"):
