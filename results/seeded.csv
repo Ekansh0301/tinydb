@@ -29,3 +29,18 @@ pr,label,variant,reviewer_version,trial,run_id,verdict,outcome,tier,tokens,probl
 17,wrong,independent,v2,1,44197118725,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,33136,
 17,wrong,independent,v2,2,44197480098,NONE,no valid review,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,50611,reviewer did not return a JSON object
 17,wrong,independent,v2,3,44197821544,NONE,no valid review,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,26128,reviewer did not return a JSON object
+13,correct,independent,v3,1,44366382275,APPROVE,approved,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,58177,
+13,correct,independent,v3,2,44366817676,APPROVE,approved,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,36068,
+13,correct,independent,v3,3,44367245618,APPROVE,approved,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,57106,
+14,wrong,independent,v3,1,44366468077,NONE,no valid review,nvidia:nvidia/nemotron-3-ultra-550b-a55b,199490,reviewer stopped: call budget exhausted (24 calls)
+14,wrong,independent,v3,2,44366904659,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,29166,
+14,wrong,independent,v3,3,44367330785,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,30226,
+15,correct,independent,v3,1,44366554702,APPROVE,approved,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,25013,
+15,correct,independent,v3,2,44366987301,APPROVE,approved,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,34034,
+15,correct,independent,v3,3,44367415632,APPROVE,approved,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,31877,
+16,wrong,independent,v3,1,44366639371,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,36423,
+16,wrong,independent,v3,2,44367072607,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,103913,
+16,wrong,independent,v3,3,44367504001,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,82164,
+17,wrong,independent,v3,1,44366728100,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,33103,
+17,wrong,independent,v3,2,44367159548,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,33672,
+17,wrong,independent,v3,3,44367591704,REQUEST_CHANGES,caught,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,21429,
