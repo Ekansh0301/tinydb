@@ -257,8 +257,10 @@ def cmd_local(a):
     issue = {"title": title, "body": "\n".join(text.splitlines()[1:]).strip()}
     runs = gitops.Runs(tmp / "runs", a.number, 1)
     runs.open(remote=False)
+    if a.variant != "pipeline":
+        os.environ["VARIANT"] = a.variant
     ctx = make_ctx(a.number, 1, 1, wd, runs, issue, local=True)
-    res = orchestrator.build(ctx, a.from_stage)
+    res = orchestrator.build_single(ctx) if a.variant == "single" else orchestrator.build(ctx, a.from_stage)
     print(json.dumps(res), "tokens", ctx.tokens, "calls", ctx.calls)
     print("artifacts:", runs.dir, "\nworkdir:", wd)
     if a.review and res["status"] == "RELEASED":
@@ -299,6 +301,7 @@ def main():
     lc.add_argument("--number", type=int, default=1)
     lc.add_argument("--from-stage", type=int, default=1)
     lc.add_argument("--review", action="store_true")
+    lc.add_argument("--variant", default="pipeline", choices=["pipeline", "single"])
     lc.set_defaults(fn=cmd_local)
     a = p.parse_args()
     a.fn(a)
