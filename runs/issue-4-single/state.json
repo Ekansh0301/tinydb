@@ -3,21 +3,23 @@
   "branch": "autose-single/issue-4",
   "counters": {},
   "issue": 4,
-  "reason": "",
+  "reason": "[stage 1] missing section: Source statements; [stage 1] missing section: Requirements; [stage 1] missing section: Acceptance criteria; [stage 1] missing section: Assumptions; [stage 1] no acceptance criteria found (use lines like `- AC-1 (FR-1): Given ..., when ..., then ...`); [stage 3] the diff is empty; nothing was changed; agent stopped: model unavailable: all tiers failed: every groq key is rate limited for another 586 s",
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 0,
-      "models": [],
-      "reason": "",
+      "calls": 44,
+      "models": [
+        "groq:openai/gpt-oss-120b"
+      ],
+      "reason": "[stage 1] missing section: Source statements; [stage 1] missing section: Requirements; [stage 1] missing section: Acceptance criteria; [stage 1] missing section: Assumptions; [stage 1] no acceptance criteria found (use lines like `- AC-1 (FR-1): Given ..., when ..., then ...`); [stage 3] the diff is empty; nothing was changed; agent stopped: model unavailable: all tiers failed: every groq key is rate limited for another 586 s",
       "stage": "single",
-      "status": "running",
-      "tokens": 0
+      "status": "STOPPED",
+      "tokens": 129210
     }
   },
   "stage": "single",
-  "status": "running",
+  "status": "STOPPED",
   "tokens": 0,
-  "tokens_total": 0,
-  "updated": "2026-11-18T21:24:53Z"
+  "tokens_total": 129210,
+  "updated": "2026-11-18T21:33:19Z"
 }

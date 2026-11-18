@@ -1,0 +1,4 @@
+
+
+## Stopped
+Stage single could not pass its check: [stage 1] missing section: Source statements; [stage 1] missing section: Requirements; [stage 1] missing section: Acceptance criteria; [stage 1] missing section: Assumptions; [stage 1] no acceptance criteria found (use lines like `- AC-1 (FR-1): Given ..., when ..., then ...`); [stage 3] the diff is empty; nothing was changed; agent stopped: model unavailable: all tiers failed: every groq key is rate limited for another 586 s
