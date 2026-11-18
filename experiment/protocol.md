@@ -18,8 +18,8 @@ The pipeline is exercised locally on every issue with `gpt-oss-20b` for the buil
 - **Keep as the result**: the attempt ended because a model could not do the stage within its budget (for example three failed attempts of a stage). That is a measurement of the system, not a fault.
 
 ## Experiments
-- **E1 (ADR-001): split pipeline versus one agent.** Issues #4, #6 and #7. Same frozen code, same gates, same hidden tests; the single agent has one budget of 200,000 tokens for all attempts. Compared after round 1.
-- **E2 (ADR-008): independent reviewer versus same-model reviewer.** The five seeded pull requests; independent: three trials with the final reviewer; same-model (`gpt-oss-120b`): two trials. Only reviews made by the final reviewer code are compared.
+- **E1 (ADR-001): split pipeline versus one agent.** All five issues. Same frozen code, same gates, same hidden tests; the single agent has one budget of 300,000 tokens for all attempts. Compared after round 1.
+- **E2 (ADR-008): independent reviewer versus same-model reviewer.** The five seeded pull requests; independent: three trials with the final reviewer; same-model (`gpt-oss-120b`): three trials, so both variants have 15 reviews. Only reviews made by the final reviewer code are compared.
 
 ## Token budget (Groq `gpt-oss-120b`, six keys, 200,000 tokens per key and day)
-Planned: baseline about 700,000, E1 about 600,000, E2 same-model about 500,000. Runs are spaced so that no day exceeds about 1.2 million tokens.
+Planned: baseline about 700,000, E1 about 1,000,000, E2 same-model about 750,000: about 2.5 million in all, roughly two days of quota. Runs are spaced so that no day exceeds about 1.2 million tokens; the order is baseline first, then E2 (short jobs that can run between others), then E1. Nothing is dropped to save tokens: if the quota runs short, the work is moved to the next day, and extra keys or a deadline extension (asked for before the deadline) are the fallbacks.
