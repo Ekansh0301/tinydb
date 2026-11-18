@@ -1,0 +1,102 @@
+diff --git a/tests/test_autose_strings.py b/tests/test_autose_strings.py
+new file mode 100644
+index 0000000..d71ab3f
+--- /dev/null
++++ b/tests/test_autose_strings.py
+@@ -0,0 +1,59 @@
++import pytest
++from tinydb import TinyDB, Query
++from tinydb.storages import MemoryStorage
++
++# AC-1: startswith matches only prefix
++
++def test_ac1_startswith_basic():
++    db = TinyDB(storage=MemoryStorage)
++    db.insert({'name': 'Alice'})
++    db.insert({'name': 'Bob'})
++    q = Query()
++    res = db.search(q.name.startswith('Al'))
++    assert res == [{'name': 'Alice'}]
++
++# AC-2: endswith matches only suffix
++
++def test_ac2_endswith_basic():
++    db = TinyDB(storage=MemoryStorage)
++    db.insert({'name': 'Jackson'})
++    db.insert({'name': 'John'})
++    q = Query()
++    res = db.search(q.name.endswith('son'))
++    assert res == [{'name': 'Jackson'}]
++
++# AC-3: non-string fields ignored, no exception
++
++def test_ac3_nonstring_startswith():
++    db = TinyDB(storage=MemoryStorage)
++    db.insert({'name': 'Alice'})
++    db.insert({})
++    db.insert({'name': None})
++    db.insert({'name': 123})
++    q = Query()
++    res = db.search(q.name.startswith('Al'))
++    assert res == [{'name': 'Alice'}]
++
++# AC-4: non-string fields ignored for endswith
++
++def test_ac4_nonstring_endswith():
++    db = TinyDB(storage=MemoryStorage)
++    db.insert({'name': 'Alice'})
++    db.insert({})
++    db.insert({'name': None})
++    db.insert({'name': 123})
++    q = Query()
++    res = db.search(q.name.endswith('ice'))
++    assert res == [{'name': 'Alice'}]
++
++# AC-5: case-sensitive
++
++def test_ac5_case_sensitive():
++    db = TinyDB(storage=MemoryStorage)
++    db.insert({'name': 'alice'})
++    db.insert({'name': 'Alice'})
++    q = Query()
++    res = db.search(q.name.startswith('Al'))
++    assert res == [{'name': 'Alice'}]
++
++# end of tests
+diff --git a/tinydb/queries.py b/tinydb/queries.py
+index e106c5d..fd8af86 100644
+--- a/tinydb/queries.py
++++ b/tinydb/queries.py
+@@ -359,6 +359,32 @@ class Query(QueryInstance):
+         # share a Table query-cache entry (see issue #637).
+         return self._generate_test(test, ('matches', self._path, regex, flags))
+ 
++    def startswith(self, prefix: str) -> QueryInstance:
++        """Return a query that matches when the field value starts with ``prefix``.
++
++        Non‑string values (including missing fields, ``None`` or numbers) do not
++        match and do not raise an exception.
++        """
++        def test(value):
++            if not isinstance(value, str):
++                return False
++            return value.startswith(prefix)
++
++        return self._generate_test(test, ('startswith', self._path, prefix))
++
++    def endswith(self, suffix: str) -> QueryInstance:
++        """Return a query that matches when the field value ends with ``suffix``.
++
++        Non‑string values (including missing fields, ``None`` or numbers) do not
++        match and do not raise an exception.
++        """
++        def test(value):
++            if not isinstance(value, str):
++                return False
++            return value.endswith(suffix)
++
++        return self._generate_test(test, ('endswith', self._path, suffix))
++
+     def search(self, regex: str, flags: int = 0) -> QueryInstance:
+         """
+         Run a regex test against a dict value (only substring string has to
