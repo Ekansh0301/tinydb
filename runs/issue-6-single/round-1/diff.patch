@@ -1,21 +1,12 @@
 diff --git a/tinydb/queries.py b/tinydb/queries.py
-index e106c5d..ddb955f 100644
+index e106c5d..53818f9 100644
 --- a/tinydb/queries.py
 +++ b/tinydb/queries.py
-@@ -346,6 +346,38 @@ class Query(QueryInstance):
+@@ -359,7 +359,64 @@ class Query(QueryInstance):
+         # share a Table query-cache entry (see issue #637).
+         return self._generate_test(test, ('matches', self._path, regex, flags))
  
-         >>> Query().f1.matches(r'^\\w+$')
- 
-+        :param regex: The regular expression to use for matching
-+        :param flags: regex flags to pass to ``re.match``
-+        """
-+        def test(value):
-+            if not isinstance(value, str):
-+                return False
-+            return re.match(regex, value, flags) is not None
-+        # Include flags in the hash so queries that differ only by flags do not
-+        # share a Table query-cache entry (see issue #637).
-+        return self._generate_test(test, ('matches', self._path, regex, flags))
+-    def search(self, regex: str, flags: int = 0) -> QueryInstance:
 +        """
 +        Run a regex test against a dict value (whole string has to match).
 +
@@ -38,6 +29,42 @@ index e106c5d..ddb955f 100644
 +
 +        >>> Query().f1.matches(r'^\\w+$')
 +
-         :param regex: The regular expression to use for matching
-         :param flags: regex flags to pass to ``re.match``
++        :param regex: The regular expression to use for matching
++        :param flags: regex flags to pass to ``re.match``
++        """
++        def test(value):
++            if not isinstance(value, str):
++                return False
++
++            return re.match(regex, value, flags) is not None
++
++        # Include flags in the hash so queries that differ only by flags do not
++        # share a Table query-cache entry (see issue #637).
++        return self._generate_test(test, ('matches', self._path, regex, flags))
++
++    def startswith(self, prefix: str) -> QueryInstance:
++        """Return a query that matches strings starting with *prefix*.
++
++        Only documents where the field value is a string are considered; non‑string
++        values (including missing fields, ``None`` or numbers) do not match and do
++        not raise an error.
++        """
++        def test(value):
++            return isinstance(value, str) and value.startswith(prefix)
++
++        return self._generate_test(test, ('startswith', self._path, prefix))
++
++    def endswith(self, suffix: str) -> QueryInstance:
++        """Return a query that matches strings ending with *suffix*.
++
++        Behaviour mirrors :meth:`startswith` – non‑string values simply do not
++        match.
++        """
++        def test(value):
++            return isinstance(value, str) and value.endswith(suffix)
++
++        return self._generate_test(test, ('endswith', self._path, suffix))
++
          """
+         Run a regex test against a dict value (only substring string has to
+         match).
