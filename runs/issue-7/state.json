@@ -4,7 +4,7 @@
   "counters": {},
   "issue": 7,
   "reason": "",
-  "round": 2,
+  "round": 1,
   "rounds": {
     "1": {
       "calls": 91,
@@ -30,8 +30,8 @@
     }
   },
   "stage": "5",
-  "status": "DONE",
+  "status": "STOPPED",
   "tokens": 215385,
   "tokens_total": 239206,
-  "updated": "2026-11-18T19:59:32Z"
+  "updated": "2026-11-19T23:11:14Z"
 }
