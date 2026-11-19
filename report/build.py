@@ -74,7 +74,7 @@ def stage_rates():
     if not rs:
         return "No stage records yet.\n"
     out = [r"\begin{table}[ht]\centering\small",
-           r"\caption{Per-stage pass rates over all recorded stage attempts (every run, including runs that later stopped).}\label{tab:rates}",
+           r"\caption{Per-stage pass rates over the stage attempts of the runs on frozen code (\code{autose-v1}, including runs that later stopped); \code{single} is the one-agent variant, whose four gates run after one conversation.}\label{tab:rates}",
            r"\begin{tabular}{@{}l c r r r r@{}}", r"\toprule",
            r"Variant & Stage & Attempts & Passed & Rate & First-attempt rate \\ \midrule"]
     for r in rs:
@@ -130,7 +130,7 @@ def e2_summary():
     out = [r"\begin{table}[ht]\centering\small",
            r"\caption{E2, reviewer independence: all reviews by the final reviewer on the five seeded pull requests (three trials per pull request).}\label{tab:e2}",
            r"\begin{tabular}{@{}l r r r r r r r@{}}", r"\toprule",
-           r"Variant & Reviews & Valid & Wrong PRs caught & Wrong PRs missed & Correct PRs approved & Correct PRs rejected & Mean tokens \\ \midrule"]
+           r"Variant & Reviews & Valid & Caught & Missed & Approved & Rejected & Mean tokens \\ \midrule"]
     for variant, xs in sorted(by.items()):
         wrong = [x for x in xs if x["label"] == "wrong"]
         corr = [x for x in xs if x["label"] == "correct"]
@@ -184,10 +184,7 @@ def appendix():
     n_dev = sum(1 for m in _re.finditer(r"\| \[(\d+)\]", pipeline_block) if int(m.group(1)) < 44385760641)
     out = [r"\textbf{Runs.} \code{results/runs.md} lists every Actions run with a note: %d pipeline runs (%d were development attempts on issue \#7 before the freeze, which stopped for reasons recorded in the ADRs; the recorded baseline and experiment runs follow), %d reviewer-calibration runs, and the probe run." % (n_auto, n_dev, n_cal),
            r"", r"\textbf{Tokens.} Recorded in the logs of the Actions runs (every model call logs its token use): %s tokens in total. The four rehearsal runs on \code{gpt-oss-20b} alone used 0.93\,M tokens (\code{experiment/rehearsal.md}); they, the earlier local development runs and the first runs, which did not yet log per call, are not included, so this is a lower bound. All models are free tiers, so the spending limit is zero." % format(total, ","),
-           r"", r"\begin{table}[ht]\centering\small\caption{Tokens by model, from the run logs.}\begin{tabular}{@{}l r@{}}\toprule Model & Tokens \\ \midrule"]
-    for m, t in sorted(by_model.items(), key=lambda x: -x[1]):
-        out.append("\\code{%s} & %s \\\\" % (tex(m), format(t, ",")))
-    out += [r"\bottomrule\end{tabular}\end{table}", "",
+           r"", "By model: " + "; ".join("\\code{%s} %s" % (tex(m), format(t, ",")) for m, t in sorted(by_model.items(), key=lambda x: -x[1])) + ".", "",
             r"\textbf{Reproduction.} \code{experiment/drive.py <issue> [--variant single]} starts a recorded run; \code{experiment/score.py} scores a pull request against the hidden tests (\code{experiment/hidden\_tests/}, added after the last run); \code{experiment/collect.py}, \code{experiment/tokens.py} and \code{report/build.py} rebuild the tables and this report. The frozen code is the tag \code{autose-v1} (crash fix \code{v1.1}; reviewer order \code{v1.2}, after the recorded runs)."]
     return "\n".join(out)
 
