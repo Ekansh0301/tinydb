@@ -14,7 +14,7 @@ on:
         description: issue the change claims to address
         required: true
       variant:
-        description: independent (default tiers) or same-model (builder model, fresh context)
+        description: independent (default tiers), same-model (builder model, fresh context) or ultra-first (the 550B Nemotron as first tier)
         default: independent
       trial:
         description: trial number
@@ -60,7 +60,7 @@ jobs:
         env:
           ISSUE_FILE: ${{ runner.temp }}/issue.json
           REVIEW_DIR: ${{ runner.temp }}/review_out
-          AUTOSE_TIERS_REVIEWER: ${{ inputs.variant == 'same-model' && 'groq:openai/gpt-oss-120b' || '' }}
+          AUTOSE_TIERS_REVIEWER: ${{ inputs.variant == 'same-model' && 'groq:openai/gpt-oss-120b' || (inputs.variant == 'ultra-first' && 'nvidia:nvidia/nemotron-3-ultra-550b-a55b,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,groq:qwen/qwen3.8-27b' || '') }}
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
           GROQ_API_KEYS: ${{ secrets.GROQ_API_KEYS }}
       - if: always()
