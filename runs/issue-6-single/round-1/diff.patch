@@ -1,0 +1,38 @@
+diff --git a/tinydb/queries.py b/tinydb/queries.py
+index e106c5d..ac53141 100644
+--- a/tinydb/queries.py
++++ b/tinydb/queries.py
+@@ -340,7 +340,33 @@ class Query(QueryInstance):
+             ('exists', self._path)
+         )
+ 
+-    def matches(self, regex: str, flags: int = 0) -> QueryInstance:
++    def startswith(self, prefix: str) -> QueryInstance:
++        """
++        Test if a string field starts with the given prefix.
++
++        >>> Query().name.startswith('Al')
++
++        Only string values are considered; non‑string values return False.
++        """
++        def test(value):
++            return isinstance(value, str) and value.startswith(prefix)
++
++        return self._generate_test(test, ('startswith', self._path, prefix))
++
++        def endswith(self, suffix: str) -> QueryInstance:
++        """
++        Test if a string field ends with the given suffix.
++
++        >>> Query().name.endswith('son')
++
++        Only string values are considered; non‑string values return False.
++        """
++        def test(value):
++            return isinstance(value, str) and value.endswith(suffix)
++
++        return self._generate_test(test, ('endswith', self._path, suffix))
++
++def matches(self, regex: str, flags: int = 0) -> QueryInstance:
+         """
+         Run a regex test against a dict value (whole string has to match).
