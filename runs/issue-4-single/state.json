@@ -1,25 +1,23 @@
 {
-  "base_sha": "286f876b5a1b4e148e9e867b74b0072e07673ff4",
+  "base_sha": "aa0e762a1e43d5497d051bb70dfe62c5028e0091",
   "branch": "autose-single/issue-4",
   "counters": {},
   "issue": 4,
-  "reason": "[stage 1] missing section: Source statements; [stage 1] missing section: Requirements; [stage 1] missing section: Acceptance criteria; [stage 1] missing section: Assumptions; [stage 1] no acceptance criteria found (use lines like `- AC-1 (FR-1): Given ..., when ..., then ...`); [stage 3] the diff is empty; nothing was changed; agent stopped: model unavailable: all tiers failed: every groq key is rate limited for another 586 s",
+  "reason": "",
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 44,
-      "models": [
-        "groq:openai/gpt-oss-120b"
-      ],
-      "reason": "[stage 1] missing section: Source statements; [stage 1] missing section: Requirements; [stage 1] missing section: Acceptance criteria; [stage 1] missing section: Assumptions; [stage 1] no acceptance criteria found (use lines like `- AC-1 (FR-1): Given ..., when ..., then ...`); [stage 3] the diff is empty; nothing was changed; agent stopped: model unavailable: all tiers failed: every groq key is rate limited for another 586 s",
+      "calls": 0,
+      "models": [],
+      "reason": "",
       "stage": "single",
-      "status": "STOPPED",
-      "tokens": 129210
+      "status": "running",
+      "tokens": 0
     }
   },
   "stage": "single",
-  "status": "STOPPED",
-  "tokens": 0,
-  "tokens_total": 129210,
-  "updated": "2026-11-18T21:33:19Z"
+  "status": "running",
+  "tokens": 129210,
+  "tokens_total": 0,
+  "updated": "2026-11-19T20:05:38Z"
 }
