@@ -1,47 +1,45 @@
 # Sequence view
 
-Status: PLANNED. This is the intended message flow, committed before any agent code. It is replaced by a sequence taken from a real run (with Actions run links) once a run exists; the planned version stays in git history.
+A real run, from the trigger to the review and the next round: issue #6 (`startswith` / `endswith`), Actions runs
+[44389251586](https://github.com/Ekansh0301/tinydb/actions/runs/44389251586) (round 1) and
+[44390507790](https://github.com/Ekansh0301/tinydb/actions/runs/44390507790) (round 2). Times are from `stages.jsonl` and the job records.
+The planned sequence that was committed before any agent code is in the git history of this file.
 
 ```mermaid
 sequenceDiagram
     actor M as Maintainer
-    participant GH as GitHub (issue / events)
-    participant G as Job gate
-    participant B as Job build (orchestrator)
+    participant G as gate
+    participant B as build (orchestrator)
     participant P as Planner
     participant I as Implementer
     participant T as Tester
-    participant C as Job ci
-    participant R as Job review (reviewer)
-    participant N as Job next
+    participant C as ci
+    participant R as Reviewer (separate job)
+    participant N as next
 
-    M->>GH: add label "autose" (or comment /autose)
-    GH->>G: issues.labeled event
-    G->>G: caller has write access? no other run for this issue?
-    G->>G: prompt-guard score of issue text
-    G->>B: sanitised issue, round=1, from_stage=1
-    B->>P: issue + ARCHITECTURE.md
-    P-->>B: spec.md
-    B->>B: gate 1 (criteria testable)
-    B->>P: spec.md + repo
-    P-->>B: design.md
-    B->>B: gate 2 (files and functions exist)
-    B->>I: spec.md + design.md
-    I-->>B: edits on autose/issue-N
-    B->>B: gate 3 (diff scope, builds) -> diff.patch
-    B->>T: spec.md + file list
-    T-->>B: tests/ + results
-    B->>B: gate 4 (new tests fail on base, pass on head, suite green)
-    Note over B,I: gate 4 fails: back to Implementer, at most 2 retries
-    B->>GH: push branch, open PR (pr.md)
-    GH->>C: workflow_call on PR head
-    C-->>B: CI green
-    B->>R: trigger job review (issue, diff.patch, repo at PR head only)
-    R-->>GH: review comment, review.md, verdict
-    R->>N: verdict
-    alt REQUEST_CHANGES and round < 2
-        N->>G: workflow_dispatch round+1, from_stage = 2 (approach) or 3 (code)
-    else APPROVE or round = 2
-        N->>M: PR ready for human decision
-    end
+    M->>G: dispatch for issue 6 (20:16)
+    G->>B: sanitised issue
+    B->>P: issue
+    P-->>B: spec.md (gate 1 pass, 20:16)
+    B->>P: spec
+    P-->>B: design.md (gate 2 pass, 20:17)
+    B->>I: spec, design
+    I-->>B: edits (gate 3 pass, 20:21)
+    B->>T: spec, file list
+    T-->>B: 5 tests, suite passes (gate 4 pass, 20:22)
+    B->>C: push branch, open PR
+    C-->>R: CI green (20:22)
+    Note over R: issue text, diff, repository at the PR head only
+    R->>N: REQUEST_CHANGES (code): dead code after endswith (20:23)
+    N->>G: workflow_dispatch, round 2, from stage 3
+    G->>B: round 2
+    B->>I: spec, design, the finding
+    I-->>B: edits (gate 3 pass)
+    B->>T: spec, file list
+    T-->>B: tests pass, PR updated (20:24)
+    C-->>R: CI green
+    R->>N: APPROVE (20:25), comment on the PR, run ends
 ```
+
+## Agents, artifacts and checks for each stage
+See `stage_map.md`.

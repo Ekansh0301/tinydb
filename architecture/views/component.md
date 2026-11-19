@@ -1,6 +1,6 @@
 # Component view
 
-Status: design, committed before any agent code. Updated if a decision is superseded.
+Status: design, committed before any agent code; updated to the final model assignment (ADR-012).
 
 Three LLM agents and one deterministic orchestrator. The orchestrator is ordinary Python; it runs the gates, owns the state machine and decides every back-edge. Release (stage 5) has no agent: it is code.
 
@@ -61,8 +61,8 @@ flowchart LR
     NEXT -- "approved or rounds used" --> HUMAN([Human: merge or close])
 
     subgraph LLM[model endpoints]
-        GROQ[Groq: gpt-oss-120b<br/>qwen3.8-27b<br/>prompt-guard-2-86m]
-        NV[NVIDIA: nemotron-3.5-super<br/>nemotron-3-ultra]
+        GROQ[Groq: gpt-oss-120b, gpt-oss-20b<br/>qwen3.8-27b, prompt-guard-2-86m]
+        NV[NVIDIA: nemotron-3-ultra<br/>nemotron-3.5-super]
     end
     PLAN & IMPL & TEST --> GROQ
     GATE --> GROQ
@@ -78,8 +78,8 @@ flowchart LR
 | Orchestrator | every artifact, state.json, gate results | artifacts and state on `autose-runs`, branch `autose/issue-N` | none |
 | Planner | sanitised issue, `ARCHITECTURE.md`, repo (read-only tools) | `spec.md`, `design.md` | gpt-oss-120b |
 | Implementer | `spec.md`, `design.md`, repo | code on branch `autose/issue-N` | gpt-oss-120b |
-| Tester | `spec.md`, file list from `design.md`, repo | files under `tests/`, `test_report.md` | gpt-oss-120b |
+| Tester | `spec.md`, file list from `design.md`, repo | files under `tests/`, `test_report.md` | gpt-oss-20b |
 | Release | all artifacts | push branch, open PR, `pr.md` | none |
-| Reviewer | issue text, `diff.patch`, repo at PR head | `review.md`, a PR review comment | nemotron-3.5-super, then nemotron-3-ultra, then qwen3.8-27b |
+| Reviewer | issue text, `diff.patch`, repo at PR head | `review.md`, a PR review comment | nemotron-3-ultra, then nemotron-3.5-super, then qwen3.8-27b (ADR-012; the recorded pipeline reviews used 3.5-super first) |
 
 The reviewer never receives the planner's, implementer's or tester's messages, nor `spec.md`, `design.md` or `test_report.md`. See ADR-003 and ADR-008.
