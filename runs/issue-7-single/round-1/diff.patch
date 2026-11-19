@@ -1,5 +1,5 @@
 diff --git a/tinydb/table.py b/tinydb/table.py
-index 76470aa..0091e33 100644
+index 76470aa..c992324 100644
 --- a/tinydb/table.py
 +++ b/tinydb/table.py
 @@ -246,7 +246,7 @@ class Table:
@@ -11,32 +11,13 @@ index 76470aa..0091e33 100644
          """
          Search for all documents matching a 'where' cond.
  
-@@ -257,14 +257,17 @@ class Table:
-         what a later identical search returns.
- 
-         :param cond: the condition to check against
--        :returns: list of matching documents
-+        :param limit: maximum number of documents to return (optional)
-         """
- 
-         # First, we check the query cache to see if it has results for this
-         # query
-         cached_results = self._query_cache.get(cond)
-         if cached_results is not None:
--            return cached_results[:]
-+            # Return a copy, applying limit if provided
-+            if limit is not None:
-+                return cached_results[:limit]
-++            return cached_results[:]
- 
-         # Perform the search by applying the query to all documents.
-         # Then, only if the document matches the query, convert it
-@@ -294,7 +297,7 @@ class Table:
+@@ -294,6 +294,9 @@ class Table:
              # Update the query cache
              self._query_cache[cond] = docs[:]
  
--        return docs
-+        return docs[:limit] if limit is not None else docs
++        # Apply limit if provided
++        if limit is not None:
++            return docs[:limit]
+         return docs
  
      @overload
-     def get(self) -> NoReturn: ...
