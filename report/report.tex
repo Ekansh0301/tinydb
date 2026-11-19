@@ -37,7 +37,7 @@ The workflow turns an issue into a tested and reviewed pull request through the 
 
 \begin{figure}[ht]\centering
 \resizebox{\linewidth}{!}{\input{figs/sequence.tex}}
-\caption{One real run from the trigger to the review (Actions run 44158195212, issue \#7, 15 minutes of build time). The same criterion failed twice in stage 4, which sent the run back to stage 1; the second pass succeeded and pull request \#34 was opened. The reviewer later asked for changes (see Section~\ref{sec:results}).}\label{fig:seq}
+\caption{One real run from the trigger to the review and the next round (Actions runs 44389251586 and 44390507790, issue \#6). All six stages passed in round 1 (6 minutes); the independent reviewer asked for a code change (dead code the tests cannot see) and the \code{next} job started round 2 at stage 3, after which the reviewer approved.}\label{fig:seq}
 \end{figure}
 
 \textbf{How the pieces fit.} The orchestrator (plain Python, \adr{002}) owns the state machine, the gates and the budgets; agents decide only what to write or edit inside a stage. Agents receive artifacts, never each other's conversations (\adr{003}, \adr{011}). State lives on a separate branch \code{autose-runs} and as workflow artifacts, so a pull request contains only code (\adr{004}). The reviewer is a separate job with \code{contents: read}, a different model family and its own prompt; its verdict leaves the job as a file and a later job posts it (\adr{008}). Anyone with write access can start a run with a label or the comment \code{/autose}; the issue text is screened and passed to agents as delimited data (\adr{009}, \adr{010}).
