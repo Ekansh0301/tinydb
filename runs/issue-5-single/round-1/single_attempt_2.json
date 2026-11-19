@@ -1,0 +1,1 @@
+{"ok": false, "gates": [true, true, true, false], "reasons": ["[stage 4] test suite does not pass: tests/test_autose_cache.py::test_ac2_modified_nested_not_cached"]}
