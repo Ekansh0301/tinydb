@@ -80,7 +80,7 @@ def test_reviewer_falls_back_through_tiers_in_order(monkeypatch):
     msg, used, label = c.chat([{"role": "user", "content": "x"}])
     assert label == "groq:qwen/qwen3.8-27b"
     models = [s[1] for s in seen]
-    assert models.index("nvidia/nemotron-3.5-super-vl-120b-a12b") < models.index("nvidia/nemotron-3-ultra-550b-a55b")
+    assert models.index("nvidia/nemotron-3-ultra-550b-a55b") < models.index("nvidia/nemotron-3.5-super-vl-120b-a12b")
 
 
 def test_all_tiers_failing_raises_never_returns_text(monkeypatch):

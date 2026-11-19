@@ -20,7 +20,7 @@ that explain why it is built this way. It is the submission for assignment 3 (ro
 |---|---|
 | Planner (stages 1 and 2), implementer (stage 3) | `openai/gpt-oss-120b` (Groq) |
 | Tester (stage 4) | `openai/gpt-oss-20b` (Groq) |
-| Reviewer (stage 6) | `nvidia/nemotron-3.5-super-vl-120b-a12b`, then `nemotron-3-ultra-550b-a55b`, then `qwen/qwen3.8-27b` (Groq) |
+| Reviewer (stage 6) | `nvidia/nemotron-3-ultra-550b-a55b`, then `nemotron-3.5-super-vl-120b-a12b`, then `qwen/qwen3.8-27b` (Groq); the recorded pipeline reviews used `3.5-super` first (see ADR-008) |
 | Prompt-injection screen | `meta-llama/llama-prompt-guard-2-86m` (Groq) |
 
 All are free tiers; the spending limit is therefore zero. Reasons and measurements: `architecture/decisions/ADR-012.md` (history: ADR-006)

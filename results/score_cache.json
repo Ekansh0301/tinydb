@@ -1,4 +1,46 @@
 {
+ "autose/issue-4@9ce353620efd461dec333eb844b06e53e45283f2": {
+  "acceptance_passed": 4,
+  "acceptance_total": 4,
+  "baseline_passed": 228,
+  "failed_acceptance": [],
+  "issue": 1,
+  "outcome": "Complete",
+  "regressed_tests": [],
+  "regressions": 0
+ },
+ "autose/issue-6@5a0f1193c5b4f810ef6e820a08f8e6423bf3bb42": {
+  "acceptance_passed": 5,
+  "acceptance_total": 5,
+  "baseline_passed": 228,
+  "failed_acceptance": [],
+  "issue": 3,
+  "outcome": "Complete",
+  "regressed_tests": [],
+  "regressions": 0
+ },
+ "autose/issue-6@ffc76d99e6881355f37ef7827ccf975ac20a4d06": {
+  "acceptance_passed": 5,
+  "acceptance_total": 5,
+  "baseline_passed": 228,
+  "failed_acceptance": [],
+  "issue": 3,
+  "outcome": "Complete",
+  "regressed_tests": [],
+  "regressions": 0
+ },
+ "autose/issue-7@5b9af4fc1e40136020848f9a4c71e7a17ce8a29b": {
+  "acceptance_passed": 4,
+  "acceptance_total": 5,
+  "baseline_passed": 228,
+  "failed_acceptance": [
+   "test_I4_search_limit.py::test_limit_zero_and_larger_than_matches"
+  ],
+  "issue": 4,
+  "outcome": "Partial",
+  "regressed_tests": [],
+  "regressions": 0
+ },
  "autose/issue-7@7e0abeb45bfa17ed381554354fa112b45cdfe281": {
   "acceptance_passed": 3,
   "acceptance_total": 5,

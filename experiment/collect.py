@@ -186,7 +186,16 @@ def write_results(rb, runs, notes, no_score):
     return stage_rows
 
 
+FROZEN_FIRST_RUN = 44385760641      # first run on autose-v1 (the frozen code); earlier runs were development attempts
+
+
 def write_stage_rates(stage_rows):
+    write_stage_rates_file(stage_rows, "stage_pass_rates.csv", lambda r: int(r["run_id"]) >= FROZEN_FIRST_RUN)
+    write_stage_rates_file(stage_rows, "stage_pass_rates_all_runs.csv", lambda r: True)
+
+
+def write_stage_rates_file(stage_rows, name, keep):
+    stage_rows = [s for s in stage_rows if s.get("run_id") and keep(s)]
     agg = defaultdict(lambda: {"attempts": 0, "passed": 0, "runs": set(), "first_try_runs": 0, "first_try_pass": 0})
     seen_first = set()
     for s in stage_rows:
@@ -202,7 +211,7 @@ def write_stage_rates(stage_rows):
             seen_first.add(first_key)
             a["first_try_runs"] += 1
             a["first_try_pass"] += 1 if s["ok"] else 0
-    with (RESULTS / "stage_pass_rates.csv").open("w", newline="") as f:
+    with (RESULTS / name).open("w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["variant", "stage", "attempts", "attempts_passed", "attempt_pass_rate", "rounds_reaching_stage", "first_attempt_passed", "first_attempt_pass_rate"])
         for (variant, stage), a in sorted(agg.items()):

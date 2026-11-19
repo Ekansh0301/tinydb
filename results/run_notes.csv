@@ -29,3 +29,8 @@ run_id,note
 44392287994,"Issue #5 rerun on autose-v1.1: stopped at stage 4 after three implementation attempts, the existing cache tests kept failing (model result, kept)."
 44394826436,"Issue #8 baseline: stopped at stage 2 after three design attempts (malformed tool calls, then a repeated call); a model result, kept."
 44401140674,"E1 single-agent variant on issue #4: attempt 1 passed gates 1-3 but wrote no tests named test_ac<N>; attempts 2 and 3 ended with Groq's daily quota used up (infrastructure fault, to be rerun once the quota returns)."
+44605016311,"E1 single agent, issue #4 (rerun after the quota fault): attempt 1 passed gates 1-3 but wrote no tests named test_ac<N>; attempts 2 and 3 lost the format (malformed tool calls, no spec). Stopped, a model result."
+44632511260,"E1 single agent, issue #6: three attempts, no valid spec, then context too large and a repeated call. Stopped, a model result."
+44634321127,"E1 single agent, issue #7: gates 1-3 passed in attempts 1 and 3 but no tests named test_ac<N> were written. Stopped, a model result."
+44635787537,"E1 single agent, issue #5: context too large, then a design naming an unknown function and code that did not compile. Stopped, a model result."
+44637845650,"E1 single agent, issue #8: gates 1-3 passed in attempt 3 but no tests named test_ac<N> were written. Stopped, a model result."
