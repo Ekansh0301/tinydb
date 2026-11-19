@@ -41,6 +41,18 @@ and `experiment/model_probe.md`.
 
 A comment `/autose` on an open autose pull request asks for a fresh review of that pull request only.
 
+## Results at a glance
+
+| | |
+|---|---|
+| Pipeline on the five issues | pull request on three (#4: 4/4 hidden tests; #6: 5/5; #7: 3/5, then 4/5 after the review round); #5 stopped at stage 4 and #8 at stage 2 (model results) |
+| Reviewer | asked for changes twice (a real cache defect on #7, dead code on #6); approved after round 2 |
+| E1 split versus one agent | pipeline: 3 of 5 issues reach a pull request; one agent: 0 of 5 (never passed the test gate) |
+| E2 reviewer independence | independent reviewer caught 8 of 9 defective seeded PRs and approved 6 of 6 correct ones; the builder's own model caught 1 of 9 |
+| E2b larger reviewer (bonus) | the 550B reviewer: 15 of 15 valid reviews, 9 of 9 caught, 6 of 6 approved, at twice the tokens |
+
+Details, per-stage pass rates and the reasoning: `report.pdf`, `results/`, `architecture/decisions/`.
+
 ## Frozen version and run protocol
 
 The workflow code, prompts, gates and model assignment used for the recorded runs are tagged **`autose-v1`** (commit `de625a2`); one crash fix after the first runs is tagged `autose-v1.1` (ADR-007 amendment).
