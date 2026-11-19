@@ -1,0 +1,1 @@
+{"run_id": "44634321127", "round": 1, "stage": "single", "ok": false, "route": "", "reasons": ["[stage 4] no tests named test_ac<N>_... found in tests/test_autose_*.py"], "tokens_so_far": 28652, "calls_so_far": 10, "time": "2026-11-19T23:05:23Z"}
