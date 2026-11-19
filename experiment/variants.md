@@ -36,3 +36,7 @@ How to run: `gh workflow run review-seeded.yml -f pr_number=<13..17> -f issue_nu
 on the five seeded pull requests (two correct, three with a defect the included tests do not catch; labels in
 `experiment/seeded_prs/labels.csv`). Three trials per cell. Measured: catch rate on the wrong ones, false rejection of the correct ones,
 reviews rejected by the evidence gate, and tokens.
+
+## E2b: does a larger reviewer help? (bonus, ADR-008)
+
+Same five seeded pull requests, same protocol, three trials each, with the reviewer chain reordered so that `nemotron-3-ultra-550b-a55b` (55B active parameters) answers first and `nemotron-3.5-super-vl-120b-a12b` (12B active) is the fallback. Variant name in the workflow: `ultra-first`. It answers the question whether the independent reviewer's result depends on the reviewer being large; it needs no Groq tokens.
