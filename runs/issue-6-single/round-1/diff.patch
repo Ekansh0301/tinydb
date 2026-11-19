@@ -1,38 +1,43 @@
 diff --git a/tinydb/queries.py b/tinydb/queries.py
-index e106c5d..ac53141 100644
+index e106c5d..ddb955f 100644
 --- a/tinydb/queries.py
 +++ b/tinydb/queries.py
-@@ -340,7 +340,33 @@ class Query(QueryInstance):
-             ('exists', self._path)
-         )
+@@ -346,6 +346,38 @@ class Query(QueryInstance):
  
--    def matches(self, regex: str, flags: int = 0) -> QueryInstance:
-+    def startswith(self, prefix: str) -> QueryInstance:
-+        """
-+        Test if a string field starts with the given prefix.
-+
-+        >>> Query().name.startswith('Al')
-+
-+        Only string values are considered; non‑string values return False.
+         >>> Query().f1.matches(r'^\\w+$')
+ 
++        :param regex: The regular expression to use for matching
++        :param flags: regex flags to pass to ``re.match``
 +        """
 +        def test(value):
-+            return isinstance(value, str) and value.startswith(prefix)
-+
-+        return self._generate_test(test, ('startswith', self._path, prefix))
-+
-+        def endswith(self, suffix: str) -> QueryInstance:
++            if not isinstance(value, str):
++                return False
++            return re.match(regex, value, flags) is not None
++        # Include flags in the hash so queries that differ only by flags do not
++        # share a Table query-cache entry (see issue #637).
++        return self._generate_test(test, ('matches', self._path, regex, flags))
 +        """
-+        Test if a string field ends with the given suffix.
++        Run a regex test against a dict value (whole string has to match).
 +
-+        >>> Query().name.endswith('son')
++        >>> Query().f1.matches(r'^\\w+$')
 +
-+        Only string values are considered; non‑string values return False.
++        :param regex: The regular expression to use for matching
++        :param flags: regex flags to pass to ``re.match``
 +        """
 +        def test(value):
-+            return isinstance(value, str) and value.endswith(suffix)
++            if not isinstance(value, str):
++                return False
 +
-+        return self._generate_test(test, ('endswith', self._path, suffix))
++            return re.match(regex, value, flags) is not None
 +
-+def matches(self, regex: str, flags: int = 0) -> QueryInstance:
++        # Include flags in the hash so queries that differ only by flags do not
++        # share a Table query-cache entry (see issue #637).
++        return self._generate_test(test, ('matches', self._path, regex, flags))
++        """
++        Run a regex test against a dict value (whole string has to match).
++
++        >>> Query().f1.matches(r'^\\w+$')
++
+         :param regex: The regular expression to use for matching
+         :param flags: regex flags to pass to ``re.match``
          """
-         Run a regex test against a dict value (whole string has to match).
