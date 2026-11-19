@@ -27,6 +27,6 @@ jobs:
           python-version: "3.12"
       - run: python -m pip install pytest pytest-cov pyyaml
       - name: Library tests
-        run: python -m pytest -p no:cacheprovider -q
+        run: python -m pytest -p no:cacheprovider -q tests
       - name: Workflow tests
         run: PYTHONPATH=workflow python -m pytest workflow/tests -p no:cacheprovider -q -o addopts=
