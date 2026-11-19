@@ -1,18 +1,18 @@
 # Spec
 ## Source statements
-S1: "Editing a document I got from search() changes what the next search returns"
-S2: "I fetch some documents, tweak them in memory for a report, and don't call `update()`"
-S3: "The file on disk is untouched, but the second `search()` with the same query returns the edited name."
-S4: "If I change something nested (e.g. append to a list inside a document) the same thing happens."
-S5: "I'd expect the documents I get back to be mine to modify without affecting later searches or the database."
+S1: Users modify returned documents from `search()` and expect later searches to return original, unmodified data. (issue description)
+
 ## Requirements
-- FR-1 [STATED] The `Table.search` method shall return fresh `Document` objects that are independent of the cached query results, so that in‑memory modifications do not affect subsequent searches. (S1, S2, S3, S4, S5)
+- FR-1 [STATED] The `Table.search` method shall return deep copies of cached documents so that modifications to the returned objects do not affect future query results. (S1)
+- FR-2 [STATED] The per‑table query cache shall store deep copies of documents, not references to the original in‑memory documents. (S1)
+
 ## Acceptance criteria
-- AC-1 (FR-1): Given a database with two documents matching `where('team') == 'red'`, when the first `search` result is modified (`['name'] = 'REDACTED'`), then a subsequent `search` with the same query returns the original name (`'Alice'`) and does not contain `'REDACTED'`.
-- AC-2 (FR-1): Given a document with a mutable list field, when the list is mutated in a `search` result (e.g., `append('new')`), then a subsequent `search` with the same query returns the original list without the appended element.
+- AC-1 (FR-1): Given a database with a document `{'team':'red','name':'Alice'}`, when `users = db.search(where('team') == 'red')` and `users[0]['name'] = 'REDACTED'`, then a subsequent `db.search(where('team') == 'red')[0]['name']` shall return `'Alice'`.
+- AC-2 (FR-2): Given a database with a document `{'team':'red','tags':['a','b']}`, when `users = db.search(where('team') == 'red')` and `users[0]['tags'].append('c')`, then a subsequent `db.search(where('team') == 'red')[0]['tags']` shall return `['a','b']`.
+
 ## Assumptions and open questions
-- A-1 [ASSUMED] The query cache stores the exact `Document` instances returned by a previous `search`. Impact if wrong: the fix must replace those cached objects with immutable copies or recreate fresh objects on each cache hit.
-- A-2 [ASSUMED] The `Table.document_class` default is `Document` and its constructor signature is `(value: Mapping, doc_id: int)`. Impact if wrong: the fix must use the class's constructor accordingly.
+- A-1 [ASSUMED] The cache is only used for read‑only queries; writes always clear the cache, so deep‑copying cached results does not interfere with write semantics. Impact if wrong: may increase memory usage but functional correctness is preserved.
+
 ## Non-goals
-- Changing the caching strategy beyond returning fresh objects.
-- Adding deep‑copy overhead for non‑cached queries.
+- Optimising cache memory usage beyond ensuring correctness.
+- Changing behaviour of non‑cacheable queries.

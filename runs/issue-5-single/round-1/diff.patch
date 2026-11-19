@@ -1,20 +1,32 @@
 diff --git a/tinydb/table.py b/tinydb/table.py
-index 76470aa..8092eeb 100644
+index 76470aa..1dcf872 100644
 --- a/tinydb/table.py
 +++ b/tinydb/table.py
-@@ -264,7 +264,8 @@ class Table:
+@@ -15,6 +15,7 @@ from typing import (
+ from .queries import QueryLike
+ from .storages import Storage
+ from .utils import LRUCache
++import copy
+ 
+ __all__ = ('Document', 'Table')
+ 
+@@ -264,7 +265,9 @@ class Table:
          # query
          cached_results = self._query_cache.get(cond)
          if cached_results is not None:
 -            return cached_results[:]
 +            # Return fresh Document objects to avoid mutating cached instances
-+            return [self.document_class(dict(d), d.doc_id) for d in cached_results]
++            import copy
++return [self.document_class(copy.deepcopy(d), d.doc_id) for d in cached_results]
  
          # Perform the search by applying the query to all documents.
          # Then, only if the document matches the query, convert it
-@@ -294,7 +295,7 @@ class Table:
+@@ -292,9 +295,9 @@ class Table:
+                                                    lambda: True)
+         if is_cacheable():
              # Update the query cache
-             self._query_cache[cond] = docs[:]
+-            self._query_cache[cond] = docs[:]
++            self._query_cache[cond] = [copy.deepcopy(d) for d in docs]
  
 -        return docs
 +        return [self.document_class(dict(d), d.doc_id) for d in docs]

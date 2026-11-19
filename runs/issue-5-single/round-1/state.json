@@ -1,0 +1,13 @@
+
+
+## Stopped
+Stage single could not pass its check: [stage 2] `top` not found in tinydb/table.py (mark it NEW if it is new); [stage 3] compileall failed: *** Error compiling 'tinydb/table.py'...
+Sorry: IndentationError: unexpected indent (table.py, line 275)
+; [stage 3] import tinydb failed: it__.py", line 30, in <module>
+    from .database import TinyDB
+  File "/home/runner/work/tinydb/tinydb/tinydb/database.py", line 9, in <module>
+    from .table import Table, Document
+  File "/home/runner/work/tinydb/tinydb/tinydb/table.py", line 275
+    docs = [
+IndentationError: unexpected indent
+; [stage 4] test suite does not pass: E     File "/home/runner/work/tinydb/tinydb/tinydb/table.py", line 275 | E       docs = [ | E   IndentationError: unexpected indent

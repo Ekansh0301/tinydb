@@ -3,21 +3,23 @@
   "branch": "autose-single/issue-5",
   "counters": {},
   "issue": 5,
-  "reason": "",
+  "reason": "[stage 2] `top` not found in tinydb/table.py (mark it NEW if it is new); [stage 3] compileall failed: *** Error compiling 'tinydb/table.py'...\nSorry: IndentationError: unexpected indent (table.py, line 275)\n; [stage 3] import tinydb failed: it__.py\", line 30, in <module>\n    from .database import TinyDB\n  File \"/home/runner/work/tinydb/tinydb/tinydb/database.py\", line 9, in <module>\n    from .table import Table, Document\n  File \"/home/runner/work/tinydb/tinydb/tinydb/table.py\", line 275\n    docs = [\nIndentationError: unexpected indent\n; [stage 4] test suite does not pass: E     File \"/home/runner/work/tinydb/tinydb/tinydb/table.py\", line 275 | E       docs = [ | E   IndentationError: unexpected indent",
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 0,
-      "models": [],
-      "reason": "",
+      "calls": 58,
+      "models": [
+        "groq:openai/gpt-oss-120b"
+      ],
+      "reason": "[stage 2] `top` not found in tinydb/table.py (mark it NEW if it is new); [stage 3] compileall failed: *** Error compiling 'tinydb/table.py'...\nSorry: IndentationError: unexpected indent (table.py, line 275)\n; [stage 3] import tinydb failed: it__.py\", line 30, in <module>\n    from .database import TinyDB\n  File \"/home/runner/work/tinydb/tinydb/tinydb/database.py\", line 9, in <module>\n    from .table import Table, Document\n  File \"/home/runner/work/tinydb/tinydb/tinydb/table.py\", line 275\n    docs = [\nIndentationError: unexpected indent\n; [stage 4] test suite does not pass: E     File \"/home/runner/work/tinydb/tinydb/tinydb/table.py\", line 275 | E       docs = [ | E   IndentationError: unexpected indent",
       "stage": "single",
-      "status": "running",
-      "tokens": 0
+      "status": "STOPPED",
+      "tokens": 213843
     }
   },
   "stage": "single",
-  "status": "running",
+  "status": "STOPPED",
   "tokens": 0,
-  "tokens_total": 0,
-  "updated": "2026-11-19T23:13:50Z"
+  "tokens_total": 213843,
+  "updated": "2026-11-19T23:25:18Z"
 }
