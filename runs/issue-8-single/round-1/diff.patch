@@ -1,1 +1,43 @@
-
+diff --git a/tinydb/table.py b/tinydb/table.py
+index 76470aa..12b8c50 100644
+--- a/tinydb/table.py
++++ b/tinydb/table.py
+@@ -639,23 +639,25 @@ class Table:
+         :returns: a list containing the removed documents' ID
+         """
+         if doc_ids is not None:
+-            # This function returns the list of IDs for the documents that
+-            # have been removed. Document IDs that don't exist in the table
+-            # are silently skipped, mirroring the behaviour of
+-            # ``get(doc_ids=...)`` (see issue #591). The list of *actually*
+-            # removed IDs is determined inside the updater so it reflects the
+-            # table state at write time.
++            # When both doc_ids and cond are provided, remove only documents
++            # whose ID is in doc_ids *and* that satisfy the condition.
++            # If cond is None, behave as before (remove by IDs only).
+             requested_ids = list(doc_ids)
+             removed_ids: list[int] = []
+ 
+             def updater(table: dict):
+-                # Filter to IDs that exist *before* performing any removals,
+-                # so the operation is atomic: either every existing target is
+-                # removed, or none is.
+-                removed_ids.extend(
+-                    doc_id for doc_id in requested_ids if doc_id in table
+-                )
+-                for doc_id in removed_ids:
++                # Determine which IDs to remove based on existence and condition
++                if cond is not None:
++                    # Evaluate condition on each document
++                    _cond = cast(QueryLike, cond)
++                    ids_to_remove = [
++                        doc_id for doc_id in requested_ids
++                        if doc_id in table and _cond(table[doc_id])
++                    ]
++                else:
++                    ids_to_remove = [doc_id for doc_id in requested_ids if doc_id in table]
++                removed_ids.extend(ids_to_remove)
++                for doc_id in ids_to_remove:
+                     del table[doc_id]
+ 
+             # Perform the remove operation

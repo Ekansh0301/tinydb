@@ -3,21 +3,23 @@
   "branch": "autose-single/issue-8",
   "counters": {},
   "issue": 8,
-  "reason": "",
+  "reason": "[stage 4] no tests named test_ac<N>_... found in tests/test_autose_*.py",
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 0,
-      "models": [],
-      "reason": "",
+      "calls": 41,
+      "models": [
+        "groq:openai/gpt-oss-120b"
+      ],
+      "reason": "[stage 4] no tests named test_ac<N>_... found in tests/test_autose_*.py",
       "stage": "single",
-      "status": "running",
-      "tokens": 0
+      "status": "STOPPED",
+      "tokens": 149631
     }
   },
   "stage": "single",
-  "status": "running",
+  "status": "STOPPED",
   "tokens": 0,
-  "tokens_total": 0,
-  "updated": "2026-11-19T23:28:04Z"
+  "tokens_total": 149631,
+  "updated": "2026-11-19T23:35:26Z"
 }
