@@ -1,11 +1,23 @@
-The single-agent variant has no recorded runs yet.
-
+\begin{table}[ht]\centering\small
+\caption{E1, splitting the work: the split pipeline and the single agent on the same issues, compared at the end of round 1 (before any review feedback).}\label{tab:e1}
+\begin{tabular}{@{}r l c c c c r@{}}
+\toprule
+Issue & Variant & PR opened & Hidden tests & Regressions & First-try gates 1--4 & Tokens \\ \midrule
+\#4 & pipeline & yes & not scored & -- & 2 & 160447 \\
+\#4 & single & no & not scored & -- & -- & 129210 \\
+\#5 & pipeline & no & not scored & -- & 2 & 227977 \\
+\#6 & pipeline & yes & not scored & -- & 4 & 120598 \\
+\#7 & pipeline & yes & 3/5 & 0 & 3 & 215385 \\
+\#8 & pipeline & no & not scored & -- & 1 & 195881 \\
+\bottomrule\end{tabular}
+\end{table}
 \begin{table}[ht]\centering\small
 \caption{E2, reviewer independence: all reviews by the final reviewer on the five seeded pull requests (three trials per pull request).}\label{tab:e2}
 \begin{tabular}{@{}l r r r r r r r@{}}
 \toprule
 Variant & Reviews & Valid & Wrong PRs caught & Wrong PRs missed & Correct PRs approved & Correct PRs rejected & Mean tokens \\ \midrule
 independent & 15 & 14 & 8/9 & 0/9 & 6/6 & 0/6 & 54124 \\
+same-model & 15 & 14 & 1/9 & 8/9 & 5/6 & 0/6 & 3392 \\
 \bottomrule\end{tabular}
 \end{table}
 Pending.
