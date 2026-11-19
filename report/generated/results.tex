@@ -3,11 +3,11 @@
 \begin{tabular}{@{}l c r r r r@{}}
 \toprule
 Variant & Stage & Attempts & Passed & Rate & First-attempt rate \\ \midrule
-pipeline & 1 & 14 & 11 & 79\% & 82\% \\
-pipeline & 2 & 17 & 9 & 53\% & 50\% \\
-pipeline & 3 & 19 & 15 & 79\% & 82\% \\
-pipeline & 4 & 20 & 5 & 25\% & 40\% \\
-single & single & 3 & 0 & 0\% & 0\% \\
+pipeline & 1 & 6 & 5 & 83\% & 80\% \\
+pipeline & 2 & 9 & 3 & 33\% & 40\% \\
+pipeline & 3 & 7 & 6 & 86\% & 80\% \\
+pipeline & 4 & 6 & 4 & 67\% & 80\% \\
+single & single & 18 & 0 & 0\% & 0\% \\
 \bottomrule\end{tabular}
 \end{table}
 \begin{table}[ht]\centering\small
@@ -15,14 +15,18 @@ single & single & 3 & 0 & 0\% & 0\% \\
 \begin{tabular}{@{}r l c c c c r r l@{}}
 \toprule
 Issue & Variant & Round & PR & Hidden & Regr. & Tokens & Reviewer & \\ \midrule
-\#4 & pipeline & 1 & \#48 & not scored & -- & 160447 & approve & \\
+\#4 & pipeline & 1 & \#48 & 4/4 & 0 & 160447 & approve & \\
 \#5 & pipeline & 1 & -- & not scored & -- & 227977 & none & \\
-\#6 & pipeline & 1 & \#49 & not scored & -- & 120598 & request changes & \\
-\#6 & pipeline & 2 & \#49 & not scored & -- & 19735 & approve & \\
+\#6 & pipeline & 1 & \#49 & 5/5 & 0 & 120598 & request changes & \\
+\#6 & pipeline & 2 & \#49 & 5/5 & 0 & 19735 & approve & \\
 \#7 & pipeline & 1 & \#34 & 3/5 & 0 & 215385 & request changes & \\
-\#7 & pipeline & 2 & \#34 & not scored & -- & 23821 & approve & \\
+\#7 & pipeline & 2 & \#34 & 4/5 & 0 & 23821 & approve & \\
 \#8 & pipeline & 1 & -- & not scored & -- & 195881 & none & \\
-\#4 & single & 1 & -- & not scored & -- & 129210 & none & \\
+\#4 & single & 1 & -- & not scored & -- & 101902 & none & \\
+\#5 & single & 1 & -- & not scored & -- & 213843 & none & \\
+\#6 & single & 1 & -- & not scored & -- & 218294 & none & \\
+\#7 & single & 1 & -- & not scored & -- & 128126 & none & \\
+\#8 & single & 1 & -- & not scored & -- & 149631 & none & \\
 \bottomrule\end{tabular}
 \end{table}
 \begin{table}[ht]\centering\small
@@ -50,5 +54,15 @@ same-model v3 & \#14 (wrong) & missed, missed, missed & 0/3 \\
 same-model v3 & \#15 (correct) & no valid review, approved, approved & 2/2 \\
 same-model v3 & \#16 (wrong) & missed, missed, missed & 0/3 \\
 same-model v3 & \#17 (wrong) & missed, caught, missed & 1/3 \\
+ultra-first v3 & \#13 (correct) & approved, approved, approved & 3/3 \\
+ultra-first v3 & \#14 (wrong) & caught, caught, caught & 3/3 \\
+ultra-first v3 & \#15 (correct) & approved, approved, approved & 3/3 \\
+ultra-first v3 & \#16 (wrong) & caught, caught, caught & 3/3 \\
+ultra-first v3 & \#17 (wrong) & caught, caught, caught & 3/3 \\
 \bottomrule\end{tabular}
 \end{table}
+\textbf{Stage pass rates (Table~\ref{tab:rates}).} Over the runs on frozen code, requirements (stage 1) passed 5 of 6 attempts, implementation (stage 3) 6 of 7, testing (stage 4) 4 of 6, and design (stage 2) only 3 of 9: the design gate was the bottleneck (a file or function that does not exist, a criterion without a row, malformed tool calls while reading the code). Release (stage 5) succeeded every time a run reached it, and CI was green on every pull request. The first-attempt rates are 80\,\%, 40\,\%, 80\,\% and 80\,\%.
+
+\textbf{Hidden tests.} Of the five issues, three reached a pull request. Issue \#4 (None in comparisons) and \#6 (\code{startswith}/\code{endswith}) pass all hidden tests; \#7 (\code{limit}) passes 3 of 5 in round 1 and 4 of 5 after review. The remaining failure is \code{limit=0}, which the specification written by the planner treats as an error and the hidden test treats as an empty result: a reading of the issue, not a coding mistake, and the reviewer approved it against the issue text. Issue \#5 (search results alias the cache) stopped at stage 4: the fix broke existing cache tests in three implementation attempts, the trap the issue contains (an existing test encodes the old behaviour); issue \#8 (vague) stopped at stage 2 after three design attempts. There were no regressions in any pull request.
+
+\textbf{What the reviewer caught, and where it was wrong.} On the pipeline pull requests the reviewer asked for changes twice. On \#7 it found by running its own snippet that the query cache returned before \code{limit} was applied (\code{tinydb/table.py:267}); this is the defect two hidden tests check, and round 2 fixed it. On \#6 it found dead code the tests cannot see (a stray fragment after \code{endswith}), which the hidden tests did not flag. It was wrong, or at least silent, on \#7 round 2: it approved a pull request that still fails one hidden test, because the issue does not say what \code{limit=0} should do. On the seeded pull requests (Table~\ref{tab:e2}) the independent reviewer missed nothing it produced a valid review for, and the invalid reviews are its main failure; early versions (v1, v2) missed the cache-hash bug and produced more invalid reviews, which is why the experiments use only the final version (v3).

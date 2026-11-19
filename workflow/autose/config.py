@@ -36,8 +36,8 @@ ROLE_TIERS = {
     "implementer": [("groq", "openai/gpt-oss-120b")],
     "tester": [("groq", "openai/gpt-oss-20b")],
     "single": [("groq", "openai/gpt-oss-120b")],       # experiment E1: one agent does every build stage
-    "reviewer": [("nvidia", "nvidia/nemotron-3.5-super-vl-120b-a12b"),
-                 ("nvidia", "nvidia/nemotron-3-ultra-550b-a55b"),
+    "reviewer": [("nvidia", "nvidia/nemotron-3-ultra-550b-a55b"),          # ultra first since E2b (autose-v1.2)
+                 ("nvidia", "nvidia/nemotron-3.5-super-vl-120b-a12b"),
                  ("groq", "qwen/qwen3.8-27b")],
     "guard": [("groq", "meta-llama/llama-prompt-guard-2-86m")],
 }

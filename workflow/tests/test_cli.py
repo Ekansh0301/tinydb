@@ -24,7 +24,7 @@ def test_an_invalid_review_is_retried_once_on_the_next_tier(monkeypatch, tmp_pat
     monkeypatch.setattr(review.gitops, "run", lambda *a, **k: "")
     js, why, c, res = review.run_review(str(tmp_path), "base", "t", "b", log=lambda *_: None)
     assert js == {"verdict": "APPROVE"} and why == []
-    assert calls == ["nvidia/nemotron-3.5-super-vl-120b-a12b", "nvidia/nemotron-3-ultra-550b-a55b"]
+    assert calls == ["nvidia/nemotron-3-ultra-550b-a55b", "nvidia/nemotron-3.5-super-vl-120b-a12b"]
     assert [a["ok"] for a in c.attempts] == [False, True]
 
 

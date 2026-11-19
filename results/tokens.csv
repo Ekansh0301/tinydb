@@ -1,8 +1,9 @@
 workflow,model,tokens
-autose,groq:openai/gpt-oss-120b,916434
-autose,groq:openai/gpt-oss-20b,28122
+autose,groq:openai/gpt-oss-120b,2587447
+autose,groq:openai/gpt-oss-20b,89887
 autose,groq:qwen/qwen3.8-27b,402076
-autose,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,278664
+autose,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,399343
 autose,nvidia:poolside/laguna-xs-2.1,678263
-review-seeded,nvidia:nvidia/nemotron-3-ultra-550b-a55b,118743
-review-seeded,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,2129751
+review-seeded,groq:openai/gpt-oss-120b,50886
+review-seeded,nvidia:nvidia/nemotron-3-ultra-550b-a55b,1585161
+review-seeded,nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b,2233563

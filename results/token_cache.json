@@ -393,5 +393,275 @@
    "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 21429
   },
   "workflow": "review-seeded"
+ },
+ "44385760641": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 15221,
+   "groq:openai/gpt-oss-20b": 8600,
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 34333
+  },
+  "workflow": "autose"
+ },
+ "44386671130": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 151703,
+   "groq:openai/gpt-oss-20b": 8744,
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 32437
+  },
+  "workflow": "autose"
+ },
+ "44389251586": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 111871,
+   "groq:openai/gpt-oss-20b": 8727,
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 33265
+  },
+  "workflow": "autose"
+ },
+ "44390507790": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 10907,
+   "groq:openai/gpt-oss-20b": 8828,
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 20644
+  },
+  "workflow": "autose"
+ },
+ "44391179801": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 43313
+  },
+  "workflow": "autose"
+ },
+ "44392287994": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 201111,
+   "groq:openai/gpt-oss-20b": 26866
+  },
+  "workflow": "autose"
+ },
+ "44394826436": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 195881
+  },
+  "workflow": "autose"
+ },
+ "44396975304": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 2949
+  },
+  "workflow": "review-seeded"
+ },
+ "44397428919": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 2868
+  },
+  "workflow": "review-seeded"
+ },
+ "44397881308": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 2803
+  },
+  "workflow": "review-seeded"
+ },
+ "44398321194": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 2857
+  },
+  "workflow": "review-seeded"
+ },
+ "44398761251": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 3713
+  },
+  "workflow": "review-seeded"
+ },
+ "44399428384": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 4380
+  },
+  "workflow": "review-seeded"
+ },
+ "44399558180": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 4416
+  },
+  "workflow": "review-seeded"
+ },
+ "44399682910": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 2895
+  },
+  "workflow": "review-seeded"
+ },
+ "44399807726": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 2838
+  },
+  "workflow": "review-seeded"
+ },
+ "44399929816": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 2700
+  },
+  "workflow": "review-seeded"
+ },
+ "44400055339": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 4538
+  },
+  "workflow": "review-seeded"
+ },
+ "44400176249": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 2847
+  },
+  "workflow": "review-seeded"
+ },
+ "44400301993": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 4462
+  },
+  "workflow": "review-seeded"
+ },
+ "44400430520": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 2903
+  },
+  "workflow": "review-seeded"
+ },
+ "44400556271": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 3717
+  },
+  "workflow": "review-seeded"
+ },
+ "44401140674": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 129210
+  },
+  "workflow": "autose"
+ },
+ "44605016311": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 101902
+  },
+  "workflow": "autose"
+ },
+ "44632511260": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 218294
+  },
+  "workflow": "autose"
+ },
+ "44633931126": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 89867
+  },
+  "workflow": "review-seeded"
+ },
+ "44634012550": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 122164,
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 29946
+  },
+  "workflow": "review-seeded"
+ },
+ "44634094427": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 95980
+  },
+  "workflow": "review-seeded"
+ },
+ "44634177207": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 102127
+  },
+  "workflow": "review-seeded"
+ },
+ "44634262646": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 61348
+  },
+  "workflow": "review-seeded"
+ },
+ "44634321127": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 128126
+  },
+  "workflow": "autose"
+ },
+ "44634343502": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 136078,
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 32759
+  },
+  "workflow": "review-seeded"
+ },
+ "44634424572": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 120593
+  },
+  "workflow": "review-seeded"
+ },
+ "44634507784": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 90022
+  },
+  "workflow": "review-seeded"
+ },
+ "44634597169": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 66594
+  },
+  "workflow": "review-seeded"
+ },
+ "44634678960": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 75758
+  },
+  "workflow": "review-seeded"
+ },
+ "44634758541": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 81055
+  },
+  "workflow": "review-seeded"
+ },
+ "44634842172": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 130341
+  },
+  "workflow": "review-seeded"
+ },
+ "44634926481": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 80763
+  },
+  "workflow": "review-seeded"
+ },
+ "44635007389": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 98904
+  },
+  "workflow": "review-seeded"
+ },
+ "44635087953": {
+  "tokens": {
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 114824,
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 41107
+  },
+  "workflow": "review-seeded"
+ },
+ "44635787537": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 213843
+  },
+  "workflow": "autose"
+ },
+ "44637845650": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 149631
+  },
+  "workflow": "autose"
  }
 }
