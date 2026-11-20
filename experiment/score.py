@@ -3,8 +3,8 @@
     python experiment/score.py --issue 1 --branch autose/issue-4
     python experiment/score.py --issue 1 --path /path/to/checkout
 
-Hidden tests are read from $HIDDEN_DIR (default ../private/hidden_tests next to the
-repository) and are never copied into the repository the agents see. The numbering
+Hidden tests are read from $HIDDEN_DIR (default experiment/hidden_tests, committed after the last
+recorded run) and are copied beside, not into, the checkout that is scored. The numbering
 follows experiment/issues: issue 1..5 -> hidden test file test_I<n>_*.py.
 Prints one JSON line: acceptance passed/total, regressions among the 228 baseline tests,
 and outcome (Complete / Partial / Failed), as defined in the task.
@@ -48,7 +48,7 @@ def main():
     g.add_argument("--path", help="an existing checkout")
     a.add_argument("--sha", help="with --branch: score this commit of the branch instead of its tip")
     a.add_argument("--python", default=sys.executable)
-    a.add_argument("--hidden", default=os.environ.get("HIDDEN_DIR") or str(REPO.parent / "private" / "hidden_tests"))
+    a.add_argument("--hidden", default=os.environ.get("HIDDEN_DIR") or str(REPO / "experiment" / "hidden_tests"))
     a.add_argument("--allow-changed", default="",
                    help="comma separated baseline tests that the issue legitimately replaces")
     args = a.parse_args()

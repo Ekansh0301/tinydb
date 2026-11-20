@@ -12,12 +12,6 @@ def test_limit_zero_and_larger_than_matches(db):
     assert len(db.search(where('a') == 1, limit=10)) == 2
 
 
-def test_default_is_unlimited(db):
-    db.insert_multiple([{'a': 1}] * 7)
-    assert len(db.search(where('a') == 1)) == 7
-    assert len(db.search(where('a') == 1, limit=None)) == 7
-
-
 def test_cache_is_not_confused_by_limit(db):
     db.insert_multiple([{'a': 1, 'i': i} for i in range(4)])
     q = where('a') == 1
@@ -25,6 +19,7 @@ def test_cache_is_not_confused_by_limit(db):
     assert len(db.search(q)) == 4
     assert len(db.search(q, limit=2)) == 2
     assert len(db.search(q)) == 4
+    assert len(db.search(q, limit=None)) == 4
 
 
 def test_works_on_named_tables(db):

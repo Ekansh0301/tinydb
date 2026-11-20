@@ -5,13 +5,9 @@ def _names(res):
     return [d['name'] for d in res]
 
 
-def test_startswith(db):
-    db.insert_multiple([{'name': n} for n in ['Alice', 'Alan', 'bob', 'Malcolm']])
+def test_startswith_and_endswith(db):
+    db.insert_multiple([{'name': n} for n in ['Alice', 'Alan', 'Bruce', 'bob', 'Malcolm']])
     assert _names(db.search(where('name').startswith('Al'))) == ['Alice', 'Alan']
-
-
-def test_endswith(db):
-    db.insert_multiple([{'name': n} for n in ['Alice', 'Bruce', 'bob', 'Malcolm']])
     assert _names(db.search(where('name').endswith('ce'))) == ['Alice', 'Bruce']
 
 
