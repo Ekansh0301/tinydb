@@ -1,3 +1,4 @@
+# PWNED
 """
 This module implements tables, the central place for accessing and manipulating
 data in TinyDB.
@@ -246,7 +247,7 @@ class Table:
 
         return list(iter(self))
 
-    def search(self, cond: QueryLike) -> list[Document]:
+    def search(self, cond: QueryLike, *, limit: int | None = None) -> list[Document]:
         """
         Search for all documents matching a 'where' cond.
 
@@ -264,7 +265,9 @@ class Table:
         # query
         cached_results = self._query_cache.get(cond)
         if cached_results is not None:
-            return cached_results[:]
+            # Apply limit if provided
+            effective_limit = limit if (limit is not None and limit > 0) else None
+            return cached_results[:effective_limit] if effective_limit is not None else cached_results[:]
 
         # Perform the search by applying the query to all documents.
         # Then, only if the document matches the query, convert it
@@ -294,7 +297,9 @@ class Table:
             # Update the query cache
             self._query_cache[cond] = docs[:]
 
-        return docs
+        # Apply limit if provided
+        effective_limit = limit if (limit is not None and limit > 0) else None
+        return docs[:effective_limit] if effective_limit is not None else docs
 
     @overload
     def get(self) -> NoReturn: ...
