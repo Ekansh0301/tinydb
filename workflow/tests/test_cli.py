@@ -60,3 +60,15 @@ def test_the_injection_screen_returns_the_highest_chunk_score(monkeypatch):
 
     monkeypatch.setattr(cli.llm, "Client", Fake)
     assert cli.injection_score("x" * 3000) == 0.97
+
+
+def test_error_messages_never_carry_the_authorization_header():
+    import pytest
+    from autose import gitops
+    token = "ghs_" + "A" * 36
+    header = "AUTHORIZATION: basic eC1hY2Nlc3MtdG9rZW46" + "Z2hzX0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB"
+    with pytest.raises(RuntimeError) as e:
+        gitops.run(["git", "-c", "http.https://github.com/.extraheader=" + header, "no-such-subcommand"], cwd=".")
+    assert "eC1hY2Nlc3Mt" not in str(e.value) and "extraheader" not in str(e.value)
+    assert "<redacted>" in gitops.redact("x " + header) and token not in gitops.redact("tok " + token)
+    assert "gsk_" not in gitops.redact("gsk_" + "b" * 30) and "nvapi-" not in gitops.redact("nvapi-" + "c" * 30)

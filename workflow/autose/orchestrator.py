@@ -21,7 +21,7 @@ def budget_spent(outcome):
 
 
 def stop(ctx, stage, reasons):
-    msg = "; ".join(reasons) or "no reason recorded"
+    msg = gitops.redact("; ".join(reasons)) or "no reason recorded"
     name = {"1": "spec.md", "2": "design.md", "3": "diff.patch", "4": "test_report.md", "5": "pr.md"}.get(str(stage), "state.json")
     old = ctx.runs.read(name, "") or ""
     ctx.runs.write(name, old + "\n\n## Stopped\nStage %s could not pass its check: %s\n" % (stage, msg))
@@ -157,7 +157,7 @@ def build(ctx, from_stage):
             try:
                 o = stages.stage5(ctx)
             except Exception as e:
-                return stop(ctx, 5, [str(e)[:300]])
+                return stop(ctx, 5, [gitops.redact(str(e))[-300:]])
             ctx.runs.write("result.json", __import__("json").dumps(o.data))
             ctx.snapshot("5", "released")
             ctx.persist()
@@ -180,7 +180,7 @@ def build_single(ctx):
             try:
                 r = stages.stage5(ctx)
             except Exception as e:
-                return stop(ctx, 5, [str(e)[:300]])
+                return stop(ctx, 5, [gitops.redact(str(e))[-300:]])
             ctx.runs.write("result.json", __import__("json").dumps(r.data))
             ctx.snapshot("5", "released")
             ctx.persist()

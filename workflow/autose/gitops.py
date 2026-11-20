@@ -3,6 +3,7 @@ never appears in a remote URL or in a log (ADR-009)."""
 import base64
 import json
 import os
+import re
 import subprocess
 import time
 from pathlib import Path
@@ -10,10 +11,40 @@ from pathlib import Path
 from . import config
 
 
+SECRET_PATTERNS = [
+    (re.compile(r"(AUTHORIZATION:\s*basic\s+)[A-Za-z0-9+/=_-]+", re.I), r"\1<redacted>"),
+    (re.compile(r"x-access-token:[^@\s'\"]+"), "x-access-token:<redacted>"),
+    (re.compile(r"\bgh[pousr]_[A-Za-z0-9_]{20,}"), "<redacted-token>"),
+    (re.compile(r"\bgsk_[A-Za-z0-9]{20,}"), "<redacted-key>"),
+    (re.compile(r"\bnvapi-[A-Za-z0-9_-]{20,}"), "<redacted-key>"),
+]
+
+
+def redact(text):
+    """Remove anything that looks like a credential from text that may be logged, commented or stored."""
+    for rx, repl in SECRET_PATTERNS:
+        text = rx.sub(repl, text or "")
+    return text
+
+
+def safe_cmd(args):
+    """The command without its `-c key=value` options, which can carry the authorization header."""
+    out, skip = [], False
+    for a in args:
+        if skip:
+            skip = False
+            continue
+        if a == "-c":
+            skip = True
+            continue
+        out.append(a)
+    return " ".join(out[:3])
+
+
 def run(args, cwd=None, check=True, env=None, input=None):
     p = subprocess.run(args, cwd=cwd, capture_output=True, text=True, env=env, input=input)
     if check and p.returncode:
-        raise RuntimeError("%s failed: %s" % (" ".join(args[:3]), (p.stderr or p.stdout)[-400:]))
+        raise RuntimeError(redact("%s failed: %s" % (safe_cmd(args), (p.stderr or p.stdout)[-400:])))
     return p.stdout.strip()
 
 

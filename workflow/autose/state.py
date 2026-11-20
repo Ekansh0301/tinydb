@@ -24,7 +24,8 @@ class Ctx:
     cur_stage: str = ""
 
     def log(self, msg):
-        line = "[%s] %s" % (time.strftime("%H:%M:%S"), msg)
+        from .gitops import redact
+        line = "[%s] %s" % (time.strftime("%H:%M:%S"), redact(str(msg)))
         self.log_lines.append(line)
         print(line, flush=True)
 
