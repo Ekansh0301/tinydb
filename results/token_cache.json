@@ -663,5 +663,42 @@
    "groq:openai/gpt-oss-120b": 149631
   },
   "workflow": "autose"
+ },
+ "44660282447": {
+  "tokens": {
+   "groq:meta-llama/llama-prompt-guard-2-86m": 0
+  },
+  "workflow": "autose"
+ },
+ "44660588022": {
+  "tokens": {
+   "groq:meta-llama/llama-prompt-guard-2-86m": 0
+  },
+  "workflow": "autose"
+ },
+ "44660901708": {
+  "tokens": {
+   "groq:meta-llama/llama-prompt-guard-2-86m": 0,
+   "groq:openai/gpt-oss-120b": 67203,
+   "groq:openai/gpt-oss-20b": 12789,
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 74416
+  },
+  "workflow": "autose"
+ },
+ "44661715787": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 42750,
+   "groq:openai/gpt-oss-20b": 10392
+  },
+  "workflow": "autose"
+ },
+ "44662765820": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 52292,
+   "groq:openai/gpt-oss-20b": 14209,
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 119046,
+   "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 55599
+  },
+  "workflow": "autose"
  }
 }
