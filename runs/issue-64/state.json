@@ -3,7 +3,7 @@
   "branch": "autose/issue-64",
   "counters": {},
   "issue": 64,
-  "reason": "git -c http.https://github.com/.extraheader=AUTHORIZATION: basic <redacted>",
+  "reason": "",
   "round": 2,
   "rounds": {
     "1": {
@@ -18,20 +18,17 @@
       "tokens": 79992
     },
     "2": {
-      "calls": 17,
-      "models": [
-        "groq:openai/gpt-oss-120b",
-        "groq:openai/gpt-oss-20b"
-      ],
-      "reason": "git -c http.https://github.com/.extraheader=AUTHORIZATION: basic <redacted>",
-      "stage": "5",
-      "status": "STOPPED",
-      "tokens": 53142
+      "calls": 0,
+      "models": [],
+      "reason": "",
+      "stage": "3",
+      "status": "running",
+      "tokens": 0
     }
   },
-  "stage": "5",
-  "status": "STOPPED",
-  "tokens": 79992,
-  "tokens_total": 133134,
-  "updated": "2026-11-20T02:37:14Z"
+  "stage": "3",
+  "status": "running",
+  "tokens": 133134,
+  "tokens_total": 79992,
+  "updated": "2026-11-20T02:43:38Z"
 }
