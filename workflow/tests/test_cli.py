@@ -72,3 +72,11 @@ def test_error_messages_never_carry_the_authorization_header():
     assert "eC1hY2Nlc3Mt" not in str(e.value) and "extraheader" not in str(e.value)
     assert "<redacted>" in gitops.redact("x " + header) and token not in gitops.redact("tok " + token)
     assert "gsk_" not in gitops.redact("gsk_" + "b" * 30) and "nvapi-" not in gitops.redact("nvapi-" + "c" * 30)
+
+
+def test_the_next_round_keeps_the_variant(monkeypatch):
+    seen = []
+    monkeypatch.setattr(cli.gitops, "gh", lambda args, **k: seen.append(args) or "")
+    monkeypatch.setenv("VARIANT", "trial2")
+    cli.dispatch(5, 2, 3)
+    assert "variant=trial2" in seen[0] and "round=2" in seen[0] and "from_stage=3" in seen[0]

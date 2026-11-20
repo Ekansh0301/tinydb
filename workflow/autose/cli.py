@@ -206,7 +206,7 @@ def cmd_review(_):
 
 def dispatch(n, rnd, frm):
     gitops.gh(["workflow", "run", "autose.yml", "--repo", config.REPO, "-f", "issue_number=%d" % n,
-               "-f", "round=%d" % rnd, "-f", "from_stage=%d" % frm])
+               "-f", "round=%d" % rnd, "-f", "from_stage=%d" % frm, "-f", "variant=%s" % variant()])
 
 
 def cmd_next(_):
@@ -242,8 +242,8 @@ def cmd_next(_):
         return final("REVIEW_UNAVAILABLE", "autose: no valid review was produced, so there is no approval. A person must review pull request #%s." % pr)
     if js["verdict"] == "APPROVE":
         return final("DONE", "autose: reviewer approved pull request #%s. Merge or close is a human decision." % pr)
-    if variant() != "pipeline":
-        return final("DONE", "autose (%s variant): review recorded for pull request #%s; the experiment ends after round 1." % (variant(), pr))
+    if variant() == "single":
+        return final("DONE", "autose (single variant): review recorded for pull request #%s; the experiment ends after round 1." % pr)
     if rnd - 1 >= config.MAX_FIX_CYCLES:
         return final("DONE", "autose: the reviewer still asks for changes after %d fix cycles. Pull request #%s is left for a human decision." % (config.MAX_FIX_CYCLES, pr))
     frm = 2 if js.get("issue_class") == "approach" else 3
