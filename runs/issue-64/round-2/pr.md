@@ -31,4 +31,4 @@ Opened by the autose workflow. It never merges; a person decides.
 
 
 ## Stopped
-Stage 5 could not pass its check: git -c http.https://github.com/.extraheader=AUTHORIZATION: basic eC1hY2Nlc3MtdG9rZW46Z2hzXzE1MzY4X2V5SmhiR2NpT2lKRlV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpoZFdRaU9pSmhkWFJvYm1RaUxDSmpkSGdpT2lJME5HdDFNWFpHWWtoV1dqaHlTSGRVWkVWRU5IZ3pSbWxGV0dsSVdIaE5iREpGVWpkaGEyb3RPSFZ6VTNoU2RsY3hNR2gwU2t4Vklpd2laWGh3SWp
+Stage 5 could not pass its check: git -c http.https://github.com/.extraheader=AUTHORIZATION: basic <redacted>

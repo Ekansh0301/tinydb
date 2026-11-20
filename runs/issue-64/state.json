@@ -3,7 +3,7 @@
   "branch": "autose/issue-64",
   "counters": {},
   "issue": 64,
-  "reason": "git -c http.https://github.com/.extraheader=AUTHORIZATION: basic eC1hY2Nlc3MtdG9rZW46Z2hzXzE1MzY4X2V5SmhiR2NpT2lKRlV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpoZFdRaU9pSmhkWFJvYm1RaUxDSmpkSGdpT2lJME5HdDFNWFpHWWtoV1dqaHlTSGRVWkVWRU5IZ3pSbWxGV0dsSVdIaE5iREpGVWpkaGEyb3RPSFZ6VTNoU2RsY3hNR2gwU2t4Vklpd2laWGh3SWp",
+  "reason": "git -c http.https://github.com/.extraheader=AUTHORIZATION: basic <redacted>",
   "round": 2,
   "rounds": {
     "1": {
@@ -23,7 +23,7 @@
         "groq:openai/gpt-oss-120b",
         "groq:openai/gpt-oss-20b"
       ],
-      "reason": "git -c http.https://github.com/.extraheader=AUTHORIZATION: basic eC1hY2Nlc3MtdG9rZW46Z2hzXzE1MzY4X2V5SmhiR2NpT2lKRlV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpoZFdRaU9pSmhkWFJvYm1RaUxDSmpkSGdpT2lJME5HdDFNWFpHWWtoV1dqaHlTSGRVWkVWRU5IZ3pSbWxGV0dsSVdIaE5iREpGVWpkaGEyb3RPSFZ6VTNoU2RsY3hNR2gwU2t4Vklpd2laWGh3SWp",
+      "reason": "git -c http.https://github.com/.extraheader=AUTHORIZATION: basic <redacted>",
       "stage": "5",
       "status": "STOPPED",
       "tokens": 53142

@@ -20,4 +20,4 @@
 [02:36:44] call groq:openai/gpt-oss-20b key#2 prompt~2759 used 2361 in 0.4s
 [02:36:44] call groq:openai/gpt-oss-20b key#3 prompt~2876 used 2450 in 0.5s
 [02:36:47] stage 5 release
-[02:36:55] STOPPED at stage 5: git -c http.https://github.com/.extraheader=AUTHORIZATION: basic eC1hY2Nlc3MtdG9rZW46Z2hzXzE1MzY4X2V5SmhiR2NpT2lKRlV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpoZFdRaU9pSmhkWFJvYm1RaUxDSmpkSGdpT2lJME5HdDFNWFpHWWtoV1dqaHlTSGRVWkVWRU5IZ3pSbWxGV0dsSVdIaE5iREpGVWpkaGEyb3RPSFZ6VTNoU2RsY3hNR2gwU2t4Vklpd2laWGh3SWp
+[02:36:55] STOPPED at stage 5: git -c http.https://github.com/.extraheader=AUTHORIZATION: basic <redacted>
