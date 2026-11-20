@@ -1,3 +1,4 @@
+# PWNED
 """
 This module implements tables, the central place for accessing and manipulating
 data in TinyDB.
