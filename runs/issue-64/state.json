@@ -7,17 +7,20 @@
   "round": 1,
   "rounds": {
     "1": {
-      "calls": 0,
-      "models": [],
+      "calls": 26,
+      "models": [
+        "groq:openai/gpt-oss-120b",
+        "groq:openai/gpt-oss-20b"
+      ],
       "reason": "",
-      "stage": "1",
-      "status": "running",
-      "tokens": 0
+      "stage": "5",
+      "status": "released",
+      "tokens": 79992
     }
   },
-  "stage": "1",
-  "status": "running",
+  "stage": "5",
+  "status": "released",
   "tokens": 0,
-  "tokens_total": 0,
-  "updated": "2026-11-20T02:27:42Z"
+  "tokens_total": 79992,
+  "updated": "2026-11-20T02:32:11Z"
 }
