@@ -41,11 +41,20 @@ and `experiment/model_probe.md`.
 
 A comment `/autose` on an open autose pull request asks for a fresh review of that pull request only.
 
+The label trigger and the issue comment were used on issue #7 (the first runs); the later recorded runs were started with
+`workflow_dispatch` through `experiment/drive.py`, which runs the same jobs. Each review round is started by the workflow itself
+(`next` dispatches the following round), never by hand, except one hand-off that the gate refused because of a bug (`runs.md`).
+
+## Reuse of the earlier assignments
+
+- **Stage 1 reuses the requirements skill of assignment 1.** `workflow/prompts/spec.md` is a condensed, non-interactive version of it: source statements, a status on every requirement (STATED, INFERRED, ASSUMED), `shall` only for stated requirements, Given/When/Then criteria with a concrete outcome, and no invented requirements. The interactive questions and the confidence score of that skill are dropped, because no stakeholder can answer inside a run.
+- **Stage 2 uses the `ARCHITECTURE.md` of assignment 2** (tinydb at the same commit): components, three ADRs and five constraints. The design stage receives it trimmed to the component table, the ADR decisions and the constraints (`architecture/decisions/ADR-011.md`).
+
 ## Results at a glance
 
 | | |
 |---|---|
-| Pipeline on the five issues | pull request on three (#4: 4/4 hidden tests; #6: 5/5; #7: 3/5, then 4/5 after the review round); #5 stopped at stage 4 and #8 at stage 2 (model results) |
+| Pipeline on the five issues | pull request on three (#4: 4/4 hidden tests; #6: 4/4; #7: 2/4, then 3/4 after the review round); #5 stopped at stage 4 and #8 at stage 2 (model results) |
 | Reviewer | asked for changes twice (a real cache defect on #7, dead code on #6); approved after round 2 |
 | E1 split versus one agent | pipeline: 3 of 5 issues reach a pull request; one agent: 0 of 5 (never passed the test gate) |
 | E2 reviewer independence | independent reviewer caught 8 of 9 defective seeded PRs and approved 6 of 6 correct ones; the builder's own model caught 1 of 9 |
@@ -55,7 +64,7 @@ Details, per-stage pass rates and the reasoning: `report.pdf`, `results/`, `arch
 
 ## Frozen version and run protocol
 
-The workflow code, prompts, gates and model assignment used for the recorded runs are tagged **`autose-v1`** (commit `de625a2`); one crash fix after the first runs is tagged `autose-v1.1` (ADR-007 amendment).
+The workflow code, prompts, gates and model assignment used for the recorded runs are tagged **`autose-v1`** (commit `de625a2`); one crash fix after the first runs is tagged `autose-v1.1` (ADR-007 amendment); the reviewer order of `autose-v1.2` was changed after the recorded runs (ADR-008).
 `experiment/protocol.md` says what was fixed before the remaining runs, what counts as a rerun, and the token budget;
 `experiment/rehearsal.md` records the development runs that preceded the freeze; every attempt, including stopped and cancelled
 ones, is listed with a note in `results/runs.md`.
@@ -97,7 +106,7 @@ results/
 
 ## Hidden tests
 
-Each of the five issues has two to four hidden acceptance tests (22 in total). They were written before any run, validated
+Each of the five issues has two to four hidden acceptance tests (20 in total). They were written before any run, validated
 against a reference fix (all fail on the base commit except regression guards, all pass on the fix), and kept outside this
 repository while the agents could still read it. They are added to `experiment/hidden_tests/` after the last run.
 Scoring: `python experiment/score.py --issue <1..5> --branch autose/issue-<N>`.
@@ -108,4 +117,4 @@ Scoring: `python experiment/score.py --issue <1..5> --branch autose/issue-<N>`.
 - It never merges.
 - API keys are repository secrets (`GROQ_API_KEYS`, `NVIDIA_API_KEY`). They are not in code, logs or prompts; commands run by
   agents start with an empty environment.
-- Total tokens used: see `results/runs.md`.
+- Token use: `results/tokens.csv` and the appendix of `report.pdf` (counted from the logs of every Actions run; a lower bound).
