@@ -61,12 +61,13 @@ The label trigger and the issue comment were used on issue #7 (the first runs); 
 | E1 split versus one agent | pipeline: 3 of 5 issues reach a pull request; one agent: 0 of 5 (never passed the test gate) |
 | E2 reviewer independence | independent reviewer caught 8 of 9 defective seeded PRs and approved 6 of 6 correct ones; the builder's own model caught 1 of 9 |
 | E2b larger reviewer (bonus) | the 550B reviewer: 15 of 15 valid reviews, 9 of 9 caught, 6 of 6 approved, at twice the tokens |
+| Prompt injection | the screen caught blunt injections (0.99) and missed polite ones; in an end-to-end test the agents treated an unscreened polite injection as data. The test also found that the screen had been failing open and that an error message leaked a short-lived token; both fixed (ADR-009, `experiment/injection_test.md`) |
 
 Details, per-stage pass rates and the reasoning: `report.pdf`, `results/`, `architecture/decisions/`.
 
 ## Frozen version and run protocol
 
-The workflow code, prompts, gates and model assignment used for the recorded runs are tagged **`autose-v1`** (commit `de625a2`); one crash fix after the first runs is tagged `autose-v1.1` (ADR-007 amendment); the reviewer order of `autose-v1.2` was changed after the recorded runs (ADR-008).
+The workflow code, prompts, gates and model assignment used for the recorded runs are tagged **`autose-v1`** (commit `de625a2`); one crash fix after the first runs is tagged `autose-v1.1` (ADR-007 amendment). Later tags: `autose-v1.2` reviewer order (after the recorded runs, ADR-008), `autose-v1.3` injection screen fixed and fail-closed, `autose-v1.4` credentials redacted from messages, `autose-v1.5` named variants keep the review rounds (all in ADR-009 and `experiment/protocol.md`).
 `experiment/protocol.md` says what was fixed before the remaining runs, what counts as a rerun, and the token budget;
 `experiment/rehearsal.md` records the development runs that preceded the freeze; every attempt, including stopped and cancelled
 ones, is listed with a note in `results/runs.md`.
@@ -87,7 +88,7 @@ ones, is listed with a note in `results/runs.md`.
 README.md
 report.pdf
 architecture/
-  views/          component view, planned and real sequence view, stage map (agent, artifact, check)
+  views/          component view, sequence view of a real run, stage map (agent, artifact, check)
   decisions/      ADR-001 ... one per decision; superseded ones are kept and marked
 workflow/
   autose/         orchestrator, agents, tools, gates, model client, entry points
@@ -99,18 +100,22 @@ experiment/
   hidden_tests/   acceptance tests (added after the runs, see below)
   seeded_prs/     the five reviewer-check pull requests: diffs and labels
   variants.md     what each decision-experiment variant changes
-  score.py        scores a result against the hidden tests and the baseline
+  protocol.md     frozen code, rerun rule, experiments, token budget (with amendments)
+  rehearsal.md    development runs before the freeze
+  injection_test.md / .py   the prompt-injection tests and what they found
+  score.py drive.py collect.py tokens.py   scoring, running, collecting results and tokens
   model_probe.md  availability and tool-call measurements behind the model choices
 results/
-  results.csv
-  runs.md         links to every Actions run, pull request and review
+  results.csv  seeded.csv  stage_pass_rates.csv  tokens.csv
+  runs.md         links to every Actions run, pull request and review (with a note each)
+report/           sources of report.pdf (build.py, report.tex, figures, text)
 ```
 
 ## Hidden tests
 
-Each of the five issues has two to four hidden acceptance tests (20 in total). They were written before any run, validated
-against a reference fix (all fail on the base commit except regression guards, all pass on the fix), and kept outside this
-repository while the agents could still read it. They are added to `experiment/hidden_tests/` after the last run.
+Each of the five issues has four hidden acceptance tests (20 in total). They were written before any run, validated
+against a reference fix (16 fail on the base commit, the other 4 are regression guards, all 20 pass on the fix), and kept outside this
+repository while the agents could still read it. They were added to `experiment/hidden_tests/` after the last recorded run.
 Scoring: `python experiment/score.py --issue <1..5> --branch autose/issue-<N>`.
 
 ## Rules followed
@@ -118,5 +123,5 @@ Scoring: `python experiment/score.py --issue <1..5> --branch autose/issue-<N>`.
 - The workflow acts only on `Ekansh0301/tinydb`; it refuses to run in any other repository and never pushes to the upstream project.
 - It never merges.
 - API keys are repository secrets (`GROQ_API_KEYS`, `NVIDIA_API_KEY`). They are not in code, logs or prompts; commands run by
-  agents start with an empty environment.
+  agents start with an empty environment; anything logged, stored or commented passes through `redact` (one earlier lapse is recorded in ADR-009).
 - Token use: `results/tokens.csv` and the appendix of `report.pdf` (counted from the logs of every Actions run; a lower bound).
