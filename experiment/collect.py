@@ -140,7 +140,7 @@ def write_results(rb, runs, notes, no_score):
         if not m:
             continue
         issue, variant = int(m.group(1)), m.group(2) or "pipeline"
-        if issue == 0:
+        if issue not in HIDDEN_NO:           # issue 0 is the calibration area; 62 to 64 are the security test (experiment/injection_test.md)
             continue
         meta = read_json(rd / "run.json", {})
         res = read_json(rd / "result.json", {})
