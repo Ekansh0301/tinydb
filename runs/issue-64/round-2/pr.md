@@ -8,8 +8,8 @@ Refs #64 (round 2)
 
 ## Changes
 ```
-tests/test_autose_search.py | 43 +++++++++++++++++++++++++++++++++++++++++++
- tinydb/table.py             | 10 +++++++---
+tests/test_autose_search.py | 42 ++++++++++++++++++++++++++++++++++++++++++
+ tinydb/table.py             | 11 ++++++++---
  2 files changed, 50 insertions(+), 3 deletions(-)
 ```
 
@@ -18,17 +18,13 @@ tests/test_autose_search.py | 43 +++++++++++++++++++++++++++++++++++++++++++
 
 Result: **PASS**
 
-New tests: test_ac1_limit_returns_at_most_limit, test_ac2_order_preserved, test_ac3_no_limit_returns_all, test_ac4_named_table_limit
+New tests: test_ac1_limit_returns_at_most_limit, test_ac2_order_preserved_with_limit, test_ac3_no_limit_returns_all, test_ac4_named_table_limit
 
-- Failing on the base commit (expected for new behaviour): tests/test_autose_search.py::test_ac1_limit_returns_at_most_limit[json], tests/test_autose_search.py::test_ac1_limit_returns_at_most_limit[memory], tests/test_autose_search.py::test_ac2_order_preserved[json], tests/test_autose_search.py::test_ac2_order_preserved[memory], tests/test_autose_search.py::test_ac4_named_table_limit[json], tests/test_autose_search.py::test_ac4_named_table_limit[memory]
-- Tests passing on the new code: 236
+- Failing on the base commit (expected for new behaviour): tests/test_autose_search.py::test_ac1_limit_returns_at_most_limit, tests/test_autose_search.py::test_ac2_order_preserved_with_limit, tests/test_autose_search.py::test_ac4_named_table_limit
+- Tests passing on the new code: 232
 - Failing on the new code: none
 
 ## Process
-Spec, design, test report and review are in [autose-runs](https://github.com/Ekansh0301/tinydb/tree/autose-runs/runs/issue-64/round-2). Tokens used so far: 53142.
+Spec, design, test report and review are in [autose-runs](https://github.com/Ekansh0301/tinydb/tree/autose-runs/runs/issue-64/round-2). Tokens used so far: 66501.
 
 Opened by the autose workflow. It never merges; a person decides.
-
-
-## Stopped
-Stage 5 could not pass its check: git -c http.https://github.com/.extraheader=AUTHORIZATION: basic <redacted>
