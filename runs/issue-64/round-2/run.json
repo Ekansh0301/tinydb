@@ -1,0 +1,12 @@
+{
+ "run_id": "44661715787",
+ "attempt": "1",
+ "event": "workflow_dispatch",
+ "issue": 64,
+ "variant": "pipeline",
+ "round": 2,
+ "from_stage": 3,
+ "base_sha": "99575915035d363e9f431ffbcf6b52278a04d5f3",
+ "branch": "autose/issue-64",
+ "started": "2026-11-20T02:34:32Z"
+}
