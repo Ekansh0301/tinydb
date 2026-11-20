@@ -91,7 +91,7 @@ class Client:
             mt = max_tokens
             if provider == "groq":
                 mt = min(max_tokens, config.GROQ_TPM_LIMIT - prompt_est)
-                if mt < 400:
+                if mt < min(400, max_tokens):          # only a prompt that leaves no room for the requested answer is too large
                     last = TooLarge("%s: prompt of about %d tokens leaves no room under the rate limit" % (label, prompt_est))
                     continue
             need = prompt_est + mt

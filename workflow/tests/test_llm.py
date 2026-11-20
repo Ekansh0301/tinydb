@@ -133,3 +133,10 @@ def test_an_endpoint_that_never_answers_is_given_up_after_four_timeouts(monkeypa
     with pytest.raises(llm.LLMError):
         c.chat([{"role": "user", "content": "x"}])
     assert len(seen) == 4
+
+
+def test_a_short_answer_request_is_not_refused_as_too_large(monkeypatch):
+    """The injection classifier asks for 5 tokens; the clamp once refused every such call."""
+    c, seen = client(monkeypatch, lambda *a: OK)
+    msg, used, label = c.chat([{"role": "user", "content": "x"}], max_tokens=5)
+    assert msg["content"] == "hi" and len(seen) == 1

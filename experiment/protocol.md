@@ -23,3 +23,6 @@ The pipeline is exercised locally on every issue with `gpt-oss-20b` for the buil
 
 ## Token budget (Groq `gpt-oss-120b`, six keys, 200,000 tokens per key and day)
 Planned: baseline about 700,000, E1 about 1,000,000, E2 same-model about 750,000: about 2.5 million in all, roughly two days of quota. Runs are spaced so that no day exceeds about 1.2 million tokens; the order is baseline first, then E2 (short jobs that can run between others), then E1. Nothing is dropped to save tokens: if the quota runs short, the work is moved to the next day, and extra keys or a deadline extension (asked for before the deadline) are the fallbacks.
+
+## Amendment (2026-11-20): trial 2 on autose-v1.3
+The injection screen turned out to be failing open in every run on `autose-v1` and `autose-v1.1` (ADR-009 amendment). That is a bug in our code, so by the rerun rule above the affected runs are repeated on the fixed commit `autose-v1.3`: the pipeline is run once more on all five issues. The first complete attempt on `autose-v1` stays the primary result of each cell (the screen does not change what happens to a benign issue); trial 2 is reported beside it and shows how much a repeated run varies. The single-agent variant is not repeated: it passed the same gate, and no cell of it reached a pull request.
