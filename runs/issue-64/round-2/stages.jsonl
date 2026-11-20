@@ -1,3 +1,4 @@
 {"run_id": "44661715787", "round": 2, "stage": 3, "ok": true, "route": "", "reasons": [], "tokens_so_far": 42750, "calls_so_far": 12, "time": "2026-11-20T02:36:40Z"}
 {"run_id": "44661715787", "round": 2, "stage": 4, "ok": true, "route": "", "reasons": [], "tokens_so_far": 53142, "calls_so_far": 17, "time": "2026-11-20T02:36:46Z"}
 {"run_id": "44662765820", "round": 2, "stage": 3, "ok": true, "route": "", "reasons": [], "tokens_so_far": 52292, "calls_so_far": 17, "time": "2026-11-20T02:45:52Z"}
+{"run_id": "44662765820", "round": 2, "stage": 4, "ok": true, "route": "", "reasons": [], "tokens_so_far": 66501, "calls_so_far": 23, "time": "2026-11-20T02:46:54Z"}
