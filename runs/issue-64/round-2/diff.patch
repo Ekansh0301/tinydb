@@ -1,0 +1,87 @@
+diff --git a/tests/test_autose_search.py b/tests/test_autose_search.py
+new file mode 100644
+index 0000000..fbfbcf7
+--- /dev/null
++++ b/tests/test_autose_search.py
+@@ -0,0 +1,46 @@
++import pytest
++from tinydb import TinyDB, where
++from tinydb.storages import MemoryStorage
++
++# AC-1: limit returns at most limit docs and each is Document
++
++def test_ac1_limit_returns_at_most_and_documents():
++    db = TinyDB(storage=MemoryStorage)
++    docs = [{'type': 'log', 'i': i} for i in range(10)]
++    db.insert_multiple(docs)
++    result = db.search(where('type') == 'log', limit=5)
++    assert len(result) <= 5
++    for d in result:
++        assert hasattr(d, 'doc_id')
++
++# AC-2: preserves order
++
++def test_ac2_limit_preserves_order():
++    db = TinyDB(storage=MemoryStorage)
++    docs = [{'type': 'log', 'i': i} for i in range(6)]
++    db.insert_multiple(docs)
++    result = db.search(where('type') == 'log', limit=3)
++    assert [d['i'] for d in result] == [0, 1, 2]
++
++# AC-3: no limit returns all
++
++def test_ac3_no_limit_returns_all():
++    db = TinyDB(storage=MemoryStorage)
++    docs = [{'type': 'log', 'i': i} for i in range(8)]
++    db.insert_multiple(docs)
++    result = db.search(where('type') == 'log')
++    assert len(result) == 8
++    assert [d['i'] for d in result] == list(range(8))
++
++# AC-4: named table
++
++def test_ac4_named_table_limit():
++    db = TinyDB(storage=MemoryStorage)
++    table = db.table('my_table')
++    docs = [{'type': 'log', 'i': i} for i in range(12)]
++    table.insert_multiple(docs)
++    result = table.search(where('type') == 'log', limit=4)
++    assert len(result) == 4
++    assert [d['i'] for d in result] == [0, 1, 2, 3]
++
++# end of tests
+diff --git a/tinydb/table.py b/tinydb/table.py
+index 76470aa..a4b1873 100644
+--- a/tinydb/table.py
++++ b/tinydb/table.py
+@@ -246,7 +246,7 @@ class Table:
+ 
+         return list(iter(self))
+ 
+-    def search(self, cond: QueryLike) -> list[Document]:
++    def search(self, cond: QueryLike, *, limit: int | None = None) -> list[Document]:
+         """
+         Search for all documents matching a 'where' cond.
+ 
+@@ -264,7 +264,9 @@ class Table:
+         # query
+         cached_results = self._query_cache.get(cond)
+         if cached_results is not None:
+-            return cached_results[:]
++            # Apply limit if provided
++            effective_limit = limit if (limit is not None and limit > 0) else None
++            return cached_results[:effective_limit] if effective_limit is not None else cached_results[:]
+ 
+         # Perform the search by applying the query to all documents.
+         # Then, only if the document matches the query, convert it
+@@ -294,7 +296,9 @@ class Table:
+             # Update the query cache
+             self._query_cache[cond] = docs[:]
+ 
+-        return docs
++        # Apply limit if provided
++        effective_limit = limit if (limit is not None and limit > 0) else None
++        return docs[:effective_limit] if effective_limit is not None else docs
+ 
+     @overload
+     def get(self) -> NoReturn: ...
