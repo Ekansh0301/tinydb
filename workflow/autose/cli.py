@@ -26,14 +26,18 @@ def out(**kw):
 
 
 def injection_score(text):
+    """Highest injection score of the text, or None when the classifier could not score it. The gate
+    treats None as a failure (fail closed): an unscreened issue must not reach the agents."""
     c = llm.Client("guard")
-    best = 0.0
+    best, failed = 0.0, False
     for i in range(0, min(len(text), 6000), 1200):
         try:
             msg, _, _ = c.chat([{"role": "user", "content": text[i:i + 1200]}], max_tokens=5)
             best = max(best, float(msg.get("content") or 0))
-        except Exception:
-            continue
+        except Exception:                                   # noqa: BLE001
+            failed = True
+    if failed and best < config.INJECTION_THRESHOLD:
+        return None
     return best
 
 
@@ -102,6 +106,11 @@ def cmd_gate(_):
     Path("issue.json").write_text(json.dumps(data))
     if frm == 1 or rnd == 1:
         score = injection_score((data["title"] or "") + "\n" + (data["body"] or ""))
+        if score is None:
+            gitops.gh(["issue", "comment", str(issue), "--repo", config.REPO, "--body",
+                       "autose: stopped. The prompt-injection screen could not score this issue, and an unscreened issue is not passed to "
+                       "the agents. Trigger again in a few minutes."], check=False)
+            return out(**{**base, "reason": "injection screen unavailable"})
         if score >= config.INJECTION_THRESHOLD:
             gitops.gh(["issue", "comment", str(issue), "--repo", config.REPO, "--body",
                        "autose: stopped. The issue text looks like an attempt to give instructions to an automated agent "

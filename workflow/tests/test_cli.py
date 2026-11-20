@@ -34,3 +34,29 @@ def test_two_invalid_reviews_mean_no_review(monkeypatch, tmp_path):
     monkeypatch.setattr(review.gitops, "run", lambda *a, **k: "")
     js, why, c, res = review.run_review(str(tmp_path), "base", "t", "b", log=lambda *_: None)
     assert js is None and why == ["no JSON"] and len(c.attempts) == 2
+
+
+def test_the_injection_screen_fails_closed(monkeypatch):
+    from autose import llm
+
+    class Down:
+        def __init__(self, role, log=print):
+            pass
+
+        def chat(self, *a, **k):
+            raise llm.LLMError("down")
+
+    monkeypatch.setattr(cli.llm, "Client", Down)
+    assert cli.injection_score("any text") is None
+
+
+def test_the_injection_screen_returns_the_highest_chunk_score(monkeypatch):
+    class Fake:
+        def __init__(self, role, log=print):
+            self.scores = iter(["0.01", "0.97", "0.02"])
+
+        def chat(self, *a, **k):
+            return {"content": next(self.scores)}, 1, "fake"
+
+    monkeypatch.setattr(cli.llm, "Client", Fake)
+    assert cli.injection_score("x" * 3000) == 0.97
