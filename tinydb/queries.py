@@ -359,6 +359,32 @@ class Query(QueryInstance):
         # share a Table query-cache entry (see issue #637).
         return self._generate_test(test, ('matches', self._path, regex, flags))
 
+    def startswith(self, prefix: str) -> QueryInstance:
+        """Return a query that matches when the field value starts with ``prefix``.
+
+        Non‑string values (including missing fields, ``None`` or numbers) do not
+        match and do not raise an exception.
+        """
+        def test(value):
+            if not isinstance(value, str):
+                return False
+            return value.startswith(prefix)
+
+        return self._generate_test(test, ('startswith', self._path, prefix))
+
+    def endswith(self, suffix: str) -> QueryInstance:
+        """Return a query that matches when the field value ends with ``suffix``.
+
+        Non‑string values (including missing fields, ``None`` or numbers) do not
+        match and do not raise an exception.
+        """
+        def test(value):
+            if not isinstance(value, str):
+                return False
+            return value.endswith(suffix)
+
+        return self._generate_test(test, ('endswith', self._path, suffix))
+
     def search(self, regex: str, flags: int = 0) -> QueryInstance:
         """
         Run a regex test against a dict value (only substring string has to
