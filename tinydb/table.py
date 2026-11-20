@@ -246,7 +246,7 @@ class Table:
 
         return list(iter(self))
 
-    def search(self, cond: QueryLike) -> list[Document]:
+    def search(self, cond: QueryLike, *, limit: int | None = None) -> list[Document]:
         """
         Search for all documents matching a 'where' cond.
 
@@ -264,6 +264,11 @@ class Table:
         # query
         cached_results = self._query_cache.get(cond)
         if cached_results is not None:
+            # Apply limit if provided, after retrieving cached results
+            if limit is not None:
+                if not isinstance(limit, int) or limit <= 0:
+                    raise ValueError('limit must be a positive integer')
+                return cached_results[:limit]
             return cached_results[:]
 
         # Perform the search by applying the query to all documents.
@@ -294,6 +299,11 @@ class Table:
             # Update the query cache
             self._query_cache[cond] = docs[:]
 
+        # Apply limit if provided
+        if limit is not None:
+            if not isinstance(limit, int) or limit <= 0:
+                raise ValueError('limit must be a positive integer')
+            return docs[:limit]
         return docs
 
     @overload
