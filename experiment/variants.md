@@ -40,3 +40,6 @@ reviews rejected by the evidence gate, and tokens.
 ## E2b: does a larger reviewer help? (bonus, ADR-008)
 
 Same five seeded pull requests, same protocol, three trials each, with the reviewer chain reordered so that `nemotron-3-ultra-550b-a55b` (55B active parameters) answers first and `nemotron-3.5-super-vl-120b-a12b` (12B active) is the fallback. Variant name in the workflow: `ultra-first`. It answers the question whether the independent reviewer's result depends on the reviewer being large; it needs no Groq tokens.
+
+## Trial 2 of the pipeline (protocol amendment of 2026-11-20)
+The variant name `trial2` runs the same pipeline as the default (same code, same gates, the review rounds included) under its own run key `runs/issue-N-trial2/` and its own branch `autose-trial2/issue-N`, so that trial 1 is not overwritten. Start it with `python experiment/drive.py <issue> --variant trial2`; the rounds that the `next` job starts keep the variant.
