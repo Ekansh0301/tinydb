@@ -41,6 +41,8 @@ and `experiment/model_probe.md`.
 
 A comment `/autose` on an open autose pull request asks for a fresh review of that pull request only.
 
+CI for a pull request opened by the workflow runs inside the same Actions run (job `ci / tests`, a reusable workflow on the PR head); GitHub does not start the ordinary `pull_request` check for a pull request created with the workflow token, so the three autose pull requests were closed and reopened once by hand to attach that check to the page.
+
 The label trigger and the issue comment were used on issue #7 (the first runs); the later recorded runs were started with
 `workflow_dispatch` through `experiment/drive.py`, which runs the same jobs. Each review round is started by the workflow itself
 (`next` dispatches the following round), never by hand, except one hand-off that the gate refused because of a bug (`runs.md`).
