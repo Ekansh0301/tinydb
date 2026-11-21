@@ -1,7 +1,12 @@
 {
   "base_sha": "d1e4e7a9d885b617e6cb42e78ad532009527e073",
   "branch": "autose/issue-75",
-  "counters": {},
+  "counters": {
+    "ac1_fail": 1,
+    "ac4_fail": 1,
+    "ac5_fail": 1,
+    "impl": 1
+  },
   "issue": 75,
   "reason": "",
   "round": 2,
@@ -18,17 +23,20 @@
       "tokens": 193961
     },
     "2": {
-      "calls": 0,
-      "models": [],
+      "calls": 53,
+      "models": [
+        "groq:openai/gpt-oss-120b",
+        "groq:openai/gpt-oss-20b"
+      ],
       "reason": "",
-      "stage": "3",
-      "status": "running",
-      "tokens": 0
+      "stage": "5",
+      "status": "released",
+      "tokens": 154180
     }
   },
-  "stage": "3",
-  "status": "running",
+  "stage": "5",
+  "status": "released",
   "tokens": 193961,
-  "tokens_total": 193961,
-  "updated": "2026-11-21T17:55:53Z"
+  "tokens_total": 348141,
+  "updated": "2026-11-21T18:04:34Z"
 }
