@@ -2,9 +2,9 @@
 
 Result: **FAIL**
 
-New tests: test_ac1_between_inclusive_match, test_ac2_between_inclusive_bounds, test_ac3_missing_or_none_field, test_ac4_numeric_between, test_ac5_string_between, test_ac6_combined_predicates
+New tests: test_ac1_between_inclusive_match, test_ac2_between_bounds_inclusive, test_ac3_missing_or_none_field, test_ac4_numbers_between, test_ac5_strings_between, test_ac6_combination_with_and_not
 
-- Failing on the base commit (expected for new behaviour): tests/test_autose_between.py::test_ac1_between_inclusive_match, tests/test_autose_between.py::test_ac2_between_inclusive_bounds, tests/test_autose_between.py::test_ac3_missing_or_none_field, tests/test_autose_between.py::test_ac4_numeric_between, tests/test_autose_between.py::test_ac5_string_between, tests/test_autose_between.py::test_ac6_combined_predicates
+- Failing on the base commit (expected for new behaviour): tests/test_autose_between.py::test_ac1_between_inclusive_match, tests/test_autose_between.py::test_ac2_between_bounds_inclusive, tests/test_autose_between.py::test_ac3_missing_or_none_field, tests/test_autose_between.py::test_ac4_numbers_between, tests/test_autose_between.py::test_ac5_strings_between, tests/test_autose_between.py::test_ac6_combination_with_and_not
 - Tests passing on the new code: 233
 - Failing on the new code: tests/test_autose_between.py::test_ac3_missing_or_none_field
 
@@ -39,6 +39,6 @@ E   TypeError: '<=' not supported between instances of 'int' and 'NoneType'
 tinydb/queries.py:335: TypeError
 =========================== short test summary info ============================
 FAILED tests/test_autose_between.py::test_ac3_missing_or_none_field - TypeErr...
-1 failed, 233 passed in 0.87s
+1 failed, 233 passed in 0.78s
 
 ```
