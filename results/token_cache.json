@@ -700,5 +700,64 @@
    "nvidia:nvidia/nemotron-3.5-super-vl-120b-a12b": 55599
   },
   "workflow": "autose"
+ },
+ "44918946652": {
+  "tokens": {
+   "groq:meta-llama/llama-prompt-guard-2-86m": 0,
+   "groq:openai/gpt-oss-120b": 334934,
+   "groq:openai/gpt-oss-20b": 39362,
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 75605
+  },
+  "workflow": "autose"
+ },
+ "44926848020": {
+  "tokens": {
+   "groq:meta-llama/llama-prompt-guard-2-86m": 0,
+   "groq:openai/gpt-oss-120b": 53665,
+   "groq:openai/gpt-oss-20b": 29018,
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 80864
+  },
+  "workflow": "autose"
+ },
+ "44927612510": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 25147,
+   "groq:openai/gpt-oss-20b": 16008,
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 58365
+  },
+  "workflow": "autose"
+ },
+ "44930369538": {
+  "tokens": {},
+  "workflow": "autose"
+ },
+ "44930374867": {
+  "tokens": {},
+  "workflow": "autose"
+ },
+ "44930379675": {
+  "tokens": {},
+  "workflow": "autose"
+ },
+ "44930384626": {
+  "tokens": {},
+  "workflow": "autose"
+ },
+ "44931285607": {
+  "tokens": {
+   "groq:meta-llama/llama-prompt-guard-2-86m": 0,
+   "groq:openai/gpt-oss-120b": 67873,
+   "groq:openai/gpt-oss-20b": 126088,
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 68135
+  },
+  "workflow": "autose"
+ },
+ "44932673974": {
+  "tokens": {
+   "groq:openai/gpt-oss-120b": 101466,
+   "groq:openai/gpt-oss-20b": 52714,
+   "nvidia:nvidia/nemotron-3-ultra-550b-a55b": 73331
+  },
+  "workflow": "autose"
  }
 }

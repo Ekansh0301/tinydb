@@ -14,6 +14,16 @@ that explain why it is built this way. It is the submission for assignment 3 (ro
 | Baseline test suite | 228 passed, 0 failed, 0 skipped |
 | `main` | protected: pull requests only, no direct pushes, no force pushes, applies to administrators |
 
+## Demo video
+
+[`demo.mp4`](demo.mp4) (4 min 29 s, subtitles only) shows one complete run, live, from the issue page to the posted review:
+issue #75 is created, the label `autose` is added, and each job (gate, build, ci, review, next) is opened while it runs.
+The reviewer asked for changes in round 1 (dead code the tests cannot see) and approved in round 2, which the `next` job started by itself.
+The build and review waits are sped up and marked as such; the stage tracker, clock and token counter on screen are drawn from the run's own
+records (`stages.jsonl`, job timings). Run [44931285607](https://github.com/Ekansh0301/tinydb/actions/runs/44931285607) (round 1),
+[44932673974](https://github.com/Ekansh0301/tinydb/actions/runs/44932673974) (round 2), pull request #76, left open for a person to decide.
+Earlier recording takes (issues #71 and #73) are closed and listed in `results/runs.md`. These runs are not part of the results tables.
+
 ## Models
 
 | Role | Model (provider) |
@@ -43,7 +53,7 @@ A comment `/autose` on an open autose pull request asks for a fresh review of th
 
 CI for a pull request opened by the workflow runs inside the same Actions run (job `ci / tests`, a reusable workflow on the PR head); GitHub does not start the ordinary `pull_request` check for a pull request created with the workflow token, so the three autose pull requests were closed and reopened once by hand to attach that check to the page.
 
-The label trigger and the issue comment were used on issue #7 (the first runs); the later recorded runs were started with
+The label trigger and the issue comment were used on issue #7 (the first runs) and the label again for the demo run (issue #75); the other recorded runs were started with
 `workflow_dispatch` through `experiment/drive.py`, which runs the same jobs. Each review round is started by the workflow itself
 (`next` dispatches the following round), never by hand, except one hand-off that the gate refused because of a bug (`runs.md`).
 
@@ -87,6 +97,7 @@ ones, is listed with a note in `results/runs.md`.
 ```
 README.md
 report.pdf
+demo.mp4          screen recording of one live run (see Demo video)
 architecture/
   views/          component view, sequence view of a real run, stage map (agent, artifact, check)
   decisions/      ADR-001 ... one per decision; superseded ones are kept and marked
