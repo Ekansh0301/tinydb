@@ -1,0 +1,23 @@
+{
+  "base_sha": "d1e4e7a9d885b617e6cb42e78ad532009527e073",
+  "branch": "autose/issue-75",
+  "counters": {},
+  "issue": 75,
+  "reason": "",
+  "round": 1,
+  "rounds": {
+    "1": {
+      "calls": 0,
+      "models": [],
+      "reason": "",
+      "stage": "1",
+      "status": "running",
+      "tokens": 0
+    }
+  },
+  "stage": "1",
+  "status": "running",
+  "tokens": 0,
+  "tokens_total": 0,
+  "updated": "2026-11-21T17:40:30Z"
+}

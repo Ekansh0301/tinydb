@@ -1,0 +1,12 @@
+{
+ "run_id": "44931285607",
+ "attempt": "1",
+ "event": "issues",
+ "issue": 75,
+ "variant": "pipeline",
+ "round": 1,
+ "from_stage": 1,
+ "base_sha": "d1e4e7a9d885b617e6cb42e78ad532009527e073",
+ "branch": "autose/issue-75",
+ "started": "2026-11-21T17:40:30Z"
+}
