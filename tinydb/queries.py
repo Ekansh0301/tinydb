@@ -380,10 +380,11 @@ class Query(QueryInstance):
         return self._generate_test(test, ('search', self._path, regex, flags))
 
     def contains_text(self, substring: str) -> QueryInstance:
-        """Check if a field value contains the given substring (case‑sensitive).
+        """Check if the field value contains the given substring.
 
-        Non‑string values (including missing fields and ``None``) evaluate to
-        ``False``.
+        The check is case‑sensitive and only applies to string values.
+        Non‑string values (including missing fields, ``None`` or numbers) return
+        ``False`` without raising an exception.
         """
         def test(value):
             if not isinstance(value, str):
@@ -391,6 +392,8 @@ class Query(QueryInstance):
             return substring in value
 
         return self._generate_test(test, ('contains_text', self._path, substring))
+
+
 
     def test(self, func: Callable[..., bool], *args) -> QueryInstance:
         """
