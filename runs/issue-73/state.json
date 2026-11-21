@@ -16,11 +16,19 @@
       "stage": "5",
       "status": "released",
       "tokens": 82683
+    },
+    "2": {
+      "calls": 0,
+      "models": [],
+      "reason": "",
+      "stage": "3",
+      "status": "running",
+      "tokens": 0
     }
   },
-  "stage": "5",
+  "stage": "3",
   "status": "running",
-  "tokens": 0,
+  "tokens": 82683,
   "tokens_total": 82683,
-  "updated": "2026-11-21T16:58:23Z"
+  "updated": "2026-11-21T17:00:37Z"
 }
