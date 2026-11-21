@@ -2,29 +2,29 @@
 ## Source statements
 S1: "I search names a lot and the regex version is awkward: db.search(where('name').matches(r'.*son.*'))"  
 S2: "Could there be a plain substring check? db.search(where('name').contains_text('son'))"  
-S3: "Only strings should match. Documents where the field is missing, None or a number should just not match (no error). Case-sensitive is fine."
+S3: "Only strings should match."  
+S4: "Documents where the field is missing, None or a number should just not match (no error)."  
+S5: "Case-sensitive is fine."
 
 ## Requirements
-- FR-1 [STATED] The system shall provide a `contains_text` operator that can be used in a query expression, e.g., `where('field').contains_text('sub')` (S2).  
-- FR-2 [STATED] The `contains_text` operator shall perform a case‑sensitive substring check on the field value (S3).  
-- FR-3 [STATED] When the target field is missing, has a value of `None`, or is not a string (e.g., a number), the `contains_text` operator shall evaluate to *false* for that document and must not raise an exception (S3).  
-- FR-4 [INFERRED] The `contains_text` operator shall return a boolean value that can be combined with other query predicates using the existing logical operators (`and`, `or`, `not`) in the query builder (derived from the behavior of the existing `matches` operator).  
-- FR-5 [INFERRED] The `contains_text` operator shall be implemented as a method of the same object returned by `where(field)` so that its usage mirrors that of the existing `matches` method (derived from the API pattern shown in S1 and S2).  
+- FR-1 [STATED] The system shall provide a `contains_text(substring)` operator that can be used on a field selector, e.g., `where('name').contains_text('son')` (S2).  
+- FR-2 [STATED] The `contains_text` operator shall perform a case‑sensitive substring search (S5).  
+- FR-3 [STATED] When the target field value is not a string (i.e., the field is missing, `None`, or a numeric type), `contains_text` shall evaluate to *false* for that document and shall not raise an exception (S4).  
+- FR-4 [INFERRED] The `contains_text` operator shall return *true* for a document when the field value is a string that contains the supplied substring anywhere within it (derived from S2 and S3).  
+- FR-5 [INFERRED] The `contains_text` operator shall be composable with other query predicates in the same way as the existing `matches` operator (derived from S1 and S2).  
 
 ## Acceptance criteria
-- AC-1 (FR-1): Given a collection containing documents `{'name': 'Jackson'}` and `{'name': 'Emily'}`, when `db.search(where('name').contains_text('son'))` is executed, then the result set shall contain only the document `{'name': 'Jackson'}`.  
-- AC-2 (FR-2): Given a document `{'name': 'Jackson'}`, when `db.search(where('name').contains_text('Son'))` is executed, then the result set shall be empty, confirming case‑sensitivity.  
-- AC-3 (FR-3): Given a document `{'age': 30}` (field missing), when `db.search(where('name').contains_text('son'))` is executed, then the result set shall be empty and no exception shall be raised.  
-- AC-4 (FR-3): Given a document `{'name': None}`, when `db.search(where('name').contains_text('son'))` is executed, then the result set shall be empty and no exception shall be raised.  
-- AC-5 (FR-3): Given a document `{'name': 12345}`, when `db.search(where('name').contains_text('son'))` is executed, then the result set shall be empty and no exception shall be raised.  
-- AC-6 (FR-4): Given three documents with names `'Jackson'`, `'Jason'`, and `'Emily'`, when `db.search(where('name').contains_text('son').and(where('age').greater_than(20)))` is executed (assuming `greater_than` exists), then the result set shall contain only `'Jackson'` and `'Jason'` if they also satisfy the age predicate, demonstrating boolean composability.  
-- AC-7 (FR-5): Given the source code for the query builder, when the `where('field')` object is inspected, it shall expose a method named `contains_text` that accepts a single string argument (the substring) and returns a predicate object compatible with the query engine.  
+- AC-1 (FR-1): Given a collection with documents `[{ "name": "Jackson" }, { "name": "Emily" }]`, when `db.search(where('name').contains_text('son'))` is executed, then the result set shall contain only the document `{"name": "Jackson"}`.  
+- AC-2 (FR-2): Given a document `{"name": "Jackson"}`, when `db.search(where('name').contains_text('SON'))` is executed, then the result set shall be empty, confirming case‑sensitivity.  
+- AC-3 (FR-3): Given a collection with documents `[{ "age": 30 }, { "name": null }, { }]`, when `db.search(where('name').contains_text('son'))` is executed, then the result set shall be empty and no exception shall be raised.  
+- AC-4 (FR-4): Given a document `{"name": "sonic"}`, when `db.search(where('name').contains_text('son'))` is executed, then the result set shall contain that document.  
+- AC-5 (FR-5): Given a collection with documents `[{ "name": "Jackson", "active": true }, { "name": "Jackson", "active": false }]`, when `db.search(where('name').contains_text('son').and(where('active').equals(True)))` is executed, then the result set shall contain only the first document, demonstrating composability.  
 
 ## Assumptions and open questions
-- A-1 [ASSUMED] The query engine returns a list (or iterable) of matching documents; this is the observable result used in the acceptance criteria. Impact if wrong: If the engine returns a different structure (e.g., a cursor), the test harness must adapt to inspect the returned items. Question: What exact type does `db.search` return?  
-- A-2 [ASSUMED] The existing `matches` operator is case‑sensitive; the request “Case-sensitive is fine” is interpreted as requiring the same behavior for `contains_text`. Impact if wrong: If `matches` is actually case‑insensitive, the implementation may need a configurable flag. Question: What is the current case‑sensitivity of `matches`?  
+- A-1 [ASSUMED] The query builder (`where`) returns an object that can be extended with new predicate methods. Impact if wrong: If the builder is immutable or uses a different registration mechanism, adding `contains_text` may require a different integration point. Question: Does the current API support dynamic method addition or is a registry required?  
+- A-2 [ASSUMED] The underlying storage engine treats string fields as Unicode and supports Python‑style substring checks. Impact if wrong: If the engine stores strings in a binary format without native substring support, the implementation may need to fallback to regex, affecting performance. Question: What is the exact data type handling for string fields in the engine?  
 
 ## Non-goals
-- Supporting case‑insensitive substring searches (not requested).  
-- Providing fuzzy or approximate matching capabilities.  
-- Extending `contains_text` to non‑string data types beyond the defined “no match” behavior.
+- Providing case‑insensitive or locale‑aware substring matching.  
+- Extending `contains_text` to work on non‑string field types (e.g., lists).  
+- Optimizing the performance of `contains_text` beyond functional correctness.
