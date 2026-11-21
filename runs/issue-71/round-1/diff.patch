@@ -1,0 +1,29 @@
+diff --git a/tinydb/queries.py b/tinydb/queries.py
+index e106c5d..5f28f00 100644
+--- a/tinydb/queries.py
++++ b/tinydb/queries.py
+@@ -329,6 +329,24 @@ class Query(QueryInstance):
+             ('>=', self._path, rhs)
+         )
+ 
++    def between(self, low: Any, high: Any) -> QueryInstance:
++        """Test that a field value is within the inclusive range [low, high]."""
++        return self._generate_test(
++            lambda value: low <= value <= high,
++            ('between', self._path, freeze(low), freeze(high))
++        )
++        """
++        Test a dict value for being greater than or equal to another value.
++
++        >>> Query().f1 >= 42
++
++        :param rhs: The value to compare against
++        """
++        return self._generate_test(
++            lambda value: value >= rhs,
++            ('>=', self._path, rhs)
++        )
++
+     def exists(self) -> QueryInstance:
+         """
+         Test for a dict where a provided key exists.
