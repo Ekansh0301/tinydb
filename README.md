@@ -129,6 +129,10 @@ against a reference fix (16 fail on the base commit, the other 4 are regression 
 repository while the agents could still read it. They were added to `experiment/hidden_tests/` after the last recorded run.
 Scoring: `python experiment/score.py --issue <1..5> --branch autose/issue-<N>`.
 
+## AI assistance
+
+AI was used for coding assistance.
+
 ## Rules followed
 
 - The workflow acts only on `Ekansh0301/tinydb`; it refuses to run in any other repository and never pushes to the upstream project.
