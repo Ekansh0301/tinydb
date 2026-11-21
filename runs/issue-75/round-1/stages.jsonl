@@ -1,3 +1,4 @@
 {"run_id": "44931285607", "round": 1, "stage": 1, "ok": false, "route": "", "reasons": ["AC-7 is not in Given/When/Then form"], "tokens_so_far": 2026, "calls_so_far": 1, "time": "2026-11-21T17:40:34Z"}
 {"run_id": "44931285607", "round": 1, "stage": 1, "ok": true, "route": "", "reasons": [], "tokens_so_far": 4332, "calls_so_far": 3, "time": "2026-11-21T17:40:38Z"}
 {"run_id": "44931285607", "round": 1, "stage": 2, "ok": true, "route": "", "reasons": [], "tokens_so_far": 24460, "calls_so_far": 14, "time": "2026-11-21T17:42:48Z"}
+{"run_id": "44931285607", "round": 1, "stage": 3, "ok": true, "route": "", "reasons": [], "tokens_so_far": 50160, "calls_so_far": 30, "time": "2026-11-21T17:45:50Z"}
