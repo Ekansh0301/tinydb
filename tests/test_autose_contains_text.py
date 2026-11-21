@@ -1,48 +1,50 @@
 import pytest
-from tinydb import TinyDB, where
+from tinydb import TinyDB, Query
 from tinydb.storages import MemoryStorage
 
-# AC-1: only Jackson matches
+# AC-1
 
-def test_ac1_only_jackson_matches():
+def test_ac1_contains_text_basic():
     db = TinyDB(storage=MemoryStorage)
-    db.table('t').insert_multiple([{'name': 'Jackson'}, {'name': 'Emily'}])
-    result = db.search(where('name').contains_text('son'))
+    db.insert_multiple([{'name': 'Jackson'}, {'name': 'Emily'}])
+    q = Query()
+    result = db.search(q.name.contains_text('son'))
     assert result == [{'name': 'Jackson'}]
 
-# AC-2: case-sensitive
+# AC-2
 
-def test_ac2_case_sensitive():
+def test_ac2_contains_text_case_sensitive():
     db = TinyDB(storage=MemoryStorage)
-    db.table('t').insert({'name': 'Jackson'})
-    result = db.search(where('name').contains_text('SON'))
+    db.insert({'name': 'Jackson'})
+    q = Query()
+    result = db.search(q.name.contains_text('SON'))
     assert result == []
 
-# AC-3: non-string fields
+# AC-3
 
-def test_ac3_non_string_fields():
+def test_ac3_contains_text_non_string():
     db = TinyDB(storage=MemoryStorage)
-    db.table('t').insert_multiple([{'age': 30}, {'name': None}, {}])
-    result = db.search(where('name').contains_text('son'))
+    db.insert_multiple([{'age': 30}, {'name': None}, {}])
+    q = Query()
+    result = db.search(q.name.contains_text('son'))
     assert result == []
 
-# AC-4: substring at start
+# AC-4
 
-def test_ac4_substring_start():
+def test_ac4_contains_text_substring():
     db = TinyDB(storage=MemoryStorage)
-    db.table('t').insert({'name': 'sonic'})
-    result = db.search(where('name').contains_text('son'))
+    db.insert({'name': 'sonic'})
+    q = Query()
+    result = db.search(q.name.contains_text('son'))
     assert result == [{'name': 'sonic'}]
 
-# AC-5: composability
+# AC-5
 
-def test_ac5_composability():
+def test_ac5_contains_text_composable():
     db = TinyDB(storage=MemoryStorage)
-    db.table('t').insert_multiple([
-        {'name': 'Jackson', 'active': True},
-        {'name': 'Jackson', 'active': False}
-    ])
-    result = db.search((where('name').contains_text('son')) & (where('active').equals(True)))
+    db.insert_multiple([{'name': 'Jackson', 'active': True}, {'name': 'Jackson', 'active': False}])
+    q = Query()
+    result = db.search((q.name.contains_text('son')) & (q.active == True))
     assert result == [{'name': 'Jackson', 'active': True}]
 
 # end of tests
