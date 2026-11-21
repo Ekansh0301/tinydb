@@ -20,7 +20,7 @@ digraph G {
   ci [label="job ci\nreusable workflow\non the PR head", fillcolor="#ffffff"];
 
   subgraph cluster_rev { label="job review (contents: read)"; style="rounded"; color="#888888"; fontsize=9;
-    rev [label="Reviewer\nstage 6\nnemotron-3.5-super →\nnemotron-3-ultra → qwen3.8-27b", fillcolor="#ffe3d1"]; }
+    rev [label="Reviewer\nstage 6\nnemotron-3-ultra →\nnemotron-3.5-super → qwen3.8-27b", fillcolor="#ffe3d1"]; }
 
   nxt [label="job next\npost review, re-dispatch\nround+1 (at most twice)", fillcolor="#ffffff"];
 
