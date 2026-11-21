@@ -1,0 +1,62 @@
+[17:55:55] stage 3 implementation (attempt 1)
+[17:55:55] groq: 6 API key(s) available
+[17:55:55] call groq:openai/gpt-oss-120b key#0 prompt~2424 used 2002 in 0.5s
+[17:55:56] call groq:openai/gpt-oss-120b key#1 prompt~3270 used 2877 in 0.9s
+[17:55:57] call groq:openai/gpt-oss-120b key#2 prompt~3601 used 2900 in 0.3s
+[17:55:57] call groq:openai/gpt-oss-120b key#3 prompt~3880 used 3125 in 0.4s
+[17:55:57] key#4 of groq refused (HTTP 401): {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}} 
+[17:55:58] call groq:openai/gpt-oss-120b key#5 prompt~4502 used 3663 in 0.5s
+[17:56:58] call groq:openai/gpt-oss-120b key#0 prompt~4664 used 3679 in 0.4s
+[17:56:59] malformed tool call: {"error":{"message":"Failed to parse tool call arguments as JSON","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"run\", \"arguments\": {\"command\":\"python -m pytest -q\"], \"timeout\": 100000}\"}"}} 
+[17:56:59] malformed tool call: {"error":{"message":"Failed to parse tool call arguments as JSON","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"run\", \"arguments\": {\"command\":\"python -m pytest -q\"], \"timeout\": 100000}\"}"}} 
+[17:57:00] call groq:openai/gpt-oss-120b key#3 prompt~4811 used 3800 in 0.6s
+[17:57:01] stage 4 testing (attempt 1)
+[17:57:02] call groq:openai/gpt-oss-20b key#5 prompt~1894 used 1571 in 0.9s
+[17:57:02] call groq:openai/gpt-oss-20b key#0 prompt~2213 used 1822 in 0.3s
+[17:57:03] call groq:openai/gpt-oss-20b key#1 prompt~3060 used 3057 in 0.9s
+[17:57:04] call groq:openai/gpt-oss-20b key#2 prompt~3649 used 3582 in 1.0s
+[17:57:05] call groq:openai/gpt-oss-20b key#5 prompt~4228 used 3701 in 0.4s
+[17:58:02] malformed tool call: {"error":{"message":"Parsing failed. The model generated output that could not be parsed. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"output_parse_failed","failed_generation":""}} 
+[17:58:03] malformed tool call: {"error":{"message":"Parsing failed. The model generated output that could not be parsed. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"output_parse_failed","failed_generation":""}} 
+[17:58:03] call groq:openai/gpt-oss-20b key#0 prompt~4374 used 3794 in 0.5s
+[17:58:03] key#3 of groq rate limited, set aside 30s: t-oss-20b` in organization `org_01kqqea6yje2krg41j2m5b0zf3` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7826, Requ
+[17:58:07] call groq:openai/gpt-oss-20b key#5 prompt~4534 used 3817 in 0.4s
+[17:58:08] call groq:openai/gpt-oss-20b key#1 prompt~4913 used 4124 in 0.6s
+[17:58:08] call groq:openai/gpt-oss-20b key#2 prompt~5054 used 4130 in 0.4s
+[17:59:06] call groq:openai/gpt-oss-20b key#3 prompt~5170 used 4205 in 0.6s
+[17:59:07] call groq:openai/gpt-oss-20b key#0 prompt~5767 used 4707 in 0.6s
+[17:59:10] stage 3 implementation (attempt 2)
+[17:59:10] call groq:openai/gpt-oss-120b key#1 prompt~2412 used 2004 in 0.4s
+[17:59:10] call groq:openai/gpt-oss-120b key#2 prompt~3258 used 2777 in 0.4s
+[17:59:10] call groq:openai/gpt-oss-120b key#5 prompt~3372 used 2816 in 0.2s
+[18:00:10] call groq:openai/gpt-oss-120b key#0 prompt~4045 used 3893 in 2.5s
+[18:00:11] malformed tool call: {"error":{"message":"Failed to parse tool call arguments as JSON","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"run\", \"arguments\": {\"command\":\"python -m pytest -q\"], \"timeout\": 100000}\"}"}} 
+[18:00:12] malformed tool call: {"error":{"message":"Failed to parse tool call arguments as JSON","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"run\", \"arguments\": {\"command\":\"python -m pytest -q\"], \"timeout\": 100000}\"}"}} 
+[18:00:13] malformed tool call: {"error":{"message":"Failed to parse tool call arguments as JSON","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"run\", \"arguments\": {\"command\":\"python -m pytest -q\"], \"timeout\": 100000}\"}"}} 
+[18:00:13] call groq:openai/gpt-oss-120b key#5 prompt~4806 used 4002 in 0.5s
+[18:00:14] call groq:openai/gpt-oss-120b key#1 prompt~5264 used 4309 in 0.5s
+[18:00:15] key#2 of groq rate limited, set aside 1s: t-oss-120b` in organization `org_01m48r6venes7bvn0c3v1w4m06` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 3669, Req
+[18:00:16] call groq:openai/gpt-oss-120b key#3 prompt~5347 used 4177 in 0.4s
+[18:01:14] call groq:openai/gpt-oss-120b key#0 prompt~5451 used 4573 in 1.3s
+[18:01:14] malformed tool call: {"error":{"message":"Parsing failed. The model generated output that could not be parsed. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"output_parse_failed","failed_generation":"We need contains_text to work; maybe not added to __call__? Actually QueryInstance uses self._test. Need to see generation."}} 
+[18:01:15] call groq:openai/gpt-oss-120b key#1 prompt~5750 used 4513 in 0.6s
+[18:01:19] malformed tool call: {"error":{"message":"Parsing failed. The model generated output that could not be parsed. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"output_parse_failed","failed_generation":"We added contains_text but maybe need also in __or__ etc? The failure: test_ac1 returns empty, meaning contains_text not being used? maybe where('name') return
+[18:01:19] call groq:openai/gpt-oss-120b key#3 prompt~5762 used 4522 in 0.5s
+[18:02:17] call groq:openai/gpt-oss-120b key#5 prompt~5869 used 4735 in 0.7s
+[18:02:18] call groq:openai/gpt-oss-120b key#0 prompt~5364 used 4158 in 0.7s
+[18:02:18] call groq:openai/gpt-oss-120b key#1 prompt~5615 used 4227 in 0.6s
+[18:02:22] call groq:openai/gpt-oss-120b key#2 prompt~5934 used 4595 in 0.8s
+[18:02:23] call groq:openai/gpt-oss-120b key#3 prompt~5933 used 4375 in 0.6s
+[18:03:20] call groq:openai/gpt-oss-120b key#5 prompt~5303 used 3775 in 0.4s
+[18:03:21] call groq:openai/gpt-oss-120b key#0 prompt~5928 used 4266 in 0.4s
+[18:03:21] call groq:openai/gpt-oss-120b key#1 prompt~5284 used 3671 in 0.4s
+[18:03:26] call groq:openai/gpt-oss-120b key#2 prompt~5742 used 4142 in 0.9s
+[18:03:26] call groq:openai/gpt-oss-120b key#3 prompt~5604 used 3890 in 0.5s
+[18:03:28] stage 4 testing (attempt 1)
+[18:03:29] call groq:openai/gpt-oss-20b key#5 prompt~1894 used 1578 in 0.2s
+[18:03:29] call groq:openai/gpt-oss-20b key#1 prompt~2206 used 2272 in 0.7s
+[18:04:21] call groq:openai/gpt-oss-20b key#5 prompt~2781 used 2355 in 0.3s
+[18:04:21] call groq:openai/gpt-oss-20b key#0 prompt~3126 used 2638 in 0.5s
+[18:04:22] call groq:openai/gpt-oss-20b key#1 prompt~3274 used 2641 in 0.3s
+[18:04:28] call groq:openai/gpt-oss-20b key#2 prompt~3393 used 2720 in 0.4s
+[18:04:31] stage 5 release
