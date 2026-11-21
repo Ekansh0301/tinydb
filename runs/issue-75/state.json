@@ -9,7 +9,7 @@
   },
   "issue": 75,
   "reason": "",
-  "round": 1,
+  "round": 2,
   "rounds": {
     "1": {
       "calls": 82,
@@ -24,7 +24,7 @@
     }
   },
   "stage": "5",
-  "status": "released",
+  "status": "running",
   "tokens": 0,
   "tokens_total": 193961,
   "updated": "2026-11-21T17:53:29Z"
