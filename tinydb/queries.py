@@ -392,25 +392,6 @@ class Query(QueryInstance):
             return substring in value
 
         return self._generate_test(test, ('contains_text', self._path, substring))
-        """
-        Run a regex test against a dict value (only substring string has to
-        match).
-
-        >>> Query().f1.search(r'^\\w+$')
-
-        :param regex: The regular expression to use for matching
-        :param flags: regex flags to pass to ``re.search``
-        """
-
-        def test(value):
-            if not isinstance(value, str):
-                return False
-
-            return re.search(regex, value, flags) is not None
-
-        # Include flags in the hash so queries that differ only by flags do not
-        # share a Table query-cache entry (see issue #637).
-        return self._generate_test(test, ('search', self._path, regex, flags))
 
     def test(self, func: Callable[..., bool], *args) -> QueryInstance:
         """
